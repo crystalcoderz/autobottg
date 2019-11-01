@@ -63,7 +63,7 @@ stage.hears('Cancel', leave());
 
 bot.start(handler(async (ctx) => await ctx.reply(messages.startMsg, getMainKeyboard(ctx))) );
 
-bot.hears('Start exchange', async (ctx) => { ctx.scene.enter('start') });
+bot.hears('Start exchange', handler(async (ctx) => ctx.scene.enter('start') ) );
 // bot.hears('Cancel', leave());
 
 bot.telegram.setWebhook('https://9f5a4511.ngrok.io/secret-path');

@@ -4,16 +4,22 @@ import Stage from 'telegraf/stage';
 const { enter, leave } = Stage;
 import { handler } from '../helpers';
 import { messages } from '../messages';
-import { getCurrenciesKeyboard } from '../keyboards';
+import { getCurrenciesKeyboard, getAgreeButton } from '../keyboards';
 import { selectFromCurrencyAction } from '../actions';
+
+import Markup from 'telegraf/markup';
+import Extra from 'telegraf/extra';
 
 const currFrom = new Scene('curr_from');
 
+const log = (data) => {
+  console.log(data)
+}
+
 currFrom.enter(handler(async (ctx) => {
   console.log('in curr_from scene');
-  await ctx.reply(messages.selectFromMsg, getCurrenciesKeyboard(ctx.session.currs));
-  // await ctx.reply(messages.selectFromMsg);
-  // await ctx.reply('', backKeyboard);
+  const currs = await ctx.session.currs;
+  await ctx.reply(messages.selectFromMsg, getCurrenciesKeyboard(currs));
 }));
 
 currFrom.action(/name/, ctx => selectFromCurrencyAction(ctx, 'btn'));

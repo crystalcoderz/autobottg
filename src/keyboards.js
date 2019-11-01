@@ -16,12 +16,14 @@ export const getCurrenciesKeyboard = (currs) => {
   const popCurrs = getPopularNames(currs);
   return Extra.HTML().markup((m) =>
     m.inlineKeyboard(
-      popCurrs.map((cur, idx) => [
+      popCurrs.map(cur => [
         m.callbackButton(
           cur,
           JSON.stringify({ action: 'name', payload: `${cur}` }),
-          false)
-      ])
+          false
+        )
+      ]),
+      {}
     )
   );
 }

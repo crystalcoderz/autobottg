@@ -1,7 +1,7 @@
 // Start scene
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-const { enter, leave } = Stage;
+// const { enter, leave } = Stage;
 import { handler } from '../helpers';
 import { getAllCurrencies } from '../api';
 import { saveToSession } from '../helpers';
