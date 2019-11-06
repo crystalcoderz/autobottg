@@ -12,9 +12,13 @@ checkAgree.enter(async (ctx) => {
   const curFrom = await ctx.session.curFrom;
   const curTo = await ctx.session.curTo;
   const walletCode = await ctx.session.walletCode;
+  const addData = await ctx.session.addData;
+  const addDataName = await ctx.session.addDataName;
+
+  const addMsg = addData ? `Your ${addDataName} is ${addData}\n`: '';
 
   await ctx.reply(`
-    You’re sending ${amount} ${curFrom} and you’ll get ${amountTotal} ${curTo}\nYour recipient’s ${curTo} address is ${walletCode}\nYour Memo ID is *numbers*.\n\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
+    You’re sending ${amount} ${curFrom} and you’ll get ${amountTotal} ${curTo}\nYour recipient’s ${curTo} address is ${walletCode}\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
     getAgreeButton(ctx));
 });
 

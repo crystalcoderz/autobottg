@@ -26,10 +26,13 @@ import {
   getAgreeButton
 } from './keyboards';
 
+import { cancelTradeAction } from './actions';
+
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
 import curTo from './controllers/curTo';
 import amount from './controllers/amount';
+import prepareData from './controllers/prepareData';
 import checkData from './controllers/checkData';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
@@ -48,6 +51,7 @@ const stage = new Stage([
   currFrom,
   curTo,
   amount,
+  prepareData,
   checkData,
   estimateExchange,
   checkAgree,
@@ -64,7 +68,7 @@ stage.hears('Cancel', leave());
 bot.start(handler(async (ctx) => await ctx.reply(messages.startMsg, getMainKeyboard(ctx))) );
 
 bot.hears('Start exchange', handler(async (ctx) => ctx.scene.enter('start') ) );
-// bot.hears('Cancel', leave());
+bot.hears('Cancel', (ctx) => cancelTradeAction(ctx, stage));
 
 bot.telegram.setWebhook('https://9f5a4511.ngrok.io/secret-path');
 
@@ -88,3 +92,5 @@ expressApp.get('/', function (req, res) {
 expressApp.listen(6000, () => {
   console.log('Server listening on 6000');
 })
+
+// console.log(process.memoryUsage().heapTotal / 1024 / 1024);

@@ -4,11 +4,14 @@ import { getPairs, getMinimum } from './api';
 import { messages } from './messages';
 import { config } from './config';
 
-export const getPopularNames = (currs) => {
-  let names = [];
+
+export const pause = time => new Promise(resolve => setTimeout(resolve, time));
+
+export const getPopularCurrs = (currs) => {
+  let popCurrs = [];
   currs.filter(curr => config.popularCurrs.includes(curr.name))
-    .map(curr => names.push(curr.name));
-  return names;
+    .map(curr => popCurrs.push({name: curr.name, ticker: curr.ticker}));
+  return popCurrs;
 }
 
 export const handler = (fn) => {
@@ -38,8 +41,9 @@ export const saveToSession = (ctx, field, data) => {
   ctx.session[field] = data;
 }
 
-export const deleteFromSession = (ctx, field) => {
-  delete ctx.session[field];
+export const deleteFromSession = async (ctx, field) => {
+  const hasField = await ctx.session.field;
+  hasField && delete ctx.session[field];
 }
 
 export const prepareName = (name) => {
@@ -48,39 +52,48 @@ export const prepareName = (name) => {
   }
 };
 
-export const convertAndCheckCurr = async (ctx, from, to) => {
+export const checkCurrency = async (ctx, curName) => {
+  let curAbbr;
   const allCurrs = await ctx.session.currs;
-  const fromCurr = allCurrs.find(item =>
-    prepareName(item.ticker) === prepareName(from) ||
-    prepareName(item.name) === prepareName(from)
+  const currAvailable = allCurrs.find(item =>
+    prepareName(item.ticker) === prepareName(curName) ||
+    prepareName(item.name) === prepareName(curName)
   );
-  const toCurr = allCurrs.find(item =>
-    prepareName(item.ticker) === prepareName(to) ||
-    prepareName(item.name) === prepareName(to)
-  );
-
-  // console.log(fromCurr);
-  // console.log(toCurr);
-
-  let curFromAbbr, curToAbbr;
-  if(fromCurr) {
-    curFromAbbr = fromCurr.ticker;
-    saveToSession(ctx, 'curFrom', curFromAbbr);
-  }
-  if(toCurr) {
-    curToAbbr = toCurr.ticker;
-    saveToSession(ctx, 'curTo', curToAbbr);
-  }
-  if(!fromCurr || !toCurr) {
-    await ctx.reply(messages.errorNameMsg);
-    delete ctx.session['curFrom'];
-    delete ctx.session['curTo'];
-    await ctx.scene.leave('check');
-    await ctx.scene.enter('curr_from');
-    return null;
-  }
-  return `${curFromAbbr}_${curToAbbr}`;
+  return curAbbr = currAvailable ? currAvailable.ticker : null;
 }
+
+
+// export const convertAndCheckCurr = async (ctx, from, to) => {
+//   const allCurrs = await ctx.session.currs;
+//   const fromCurr = allCurrs.find(item =>
+//     prepareName(item.ticker) === prepareName(from) ||
+//     prepareName(item.name) === prepareName(from)
+//   );
+//   const toCurr = allCurrs.find(item =>
+//     prepareName(item.ticker) === prepareName(to) ||
+//     prepareName(item.name) === prepareName(to)
+//   );
+
+//   let curFromAbbr, curToAbbr;
+//   if(fromCurr) {
+//     curFromAbbr = fromCurr.ticker;
+//     saveToSession(ctx, 'curFrom', curFromAbbr);
+//   } else {}
+//   if(toCurr) {
+//     curToAbbr = toCurr.ticker;
+//     saveToSession(ctx, 'curTo', curToAbbr);
+//   }
+//   if(!fromCurr || !toCurr) {
+//     await ctx.reply(messages.errorNameMsg);
+//     deleteFromSession(ctx, 'curFrom')
+//     deleteFromSession(ctx, 'curTo')
+//     await pause(3000);
+//     await ctx.scene.leave('prepare');
+//     await ctx.scene.enter('curr_from');
+//     return null;
+//   }
+//   return `${curFromAbbr}_${curToAbbr}`;
+// }
 
 export const validatePair = async (pair) => {
   const availablePairs = await getPairs();

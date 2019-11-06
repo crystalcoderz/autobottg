@@ -2,10 +2,10 @@
 import Markup from 'telegraf/markup';
 import Extra from 'telegraf/extra';
 
-import { getPopularNames } from './helpers';
+import { getPopularCurrs } from './helpers';
 
 export const getMainKeyboard = (ctx) => {
-  return Extra.markup(Markup.keyboard(['Start exchange']).resize());
+  return Extra.markup(Markup.keyboard(['Start exchange', 'Cancel']).resize());
 }
 
 export const backKeyboard = (ctx) => {
@@ -13,13 +13,13 @@ export const backKeyboard = (ctx) => {
 }
 
 export const getCurrenciesKeyboard = (currs) => {
-  const popCurrs = getPopularNames(currs);
+  const popCurrs = getPopularCurrs(currs);
   return Extra.HTML().markup((m) =>
     m.inlineKeyboard(
       popCurrs.map(cur => [
         m.callbackButton(
-          cur,
-          JSON.stringify({ action: 'name', payload: `${cur}` }),
+          `${cur.name} (${cur.ticker.toUpperCase()})`,
+          JSON.stringify({ action: 'name', payload: `${cur.name}` }),
           false
         )
       ]),

@@ -1,4 +1,9 @@
 //--------------------------- Actions -----------------------------------------------
+
+import messages from './messages';
+import { pause } from './helpers';
+import { deleteFromSession } from './helpers';
+
 import Stage from 'telegraf/stage';
 const { enter, leave } = Stage;
 import { getCurrencyName, saveToSession } from './helpers';
@@ -6,26 +11,41 @@ import { sendTransactionData } from './api';
 
 export const selectFromCurrencyAction = async (ctx, type) => {
   console.log('selectFromCurrencyAction');
-  const curFrom = getCurrencyName(ctx, type);
+  const curFrom = await getCurrencyName(ctx, type);
   saveToSession(ctx, 'curFrom', curFrom);
+  ctx.reply(`Selected currency - ${curFrom}`);
+  await pause(2000);
   await ctx.scene.leave('curr_from');
-  await ctx.scene.enter('curr_to');
+  await ctx.scene.enter('prepare');
 }
 
 export const selectToCurrencyAction = async (ctx, type) => {
   console.log('selectToCurrencyAction');
-  const curTo = getCurrencyName(ctx, type);
+  const curTo = await getCurrencyName(ctx, type);
   saveToSession(ctx, 'curTo', curTo);
+  ctx.reply(`Selected currency - ${curTo}`);
+  await pause(2000);
   await ctx.scene.leave('curr_to');
-  await ctx.scene.enter('check');
+  await ctx.scene.enter('prepare');
+}
+
+export const inputAdditionalDataAction = async (ctx) => {
+  const inputData = ctx.message.text;
+  saveToSession(ctx, 'addData', inputData);
+  await ctx.scene.leave('check');
+  await ctx.scene.enter('amount');
 }
 
 export const selectAmountAction = async (ctx) => {
-  console.log('selectAmountAction');
   const amount = ctx.message.text;
-  saveToSession(ctx, 'amount', amount);
-  await ctx.scene.leave('amount');
-  await ctx.scene.enter('est_exch');
+  const minValue = await ctx.session.minValue;
+  if(amount >= minValue) {
+    saveToSession(ctx, 'amount', amount);
+    await ctx.scene.leave('amount');
+    await ctx.scene.enter('est_exch');
+  } else {
+    ctx.reply(`Enter an amount greater than or equal to ${minValue}`);
+  }
 }
 
 export const typeWalletAction = async (ctx) => {
@@ -43,12 +63,14 @@ export const agreePressAction = async (ctx) => {
   const curTo = await ctx.session.curTo;
   const walletCode = await ctx.session.walletCode;
   const amount = await ctx.session.amount;
+  const extraId = await ctx.session.addData;
 
   const data = {
     from: curFrom,
     to: curTo,
     address: walletCode,
-    amount: amount
+    amount: amount,
+    extraId: extraId || ''
   }
   try {
     const response = await sendTransactionData(data);
@@ -60,4 +82,18 @@ export const agreePressAction = async (ctx) => {
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');
   }
+}
+
+export const cancelTradeAction = async (ctx, stage) => {
+  await deleteFromSession(ctx, 'curFrom');
+  await deleteFromSession(ctx, 'curTo');
+  await deleteFromSession(ctx, 'curFromInfo');
+  await deleteFromSession(ctx, 'curToInfo');
+  await deleteFromSession(ctx, 'addData');
+  await deleteFromSession(ctx, 'addDataName');
+  await deleteFromSession(ctx, 'amount');
+  await deleteFromSession(ctx, 'minValue');
+  await deleteFromSession(ctx, 'walletCode');
+  await deleteFromSession(ctx, 'response');
+  await leave();
 }
