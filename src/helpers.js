@@ -7,12 +7,12 @@ import { config } from './config';
 
 export const pause = time => new Promise(resolve => setTimeout(resolve, time));
 
-export const getPopularCurrs = (currs) => {
-  let popCurrs = [];
-  currs.filter(curr => config.popularCurrs.includes(curr.name))
-    .map(curr => popCurrs.push({name: curr.name, ticker: curr.ticker}));
-  return popCurrs;
-}
+// export const getPopularCurrs = (currs) => {
+//   let popCurrs = [];
+//   currs.filter(curr => config.popularCurrs.includes(curr.name))
+//     .map(curr => popCurrs.push({name: curr.name, ticker: curr.ticker}));
+//   return popCurrs;
+// }
 
 export const handler = (fn) => {
   return async function(ctx, next) {
@@ -32,8 +32,10 @@ export const getCurrencyName = async (ctx, type) => {
     selectedCurName = JSON.parse(ctx.callbackQuery.data).payload;
     await ctx.answerCbQuery(`Selected currency – ${selectedCurName}`);
   } else if(type === 'text') {
-    selectedCurName = ctx.message.text;
+    const text = ctx.message.text.split('(')[0].trim();
+    selectedCurName = text;
   }
+  console.log("TCL: getCurrencyName -> selectedCurName", selectedCurName)
   return selectedCurName;
 }
 

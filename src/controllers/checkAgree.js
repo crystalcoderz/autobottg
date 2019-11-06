@@ -1,7 +1,8 @@
 //checkAgree scene
 import Scene from 'telegraf/scenes/base';
 import { agreePressAction } from '../actions';
-import { getAgreeButton } from '../keyboards';
+import { getAgreeKeyboard } from '../keyboards';
+import { config } from '../config';
 
 const checkAgree = new Scene('agree');
 
@@ -17,11 +18,12 @@ checkAgree.enter(async (ctx) => {
 
   const addMsg = addData ? `Your ${addDataName} is ${addData}\n`: '';
 
-  await ctx.reply(`
-    You’re sending ${amount} ${curFrom} and you’ll get ${amountTotal} ${curTo}\nYour recipient’s ${curTo} address is ${walletCode}\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
-    getAgreeButton(ctx));
+  await ctx.replyWithHTML(`
+    You’re sending <b>${amount} ${curFrom}</b> and you’ll get <b>${amountTotal} ${curTo}</b>\nYour recipient’s <b>${curTo}</b> address is <b>${walletCode}</b>\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
+    getAgreeKeyboard(ctx));
 });
 
-checkAgree.action(/confirm/, ctx => agreePressAction(ctx));
+checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));
+checkAgree.hears(config.kb.back, ctx => ctx.scene.enter('est_exch'));
 
 export default checkAgree;

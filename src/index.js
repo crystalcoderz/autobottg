@@ -8,6 +8,7 @@ import Extra from 'telegraf/extra';
 import Stage from 'telegraf/stage';
 import TelegrafInlineMenu from 'telegraf-inline-menu';
 import { messages } from './messages';
+import { config } from './config';
 
 import { getAllCurrencies, getExchAmount } from './api';
 import {
@@ -68,9 +69,9 @@ stage.hears('Cancel', leave());
 bot.start(handler(async (ctx) => await ctx.reply(messages.startMsg, getMainKeyboard(ctx))) );
 
 bot.hears('Start exchange', handler(async (ctx) => ctx.scene.enter('start') ) );
-bot.hears('Cancel', (ctx) => cancelTradeAction(ctx, stage));
+bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx, stage));
 
-bot.telegram.setWebhook('https://9f5a4511.ngrok.io/secret-path');
+bot.telegram.setWebhook('https://84171062.ngrok.io/secret-path');
 
 // const webhookStatus = await bot.telegram.getWebhookInfo();
 // console.log('Webhook status', webhookStatus);

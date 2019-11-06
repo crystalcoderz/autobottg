@@ -45,19 +45,6 @@ prepareData.enter(async ctx => {
       await ctx.scene.enter('curr_to');
     }
   }
-
-  // if(curFrom) {
-  //   const curInfo = await getCurrInfo(curFrom);
-  //   console.log(curInfo);
-  // }
-
-  // const getTradePair = await convertAndCheckCurr(ctx, curFrom, curTo);
-  // if(getTradePair) {
-  //   const getMinAmount = await validatePair(getTradePair) && await getMinimumAmount(getTradePair);
-  //   saveToSession(ctx, 'minAmount', getMinAmount);
-  //   await ctx.scene.leave();
-  //   await ctx.scene.enter('amount');
-  // }
 })
 
 export default prepareData;

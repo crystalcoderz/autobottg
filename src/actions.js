@@ -12,9 +12,9 @@ import { sendTransactionData } from './api';
 export const selectFromCurrencyAction = async (ctx, type) => {
   console.log('selectFromCurrencyAction');
   const curFrom = await getCurrencyName(ctx, type);
+  console.log("TCL: selectFromCurrencyAction -> curFrom", curFrom)
   saveToSession(ctx, 'curFrom', curFrom);
-  ctx.reply(`Selected currency - ${curFrom}`);
-  await pause(2000);
+  ctx.replyWithHTML(`Selected currency - <b>${curFrom}</b>`);
   await ctx.scene.leave('curr_from');
   await ctx.scene.enter('prepare');
 }
@@ -23,8 +23,7 @@ export const selectToCurrencyAction = async (ctx, type) => {
   console.log('selectToCurrencyAction');
   const curTo = await getCurrencyName(ctx, type);
   saveToSession(ctx, 'curTo', curTo);
-  ctx.reply(`Selected currency - ${curTo}`);
-  await pause(2000);
+  ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
   await ctx.scene.leave('curr_to');
   await ctx.scene.enter('prepare');
 }
@@ -95,5 +94,5 @@ export const cancelTradeAction = async (ctx, stage) => {
   await deleteFromSession(ctx, 'minValue');
   await deleteFromSession(ctx, 'walletCode');
   await deleteFromSession(ctx, 'response');
-  await leave();
+  await ctx.scene.enter('start');
 }
