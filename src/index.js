@@ -10,6 +10,9 @@ import TelegrafInlineMenu from 'telegraf-inline-menu';
 import { messages } from './messages';
 import { config } from './config';
 
+import mongoose from 'mongoose';
+import { connectDatabase } from './connectDB';
+
 import { getAllCurrencies, getExchAmount } from './api';
 import {
   handler,
@@ -27,7 +30,7 @@ import {
   getAgreeButton
 } from './keyboards';
 
-import { cancelTradeAction } from './actions';
+import { handleStartAction, cancelTradeAction } from './actions';
 
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
@@ -41,57 +44,60 @@ import getAddress from './controllers/getAddr';
 
 const { enter, leave } = Stage;
 const expressApp = express();
-
 const Telegraf = require('telegraf');
 const bot = new Telegraf(process.env.API_KEY);
 
-// Create scene manager
+//  ------------------ APPLICATION ------------------
 
-const stage = new Stage([
-  start,
-  currFrom,
-  curTo,
-  amount,
-  prepareData,
-  checkData,
-  estimateExchange,
-  checkAgree,
-  getAddress
-]);
-bot.use(session());
-bot.use(stage.middleware());
+mongoose.connection.on('open', () => {
 
-stage.hears('Cancel', leave());
+  // Create scene manager
+
+  const stage = new Stage([
+    start,
+    currFrom,
+    curTo,
+    amount,
+    prepareData,
+    checkData,
+    estimateExchange,
+    checkAgree,
+    getAddress
+  ]);
+  bot.use(session());
+  bot.use(stage.middleware());
+
+  bot.start(handler(async (ctx) => await ctx.reply(messages.startMsg, getMainKeyboard(ctx))) );
+
+  bot.hears(/Start exchange/, ctx => handleStartAction(ctx) );
+  bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx, stage));
+  bot.telegram.setWebhook(`https://${process.env.APP_DEVELOPMENT_WEBHOOK}/exchange-bot`);
 
 
-//--------------------------- BOT-----------------------------------------------
+  // const webhookStatus = await bot.telegram.getWebhookInfo();
+  // console.log('Webhook status', webhookStatus);
 
-bot.start(handler(async (ctx) => await ctx.reply(messages.startMsg, getMainKeyboard(ctx))) );
+  bot.catch((err) => {
+    console.log('Ooops', err)
+  })
 
-bot.hears('Start exchange', handler(async (ctx) => ctx.scene.enter('start') ) );
-bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx, stage));
-
-bot.telegram.setWebhook('https://84171062.ngrok.io/secret-path');
-
-// const webhookStatus = await bot.telegram.getWebhookInfo();
-// console.log('Webhook status', webhookStatus);
-
-bot.catch((err) => {
-  console.log('Ooops', err)
-})
+});
 
 //--------------------------- Server -----------------------------------------------
 
-expressApp.use(bot.webhookCallback('/secret-path'))
-expressApp.use(morgan('combined'));
+export async function startApp () {
+  await connectDatabase(process.env.DB_DEVELOPMENT_HOST, process.env.DB_DEVELOPMENT_PORT, process.env.DB_DEVELOPMENT_NAME);
+  expressApp.use(bot.webhookCallback('/exchange-bot'));
+  expressApp.use(morgan('combined'));
+  expressApp.listen(process.env.APP_DEVELOPMENT_PORT, () => {
+    console.log(`Server listening on ${process.env.APP_DEVELOPMENT_PORT}`);
+  })
+}
+
+startApp();
 
 expressApp.get('/', function (req, res) {
   res.send('Hello World!');
 });
-
-
-expressApp.listen(6000, () => {
-  console.log('Server listening on 6000');
-})
 
 // console.log(process.memoryUsage().heapTotal / 1024 / 1024);

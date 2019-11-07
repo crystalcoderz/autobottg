@@ -49,41 +49,9 @@ export const getAmountKeyboard = (ctx) => {
 
 export const getAgreeKeyboard = (ctx) => {
   return Markup.keyboard(
-    [config.kb.confirm, config.kb.back, config.kb.cancel]
+    [config.kb.confirm],
+    [config.kb.back, config.kb.cancel]
   )
   .resize()
   .extra()
 }
-
-
-
-// export const getCurrenciesKeyboard = (currs) => {
-//   const popCurrs = getPopularCurrs(currs);
-//   return Extra.HTML().markup((m) =>
-//     m.inlineKeyboard(
-//       popCurrs.map(cur => [
-//         m.callbackButton(
-//           `${cur.name} (${cur.ticker.toUpperCase()})`,
-//           JSON.stringify({ action: 'name', payload: `${cur.name}` }),
-//           false
-//         )
-//       ]),
-//       {}
-//     )
-//   );
-// }
-
-// export const getAgreeButton = (ctx) => {
-//   return Extra.HTML().markup((m) =>
-//     m.inlineKeyboard(
-//       [
-//         m.callbackButton(
-//           'Confirm',
-//           'confirm',
-//           false
-//         ),
-//       ],
-//     {}
-//     )
-//   );
-// }

@@ -28,6 +28,4 @@ getAddress.enter(async (ctx) => {
   }, 15000);
 });
 
-getAddress.hears('Cancel', leave());
-
 export default getAddress;

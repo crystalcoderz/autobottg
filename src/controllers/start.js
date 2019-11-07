@@ -20,6 +20,4 @@ start.enter(handler(async (ctx) => {
   await ctx.scene.enter('curr_from');
 }));
 
-// start.hears('Back', leave('curr_from'));
-
 export default start;

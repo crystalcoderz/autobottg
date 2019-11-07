@@ -3,16 +3,34 @@
 import messages from './messages';
 import { pause } from './helpers';
 import { deleteFromSession } from './helpers';
+// import UserModel from './models/User';
 
 import Stage from 'telegraf/stage';
 const { enter, leave } = Stage;
 import { getCurrencyName, saveToSession } from './helpers';
 import { sendTransactionData } from './api';
 
+
+export const handleStartAction = async (ctx) => {
+  const user = ctx.message.from;
+  UserModel.insertMany({id: user.id, username: user.username});
+  saveToSession(ctx, 'userId', user.id);
+  await ctx.scene.enter('start');
+}
+
 export const selectFromCurrencyAction = async (ctx, type) => {
   console.log('selectFromCurrencyAction');
   const curFrom = await getCurrencyName(ctx, type);
-  console.log("TCL: selectFromCurrencyAction -> curFrom", curFrom)
+  const userId = ctx.message.from.id;
+  // const user = UserModel.findOne({ id : userId });
+  // if(user && user.transactions) {
+  //   const transactionIndex = user.transactions.findIndex(t => t.id === userId);
+  //   if(transactionIndex === -1) {
+  //     user.transactions.push({from: curFrom});
+  //   } else {
+  //     user.transactions[transactionIndex] = entity;
+  //   }
+  // }
   saveToSession(ctx, 'curFrom', curFrom);
   ctx.replyWithHTML(`Selected currency - <b>${curFrom}</b>`);
   await ctx.scene.leave('curr_from');
@@ -22,6 +40,11 @@ export const selectFromCurrencyAction = async (ctx, type) => {
 export const selectToCurrencyAction = async (ctx, type) => {
   console.log('selectToCurrencyAction');
   const curTo = await getCurrencyName(ctx, type);
+  // const user = UserModel.findOne({ id : userId });
+  //   if(user && user.transactions) {
+  //   const transactionIndex = user.transactions.findIndex(t => t.id === entity.id);
+  //   user.transactions.push({to: curTo});
+  // }
   saveToSession(ctx, 'curTo', curTo);
   ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
   await ctx.scene.leave('curr_to');
@@ -58,6 +81,7 @@ export const typeWalletAction = async (ctx) => {
 
 export const agreePressAction = async (ctx) => {
   console.log('agreePressAction');
+  const uId = await ctx.session.userId;
   const curFrom = await ctx.session.curFrom;
   const curTo = await ctx.session.curTo;
   const walletCode = await ctx.session.walletCode;
@@ -65,6 +89,7 @@ export const agreePressAction = async (ctx) => {
   const extraId = await ctx.session.addData;
 
   const data = {
+    userId: uId,
     from: curFrom,
     to: curTo,
     address: walletCode,
