@@ -6,17 +6,29 @@ import { getAllCurrencies } from '../api';
 import { saveToSession } from '../helpers';
 
 const start = new Scene('start');
+const { leave } = Stage
+
 
 start.enter(async (ctx) => {
   console.log('in start scene');
-  const currs = await getAllCurrencies();
-  if(!currs || !currs.length) {
+  try {
+    const currs = await getAllCurrencies();
+    if(!currs || !currs.length) {
+      await ctx.reply('No currencies found');
+      return;
+    }
+    saveToSession(ctx, 'currs', currs);
+  } catch (error) {
     await ctx.reply('No currencies found');
     return;
   }
-  saveToSession(ctx, 'currs', currs);
-  await ctx.scene.leave();
+  ctx.scene.leave();
   await ctx.scene.enter('curr_from');
+});
+
+
+start.leave((ctx) => {
+  console.log('Exit start');
 });
 
 export default start;

@@ -1,7 +1,7 @@
 //--------------------------- Actions -----------------------------------------------
 
 import Stage from 'telegraf/stage';
-import messages from './messages';
+import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
 import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
@@ -28,8 +28,6 @@ export const handleStartAction = async (ctx) => {
 
 export const selectFromCurrencyAction = async (ctx) => {
   console.log('selectFromCurrencyAction');
-  // await deleteFromSession(ctx, 'curFrom');
-  deleteFromSession(ctx, 'curTo');
 
   const getFrom = getCurrencyName(ctx); // берем имя из сообщения
   const validFrom = await convertCurrency(ctx, getFrom); // делаем сокращение имени
@@ -38,29 +36,14 @@ export const selectFromCurrencyAction = async (ctx) => {
 
   if(curInfo) {
     saveToSession(ctx, 'curFromInfo', curInfo);
-    await ctx.scene.leave('curr_from');
-    await ctx.scene.enter('curr_to');
+    ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>`);
+    await pause(1000);
+    ctx.scene.leave('curr_from');
+    ctx.scene.enter('curr_to');
   } else {
     await ctx.reply(messages.errorNameMsg);
     deleteFromSession(ctx, 'curFrom');
   }
-
-  console.log(ctx.session.curTo, 'IN selectFromCurrencyAction +++++++++++');
-  // DB
-  // const userId = ctx.message.from.id;
-  // const user = await UserModel.findOne({ id : userId });
-  // if(user && user.transactions.length) {
-  //   let transactionFound = user.transactions.findOne(user.transactions.sort().length -1);
-  //   await UserModel.updateOne({ id : userId }, { transactions: new Transaction()});
-  // }
-  // await UserModel.updateOne({ id : userId }, { transactions: new Transaction()});
-    //
-    // if(!transactionFound) {
-    //   transactionFound = new Transaction();
-    // }
-  // }
-
-  await ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>`);
 
 }
 
@@ -75,6 +58,8 @@ export const selectToCurrencyAction = async (ctx) => {
 
   if(curInfo) {
     saveToSession(ctx, 'curToInfo', curInfo);
+    ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
+    await pause(1000);
     await ctx.scene.leave('curr_to');
     await ctx.scene.enter('check');
   } else {
@@ -90,7 +75,6 @@ export const selectToCurrencyAction = async (ctx) => {
   //   user.transactions.push({to: curTo});
   // }
 
-  ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
 }
 
 export const inputAdditionalDataAction = async (ctx) => {
