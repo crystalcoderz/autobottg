@@ -15,8 +15,6 @@ const currFrom = new Scene('curr_from');
 
 currFrom.enter(ctx => {
   console.log('in curr_from scene');
-  console.log(ctx.session.currFrom);
-  console.log(ctx.session.curTo);
   const currs = ctx.session.currs;
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
@@ -35,12 +33,5 @@ currFrom.hears([/[A-Za-z]+/i, config.kb.back, config.kb.cancel], async (ctx) => 
 });
 
 const { btc, eth, bch, ltc, xmr, zec }  = config.popularCurrs;
-
-// currFrom.hears(btc, ctx => selectFromCurrencyAction(ctx));
-// currFrom.hears(eth, ctx => selectFromCurrencyAction(ctx));
-// currFrom.hears(bch, ctx => selectFromCurrencyAction(ctx));
-// currFrom.hears(ltc, ctx => selectFromCurrencyAction(ctx));
-// currFrom.hears(xmr, ctx => selectFromCurrencyAction(ctx));
-// currFrom.hears(zec, ctx => selectFromCurrencyAction(ctx));
 
 export default currFrom;

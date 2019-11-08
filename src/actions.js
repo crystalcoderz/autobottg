@@ -28,7 +28,6 @@ export const handleStartAction = async (ctx) => {
 
 export const selectFromCurrencyAction = async (ctx) => {
   console.log('selectFromCurrencyAction');
-
   const getFrom = getCurrencyName(ctx); // берем имя из сообщения
   const validFrom = await convertCurrency(ctx, getFrom); // делаем сокращение имени
   saveToSession(ctx, 'curFrom', validFrom); // сохраняем в сессию сокращение
@@ -63,7 +62,7 @@ export const selectToCurrencyAction = async (ctx) => {
     ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
     await pause(1000);
     ctx.scene.leave('curr_to');
-    ctx.scene.enter('check');
+    ctx.scene.enter('amount');
   } else {
     ctx.reply(messages.errorNameMsg);
     await pause(1000);
@@ -85,7 +84,7 @@ export const inputAdditionalDataAction = async (ctx) => {
   const inputData = ctx.message.text;
   saveToSession(ctx, 'addData', inputData);
   await ctx.scene.leave('check');
-  await ctx.scene.enter('amount');
+  await ctx.scene.enter('agree');
 }
 
 export const selectAmountAction = async (ctx) => {
@@ -95,8 +94,9 @@ export const selectAmountAction = async (ctx) => {
     saveToSession(ctx, 'amount', amount);
     ctx.scene.leave('amount');
     ctx.scene.enter('est_exch');
+    // ctx.scene.enter('check');
   } else {
-    ctx.reply(`Enter an amount greater than or equal to ${minValue}`);
+    ctx.reply(`Enter an amount bigger than or equal to ${minValue}`);
     await pause(1000);
     ctx.scene.reenter();
   }
@@ -107,7 +107,8 @@ export const typeWalletAction = (ctx) => {
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
   ctx.scene.leave('est_exch');
-  ctx.scene.enter('agree');
+  // ctx.scene.enter('agree');
+  ctx.scene.enter('check');
 }
 
 
@@ -134,7 +135,7 @@ export const agreePressAction = async (ctx) => {
     await ctx.scene.leave('agree');
     await ctx.scene.enter('get_addr');
   } catch (err) {
-    await ctx.reply(`Sorry, the address you entered is invalid. Please enter ${curTo} valid address.`);
+    await ctx.reply(`Sorry, the address you entered is invalid. Please enter a valid ${curTo} address`);
     await pause(1000);
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');

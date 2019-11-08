@@ -14,6 +14,7 @@ export const config =
     start: 'Start exchange',
     startNew: 'Start new exchange',
     cancel: '❌ Cancel exchange',
+    next: '▶️ Next',
     back: '◀️ Back',
     confirm: '✔️ Confirm'
   }
