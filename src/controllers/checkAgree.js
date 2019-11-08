@@ -8,13 +8,13 @@ const checkAgree = new Scene('agree');
 
 checkAgree.enter(async (ctx) => {
   console.log('in checkAgree scene');
-  const amount = await ctx.session.amount;
-  const amountTotal = await ctx.session.amountTotal;
-  const curFrom = await ctx.session.curFrom;
-  const curTo = await ctx.session.curTo;
-  const walletCode = await ctx.session.walletCode;
-  const addData = await ctx.session.addData;
-  const addDataName = await ctx.session.addDataName;
+  const amount = ctx.session.amount;
+  const amountTotal = ctx.session.amountTotal;
+  const curFrom = ctx.session.curFrom;
+  const curTo = ctx.session.curTo;
+  const walletCode = ctx.session.walletCode;
+  const addData = ctx.session.addData;
+  const addDataName = ctx.session.addDataName;
 
   const addMsg = addData ? `Your ${addDataName} is ${addData}\n`: '';
 

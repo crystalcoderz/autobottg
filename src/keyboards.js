@@ -47,6 +47,15 @@ export const getAmountKeyboard = (ctx) => {
   .extra()
 }
 
+export const getExtraIDKeyboard = (ctx) => {
+  return Markup.keyboard([
+    [config.kb.back, config.kb.next],
+    [config.kb.cancel]
+  ])
+  .resize()
+  .extra()
+}
+
 export const getAgreeKeyboard = (ctx) => {
   return Markup.keyboard(
     [config.kb.confirm, config.kb.back]

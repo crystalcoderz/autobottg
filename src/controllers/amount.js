@@ -23,9 +23,7 @@ amount.enter(async (ctx) => {
   );
 });
 
-// amount.hears(/[0-9]/, ctx => selectAmountAction(ctx));
-
-amount.hears([/[0-9,]+/, config.kb.back, config.kb.cancel], ctx => {
+amount.hears([/[0-9,]+/, config.kb.back, config.kb.cancel], async ctx => {
   if (config.kb.back === ctx.message.text) {
     ctx.scene.enter('curr_to');
     return;
@@ -35,7 +33,7 @@ amount.hears([/[0-9,]+/, config.kb.back, config.kb.cancel], ctx => {
     ctx.scene.leave();
     return;
   }
-  selectAmountAction(ctx)
+  await selectAmountAction(ctx);
 });
 
 export default amount;
