@@ -15,8 +15,6 @@ const currFrom = new Scene('curr_from');
 
 currFrom.enter(ctx => {
   console.log('in curr_from scene');
-  console.log(ctx.session.currFrom);
-  console.log(ctx.session.curTo);
   const currs = ctx.session.currs;
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });

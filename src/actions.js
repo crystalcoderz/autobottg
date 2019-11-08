@@ -93,6 +93,7 @@ export const selectAmountAction = async (ctx) => {
     await ctx.scene.enter('est_exch');
   } else {
     ctx.reply(`Enter an amount greater than or equal to ${minValue}`);
+    await pause(1000);
   }
 }
 
@@ -129,6 +130,7 @@ export const agreePressAction = async (ctx) => {
     await ctx.scene.enter('get_addr');
   } catch (err) {
     await ctx.reply(`Sorry, the address you entered is invalid. Please enter ${curTo} valid address.`);
+    await pause(1000);
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');
   }

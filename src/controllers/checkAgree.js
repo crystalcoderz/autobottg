@@ -6,19 +6,19 @@ import { config } from '../config';
 
 const checkAgree = new Scene('agree');
 
-checkAgree.enter(async (ctx) => {
+checkAgree.enter((ctx) => {
   console.log('in checkAgree scene');
-  const amount = await ctx.session.amount;
-  const amountTotal = await ctx.session.amountTotal;
-  const curFrom = await ctx.session.curFrom;
-  const curTo = await ctx.session.curTo;
-  const walletCode = await ctx.session.walletCode;
-  const addData = await ctx.session.addData;
-  const addDataName = await ctx.session.addDataName;
+  const amount = ctx.session.amount;
+  const amountTotal = ctx.session.amountTotal;
+  const curFrom = ctx.session.curFrom;
+  const curTo = ctx.session.curTo;
+  const walletCode = ctx.session.walletCode;
+  const addData = ctx.session.addData;
+  const addDataName = ctx.session.addDataName;
 
   const addMsg = addData ? `Your ${addDataName} is ${addData}\n`: '';
 
-  await ctx.replyWithHTML(`
+  ctx.replyWithHTML(`
     You’re sending <b>${amount} ${curFrom}</b> and you’ll get <b>${amountTotal} ${curTo}</b>\nYour recipient’s <b>${curTo}</b> address is <b>${walletCode}</b>\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
     getAgreeKeyboard(ctx));
 });
