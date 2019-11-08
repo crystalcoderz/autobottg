@@ -41,7 +41,9 @@ export const selectFromCurrencyAction = async (ctx) => {
     ctx.scene.leave('curr_from');
     ctx.scene.enter('curr_to');
   } else {
-    await ctx.reply(messages.errorNameMsg);
+    ctx.reply(messages.errorNameMsg);
+    await pause(1000);
+    ctx.scene.reenter();
     deleteFromSession(ctx, 'curFrom');
   }
 
@@ -60,10 +62,12 @@ export const selectToCurrencyAction = async (ctx) => {
     saveToSession(ctx, 'curToInfo', curInfo);
     ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
     await pause(1000);
-    await ctx.scene.leave('curr_to');
-    await ctx.scene.enter('check');
+    ctx.scene.leave('curr_to');
+    ctx.scene.enter('check');
   } else {
-    await ctx.reply(messages.errorNameMsg);
+    ctx.reply(messages.errorNameMsg);
+    await pause(1000);
+    ctx.scene.reenter();
     deleteFromSession(ctx, 'curTo');
   }
 
