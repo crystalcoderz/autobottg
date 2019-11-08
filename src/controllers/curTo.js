@@ -11,7 +11,7 @@ curTo.enter((ctx) => {
   ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx.session.currs));
 });
 
-curTo.hears([/[A-Za-z]+/i, config.kb.back, config.kb.cancel], ctx => {
+curTo.hears([/[A-Za-z]+/i, config.kb.back, config.kb.cancel], async ctx => {
   if (config.kb.back === ctx.message.text) {
     ctx.scene.enter('curr_from');
     return;
@@ -21,7 +21,7 @@ curTo.hears([/[A-Za-z]+/i, config.kb.back, config.kb.cancel], ctx => {
     ctx.scene.leave();
     return;
   }
-  selectToCurrencyAction(ctx)
+  await selectToCurrencyAction(ctx)
 });
 
 export default curTo;

@@ -3,8 +3,9 @@ import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 import { selectAmountAction } from '../actions';
 import { config } from '../config';
-import { validatePair, pause, saveToSession, deleteFromSession } from '../helpers';
+import { validatePair, saveToSession, deleteFromSession } from '../helpers';
 import { inputAdditionalDataAction } from '../actions';
+import { getAmountKeyboard } from '../keyboards';
 
 const { leave } = Stage;
 const checkData = new Scene('check');

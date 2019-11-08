@@ -93,20 +93,21 @@ export const selectAmountAction = async (ctx) => {
   const minValue = await ctx.session.minValue;
   if(amount >= minValue) {
     saveToSession(ctx, 'amount', amount);
-    await ctx.scene.leave('amount');
-    await ctx.scene.enter('est_exch');
+    ctx.scene.leave('amount');
+    ctx.scene.enter('est_exch');
   } else {
     ctx.reply(`Enter an amount greater than or equal to ${minValue}`);
     await pause(1000);
+    ctx.scene.reenter();
   }
 }
 
-export const typeWalletAction = async (ctx) => {
+export const typeWalletAction = (ctx) => {
   console.log('typeWalletAction');
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
-  await ctx.scene.leave('est_exch');
-  await ctx.scene.enter('agree');
+  ctx.scene.leave('est_exch');
+  ctx.scene.enter('agree');
 }
 
 
