@@ -13,12 +13,6 @@ checkData.enter(async (ctx) => {
   console.log('in checkData scene');
   const curFromInfo = ctx.session.curFromInfo;
 
-  const curFrom = ctx.session.curFrom;
-  const curTo = ctx.session.curTo;
-  console.log('curFrom', curFrom);
-  console.log('curTo', curTo);
-  console.log('end checkData scene =====================================');
-
   const curToInfo = await ctx.session.curToInfo;
   const pair = `${curFromInfo.ticker}_${curToInfo.ticker}`;
   const hasPair = await validatePair(pair);
@@ -39,7 +33,7 @@ checkData.enter(async (ctx) => {
   deleteFromSession(ctx, 'curFromInfo');
   deleteFromSession(ctx, 'curToInfo');
   ctx.reply('No pair found');
-  // await pause(2000);
+  await pause(1000);
   ctx.scene.leave('check');
   ctx.scene.enter('curr_from');
   return;

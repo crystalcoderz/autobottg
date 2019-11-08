@@ -44,14 +44,14 @@ prepareData.enter(async ctx => {
     const curInfo = validTo && await getCurrInfo(validTo);
     if(curInfo) {
       saveToSession(ctx, 'curToInfo', curInfo);
-      await ctx.scene.leave('prepare');
-      await ctx.scene.enter('check');
+      ctx.scene.leave('prepare');
+      ctx.scene.enter('check');
     } else {
-      await ctx.reply(messages.errorNameMsg);
+      ctx.reply(messages.errorNameMsg);
       deleteFromSession(ctx, curTo);
-      await pause(3000);
-      await ctx.scene.leave('prepare');
-      await ctx.scene.enter('curr_to');
+      await pause(1000);
+      ctx.scene.leave('prepare');
+      ctx.scene.enter('curr_to');
     }
   }
 })
