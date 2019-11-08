@@ -4,16 +4,7 @@ export const UserSchema = new mongoose.Schema(
   {
     id: Number,
     username: String,
-    transactions: [
-      {
-        userId: String,
-        from: String,
-        to: String,
-        address: String,
-        amount: Number,
-        extraId: String
-      }
-    ]
+    transactions: Array
   }
 );
 

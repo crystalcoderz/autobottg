@@ -12,6 +12,7 @@ export const config =
   },
   kb: {
     start: 'Start exchange',
+    startNew: 'Start new exchange',
     cancel: '❌ Cancel exchange',
     back: '◀️ Back',
     confirm: '✔️ Confirm'

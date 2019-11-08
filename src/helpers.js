@@ -26,16 +26,10 @@ export const handler = (fn) => {
   };
 };
 
-export const getCurrencyName = async (ctx, type) => {
-  let selectedCurName;
-  if(type === 'btn') {
-    selectedCurName = JSON.parse(ctx.callbackQuery.data).payload;
-    await ctx.answerCbQuery(`Selected currency – ${selectedCurName}`);
-  } else if(type === 'text') {
-    const text = ctx.message.text.split('(')[0].trim();
-    selectedCurName = text;
-  }
-  console.log("TCL: getCurrencyName -> selectedCurName", selectedCurName)
+
+
+export const getCurrencyName = (ctx) => {
+  const selectedCurName = ctx.message.text.split('(')[0].trim();
   return selectedCurName;
 }
 
@@ -43,8 +37,8 @@ export const saveToSession = (ctx, field, data) => {
   ctx.session[field] = data;
 }
 
-export const deleteFromSession = async (ctx, field) => {
-  const hasField = await ctx.session.field;
+export const deleteFromSession = (ctx, field) => {
+  const hasField = ctx.session.field;
   hasField && delete ctx.session[field];
 }
 
@@ -54,7 +48,7 @@ export const prepareName = (name) => {
   }
 };
 
-export const checkCurrency = async (ctx, curName) => {
+export const convertCurrency = async (ctx, curName) => {
   let curAbbr;
   const allCurrs = await ctx.session.currs;
   const currAvailable = allCurrs.find(item =>

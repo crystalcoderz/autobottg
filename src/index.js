@@ -67,10 +67,17 @@ mongoose.connection.on('open', () => {
   bot.use(session());
   bot.use(stage.middleware());
 
-  bot.start(handler(async (ctx) => await ctx.reply(messages.startMsg, getMainKeyboard(ctx))) );
+  const logger = async (ctx, next) =>  {
+    const start = new Date();
+    console.log(ctx.from.first_name);
+    await next(ctx);
+  }
+  bot.use(logger);
+
+  bot.start((ctx) => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
 
   bot.hears(/Start exchange/, ctx => handleStartAction(ctx) );
-  bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx, stage));
+  bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx));
   bot.telegram.setWebhook(`https://${process.env.APP_DEVELOPMENT_WEBHOOK}/exchange-bot`);
 
 

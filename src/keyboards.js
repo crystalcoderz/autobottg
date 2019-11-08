@@ -6,7 +6,7 @@ import { config } from './config';
 
 export const getMainKeyboard = (ctx) => {
   return Markup
-  .keyboard([config.kb.start, config.kb.cancel])
+  .keyboard([config.kb.start])
   .oneTime()
   .resize()
   .extra()
@@ -49,8 +49,15 @@ export const getAmountKeyboard = (ctx) => {
 
 export const getAgreeKeyboard = (ctx) => {
   return Markup.keyboard(
-    [config.kb.confirm],
-    [config.kb.back, config.kb.cancel]
+    [config.kb.confirm, config.kb.back]
+  )
+  .resize()
+  .extra()
+}
+
+export const getBackKeyboard = (ctx) => {
+  return Markup.keyboard(
+    [config.kb.startNew]
   )
   .resize()
   .extra()
