@@ -16,6 +16,8 @@ jobs:
             - restore_cache:
                 keys:
                   - 'changenow-bot-{{ checksum "package.json" }}'
+            - run: apt-get update
+            - run: apt-get install rsync -y
             - run:
                   name: update-npm
                   command: 'npm install -g npm@6.4.1'
