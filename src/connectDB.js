@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 const options = {
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 };
 
 

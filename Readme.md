@@ -14,8 +14,9 @@ To start using Exchange, simply add her in [Telegram](http://t.me/changeNOW_offi
 1. git clone https://github.com/EvercodeLab/changenow-bot.git
 2. Use `dev` branch for testing environment!
 3. cd changenow-bot
-4. npm install
-5. create hidden _.env_ file with fields:
+4. npm i @babel/core @babel/node @babel/preset-env -g
+5. npm install
+6. create hidden _.env_ file with fields:
 ```
   API_KEY={get from manager}
   APP_PORT=6000
@@ -24,9 +25,10 @@ To start using Exchange, simply add her in [Telegram](http://t.me/changeNOW_offi
   DB_NAME=changenow_bot
 
 ```
-6. npm run start
+7. npm run start
+
 
 П.С. Планируется использовать webhook для работы бота. Для этого заранее установить для production домена ssl-сертфикиат.
 Если сертификат будет самописный - нужны будут пути к .pem файлам на сервере.
-   
-   
+
+
