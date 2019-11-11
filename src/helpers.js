@@ -29,7 +29,7 @@ export const handler = (fn) => {
 
 
 export const getCurrencyName = (ctx) => {
-  const selectedCurName = ctx.message.text.split('(')[0].trim();
+  const selectedCurName = ctx.message.text.replace('✅', '').split('(')[0].trim();
   return selectedCurName;
 }
 

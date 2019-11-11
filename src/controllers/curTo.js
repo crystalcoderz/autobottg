@@ -8,7 +8,7 @@ import { config } from '../config';
 const curTo = new Scene('curr_to');
 
 curTo.enter((ctx) => {
-  ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx.session.currs));
+  ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
 });
 
 curTo.hears([/[A-Za-z]+/i, config.kb.back, config.kb.cancel], async ctx => {

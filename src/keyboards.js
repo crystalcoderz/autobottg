@@ -26,8 +26,14 @@ export const getFromKeyboard = (currs) => {
 }
 
 
-export const getToKeyboard = (currs) => {
-  const { btc, eth, bch, ltc, xmr, zec }  = config.popularCurrs;
+export const getToKeyboard = (ctx) => {
+  const curFrom = ctx.session.curFrom;
+  const popularCurrs = {};
+  Object.keys(config.popularCurrs).forEach(tiker => {
+    tiker === curFrom ? popularCurrs[tiker] = `✅ ${config.popularCurrs[tiker]}` 
+      : popularCurrs[tiker] = config.popularCurrs[tiker];
+  });
+  const { btc, eth, bch, ltc, xmr, zec } = popularCurrs;
   const fullKb = [
     [btc, eth],
     [bch, ltc],
