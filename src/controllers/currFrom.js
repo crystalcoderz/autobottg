@@ -19,13 +19,8 @@ currFrom.enter(ctx => {
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
 
-currFrom.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
+currFrom.hears([/(.*)/gi, config.kb.cancel], async ctx => {
   const txt = ctx.message.text;
-  console.log('TCL: txt', txt.match(/[^()A-Za-z]+/gi));
-  if (config.kb.back === txt) {
-    ctx.scene.enter('curr_from');
-    return;
-  }
   if (config.kb.cancel === txt) {
     ctx.reply(
       'Your exchange is canceled. Do you want to start a new exchange?',
@@ -35,7 +30,7 @@ currFrom.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {
-    ctx.reply('Only english letters');
+    ctx.reply('Please, use only Latin letters');
     return;
   }
   if (txt.match(/[()A-Za-z\s]+/gi)) {

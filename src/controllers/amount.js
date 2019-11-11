@@ -24,17 +24,8 @@ amount.enter(async (ctx) => {
   );
 });
 
-  // const amount = Number(ctx.message.text.replace(',', '.'));
-  // if (!amount || isNaN(amount)) {
-  //   ctx.reply('Amount must be a number.');
-  //   // await pause(1000);
-  //   // ctx.scene.reenter();
-  //   return;
-  // }
-
-amount.hears([/(.*)/ig, config.kb.enter, config.kb.back, config.kb.cancel], async ctx => {
+amount.hears([/^[a-zA-Zа-яА-Я0-9]+/gi, config.kb.back, config.kb.cancel], async ctx => {
   const txt = ctx.message.text;
-
   const validTxt = txt.replace(/[,]/g, '.');
   if (config.kb.back === txt) {
     ctx.scene.enter('curr_to');
@@ -45,12 +36,7 @@ amount.hears([/(.*)/ig, config.kb.enter, config.kb.back, config.kb.cancel], asyn
     ctx.scene.leave();
     return;
   }
-  if(validTxt.match(/[.0-9]+/ig) ) {
-    await selectAmountAction(ctx);
-  }
-  if(validTxt.match(/[^.0-9]+/ig)) {
-    ctx.reply('Only numbers and dots!');
-  }
+  await selectAmountAction(ctx);
 });
 
 export default amount;
