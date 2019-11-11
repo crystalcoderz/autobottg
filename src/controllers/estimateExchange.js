@@ -20,17 +20,28 @@ estimateExchange.enter(async (ctx) => {
   ctx.replyWithHTML(`You’re sending <b>${amount} ${curFrom}</b> and you’ll get <b>${amountTotal} ${curTo}</b>.\nEnter the recipient’s <b>${curTo}</b> address`, getAmountKeyboard(ctx));
 });
 
-estimateExchange.hears([/^[A-Za-z0-9]+$/gi, config.kb.back, config.kb.cancel], ctx => {
-  if (config.kb.back === ctx.message.text) {
+
+estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
+  const txt = ctx.message.text;
+  if (config.kb.back === txt) {
     ctx.scene.enter('amount');
     return;
   }
-  if(config.kb.cancel === ctx.message.text) {
-    ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
+  if (config.kb.cancel === txt) {
+    ctx.reply(
+      'Your exchange is canceled. Do you want to start a new exchange?',
+      getMainKeyboard(ctx)
+    );
     ctx.scene.leave();
     return;
   }
-  typeWalletAction(ctx);
+  if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
+    ctx.reply('Please, use only Latin letters');
+    return;
+  }
+  if (txt.match(/[()A-Za-z0-9\s]+/gi)) {
+    await typeWalletAction(ctx);
+  }
 });
 
 
