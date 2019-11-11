@@ -5,6 +5,7 @@ import { selectAmountAction } from '../actions';
 import { getMinimumAmount, saveToSession } from '../helpers';
 import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
 import { config } from '../config';
+import { pause } from '../helpers';
 
 const { leave } = Stage;
 const amount = new Scene('amount');
@@ -23,17 +24,33 @@ amount.enter(async (ctx) => {
   );
 });
 
-amount.hears([/[0-9,]+/, config.kb.back, config.kb.cancel], async ctx => {
-  if (config.kb.back === ctx.message.text) {
+  // const amount = Number(ctx.message.text.replace(',', '.'));
+  // if (!amount || isNaN(amount)) {
+  //   ctx.reply('Amount must be a number.');
+  //   // await pause(1000);
+  //   // ctx.scene.reenter();
+  //   return;
+  // }
+
+amount.hears([/(.*)/ig, config.kb.enter, config.kb.back, config.kb.cancel], async ctx => {
+  const txt = ctx.message.text;
+
+  const validTxt = txt.replace(/[,]/g, '.');
+  if (config.kb.back === txt) {
     ctx.scene.enter('curr_to');
     return;
   }
-  if(config.kb.cancel === ctx.message.text) {
+  if(config.kb.cancel === txt) {
     ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
     ctx.scene.leave();
     return;
   }
-  await selectAmountAction(ctx);
+  if(validTxt.match(/[.0-9]+/ig) ) {
+    await selectAmountAction(ctx);
+  }
+  if(validTxt.match(/[^.0-9]+/ig)) {
+    ctx.reply('Only numbers and dots!');
+  }
 });
 
 export default amount;
