@@ -1,5 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
+import rp from 'request-promise';
+import fs from 'fs';
 import 'dotenv/config';
 import session from 'telegraf/session';
 import Markup from 'telegraf/markup';
@@ -65,27 +67,42 @@ mongoose.connection.on('open', () => {
  bot.start((ctx) => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
  bot.hears(/Start exchange/, ctx => handleStartAction(ctx) );
  bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx));
- // bot.telegram.setWebhook(https://${process.env.APP_DEVELOPMENT_WEBHOOK}/exchange-bot);
  // const webhookStatus = await bot.telegram.getWebhookInfo();
  // console.log('Webhook status', webhookStatus);
  bot.catch((err) => {
    console.log('Ooops', err)
  })
 });
+
+function startDevMode(bot) {
+  rp(`https://api.telegram.org/bot${process.env.API_KEY}/deleteWebhook`).then(() =>
+    bot.startPolling()
+  );
+}
+
+async function startProdMode(bot) {
+  const tlsOptions = {
+    key: fs.readFileSync(process.env.PATH_TO_KEY),
+    cert: fs.readFileSync(process.env.PATH_TO_CERT)
+  };
+  await bot.telegram.setWebhook(
+    `https://${process.env.APP_WEBHOOK}/exchange-bot`,
+    {
+      source: 'cert.pem'
+    }
+  );
+}
+
+
 //--------------------------- Server -----------------------------------------------
+
 export async function startApp () {
- // const telegram = new Telegram(process.env.API_KEY)
- // await telegram.deleteWebhook()
  await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
- bot.startPolling();
- // expressApp.use(bot.webhookCallback('/exchange-bot'));
+ expressApp.use(bot.webhookCallback('/exchange-bot'));
+ process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
  expressApp.use(morgan('combined'));
  expressApp.listen(process.env.APP_PORT, () => {
    console.log(`Server listening on ${process.env.APP_PORT}`);
  })
 }
 startApp();
-// expressApp.get('/', function (req, res) {
-//   res.send('Hello World!');
-// });
-// console.log(process.memoryUsage().heapTotal / 1024 / 1024);

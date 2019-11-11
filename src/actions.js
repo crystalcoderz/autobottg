@@ -88,13 +88,18 @@ export const inputAdditionalDataAction = async (ctx) => {
 }
 
 export const selectAmountAction = async (ctx) => {
-  const amount = ctx.message.text;
+  const amount = Number(ctx.message.text.replace(',', '.'));
+  if (!amount || isNaN(amount)) {
+    ctx.reply('Only numbers and dot are allowed');
+    await pause(1000);
+    ctx.scene.reenter();
+    return;
+  }
   const minValue = await ctx.session.minValue;
   if(amount >= minValue) {
     saveToSession(ctx, 'amount', amount);
     ctx.scene.leave('amount');
     ctx.scene.enter('est_exch');
-    // ctx.scene.enter('check');
   } else {
     ctx.reply(`Enter an amount bigger than or equal to ${minValue}`);
     await pause(1000);
@@ -107,7 +112,6 @@ export const typeWalletAction = (ctx) => {
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
   ctx.scene.leave('est_exch');
-  // ctx.scene.enter('agree');
   ctx.scene.enter('check');
 }
 

@@ -7,7 +7,6 @@ import { config } from './config';
 export const getMainKeyboard = (ctx) => {
   return Markup
   .keyboard([config.kb.start])
-  .oneTime()
   .resize()
   .extra()
 }
@@ -30,7 +29,7 @@ export const getToKeyboard = (ctx) => {
   const curFrom = ctx.session.curFrom;
   const popularCurrs = {};
   Object.keys(config.popularCurrs).forEach(tiker => {
-    tiker === curFrom ? popularCurrs[tiker] = `✅ ${config.popularCurrs[tiker]}` 
+    tiker === curFrom ? popularCurrs[tiker] = `✅ ${config.popularCurrs[tiker]}`
       : popularCurrs[tiker] = config.popularCurrs[tiker];
   });
   const { btc, eth, bch, ltc, xmr, zec } = popularCurrs;
@@ -46,9 +45,9 @@ export const getToKeyboard = (ctx) => {
 }
 
 export const getAmountKeyboard = (ctx) => {
-  return Markup.keyboard(
+  return Markup.keyboard([
     [config.kb.back, config.kb.cancel]
-  )
+  ])
   .resize()
   .extra()
 }
@@ -63,17 +62,17 @@ export const getExtraIDKeyboard = (ctx) => {
 }
 
 export const getAgreeKeyboard = (ctx) => {
-  return Markup.keyboard(
+  return Markup.keyboard([
     [config.kb.confirm, config.kb.back]
-  )
+  ])
   .resize()
   .extra()
 }
 
 export const getBackKeyboard = (ctx) => {
-  return Markup.keyboard(
+  return Markup.keyboard([
     [config.kb.startNew]
-  )
+  ])
   .resize()
   .extra()
 }
