@@ -62,7 +62,7 @@ export const selectToCurrencyAction = async (ctx) => {
     ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
     await pause(1000);
     ctx.scene.leave('curr_to');
-    ctx.scene.enter('amount');
+    ctx.scene.enter('check');
   } else {
     ctx.reply(messages.errorNameMsg);
     await pause(1000);
@@ -83,7 +83,7 @@ export const selectToCurrencyAction = async (ctx) => {
 export const inputAdditionalDataAction = async (ctx) => {
   const inputData = ctx.message.text;
   saveToSession(ctx, 'addData', inputData);
-  await ctx.scene.leave('check');
+  await ctx.scene.leave('add_info');
   await ctx.scene.enter('agree');
 }
 
@@ -112,7 +112,7 @@ export const typeWalletAction = (ctx) => {
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
   ctx.scene.leave('est_exch');
-  ctx.scene.enter('check');
+  ctx.scene.enter('add_info');
 }
 
 

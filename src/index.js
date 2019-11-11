@@ -38,6 +38,7 @@ import checkData from './controllers/checkData';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
 import getAddress from './controllers/getAddr';
+import addInfo from './controllers/addInfo';
 const { enter, leave } = Stage;
 const expressApp = express();
 const Telegraf = require('telegraf');
@@ -50,7 +51,7 @@ mongoose.connection.on('open', () => {
    currFrom,
    curTo,
    amount,
-   prepareData,
+   addInfo,
    checkData,
    estimateExchange,
    checkAgree,
@@ -81,10 +82,10 @@ function startDevMode(bot) {
 }
 
 async function startProdMode(bot) {
-  const tlsOptions = {
-    key: fs.readFileSync(process.env.PATH_TO_KEY),
-    cert: fs.readFileSync(process.env.PATH_TO_CERT)
-  };
+  // const tlsOptions = {
+  //   key: fs.readFileSync(process.env.PATH_TO_KEY),
+  //   cert: fs.readFileSync(process.env.PATH_TO_CERT)
+  // };
   await bot.telegram.setWebhook(
     `https://${process.env.APP_WEBHOOK}/exchange-bot`,
     {
