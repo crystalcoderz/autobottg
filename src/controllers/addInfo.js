@@ -29,7 +29,7 @@ addInfo.enter(async (ctx) => {
 addInfo.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
-    ctx.scene.enter('curr_from');
+    ctx.scene.enter('est_exch');
     return;
   }
   if (config.kb.cancel === txt) {
