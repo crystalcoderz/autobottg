@@ -4,6 +4,7 @@ import Stage from 'telegraf/stage';
 import { getTransactionStatus } from '../api';
 import { getBackKeyboard } from '../keyboards';
 import { config } from '../config';
+import { pause } from '../helpers';
 const { leave } = Stage;
 const getAddress = new Scene('get_addr');
 let intervalStatus;
@@ -21,7 +22,9 @@ getAddress.enter(async (ctx) => {
   }
 
   const payinData = await ctx.session.response;
-  payinData && await ctx.reply(`Here is the address for your exchange.\n${payinData.payinAddress}\nCopy and paste this address into your wallet to start an exchange.`, getBackKeyboard(ctx));
+  payinData && await ctx.reply(`Here is the address for your exchange.\nCopy and paste this address into your wallet to start an exchange.`, getBackKeyboard(ctx));
+  await pause(500);
+  ctx.reply(`${payinData.payinAddress}`);
   let status = '';
   intervalStatus = setInterval(async () => {
     const getStatus = await getTransactionStatus(payinData.id);

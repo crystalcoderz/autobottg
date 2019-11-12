@@ -16,7 +16,7 @@ checkAgree.enter(async (ctx) => {
   const addData = ctx.session.addData;
   const addDataName = ctx.session.addDataName;
 
-  const addMsg = addData ? `Your ${addDataName} is ${addData}\n`: '';
+  const addMsg = addData ? `Your ${addDataName} is <b>${addData}</b>\n`: '';
 
   await ctx.replyWithHTML(`
     You’re sending <b>${amount} ${curFrom}</b> and you’ll get <b>${amountTotal} ${curTo}</b>\nYour recipient’s <b>${curTo}</b> address is <b>${walletCode}</b>\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
