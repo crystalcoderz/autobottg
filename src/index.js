@@ -39,10 +39,12 @@ import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
 import getAddress from './controllers/getAddr';
 import addInfo from './controllers/addInfo';
+import getHelp from './controllers/getHelp';
+
 const { enter, leave } = Stage;
 const expressApp = express();
 const Telegraf = require('telegraf');
-const bot = new Telegraf(process.env.API_KEY);
+const bot = new Telegraf(process.env.API_BOT_KEY);
 //  ------------------ APPLICATION ------------------
 mongoose.connection.on('open', () => {
  // Create scene manager
@@ -55,7 +57,8 @@ mongoose.connection.on('open', () => {
    checkData,
    estimateExchange,
    checkAgree,
-   getAddress
+   getAddress,
+   getHelp
  ]);
  bot.use(session());
  bot.use(stage.middleware());
@@ -76,21 +79,22 @@ mongoose.connection.on('open', () => {
 });
 
 function startDevMode(bot) {
-  rp(`https://api.telegram.org/bot${process.env.API_KEY}/deleteWebhook`).then(() =>
+  rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
     bot.startPolling()
   );
 }
 
 async function startProdMode(bot) {
-  // const tlsOptions = {
-  //   key: fs.readFileSync(process.env.PATH_TO_KEY),
-  //   cert: fs.readFileSync(process.env.PATH_TO_CERT)
-  // };
+  console.log("TCL: startProdMode -> startProdMode")
+  const tlsOptions = {
+    key: fs.readFileSync('./privkey.pem'),
+    cert: fs.readFileSync('./fullchain.pem')
+  };
   await bot.telegram.setWebhook(
-    `https://${process.env.APP_WEBHOOK}/exchange-bot`,
-    // {
-    //   source: 'cert.pem'
-    // }
+    `https://${process.env.APP_WEBHOOK}/exchange-bot/${process.env.API_BOT_KEY}`,
+    {
+      source: '../privkey.pem'
+    }
   );
 }
 

@@ -12,7 +12,7 @@ curTo.enter((ctx) => {
 });
 
 
-curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
+curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
     ctx.scene.enter('curr_from');
@@ -24,6 +24,15 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
       getMainKeyboard(ctx)
     );
     ctx.scene.leave();
+    return;
+  }
+  if (config.kb.help === txt) {
+    ctx.scene.leave();
+    ctx.scene.enter('help')
+    return;
+  }
+  if (txt.match(/^[\u{2705}]/gu)) {
+    ctx.reply('You’ve already chosen this currency. Please chose another one');
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {

@@ -26,7 +26,7 @@ addInfo.enter(async (ctx) => {
 });
 
 
-addInfo.hears([/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel], async ctx => {
+addInfo.hears([/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
     ctx.scene.enter('est_exch');
@@ -42,6 +42,11 @@ addInfo.hears([/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel], asyn
       getMainKeyboard(ctx)
     );
     ctx.scene.leave();
+    return;
+  }
+  if (config.kb.help === txt) {
+    ctx.scene.leave();
+    ctx.scene.enter('help')
     return;
   }
   if (txt.match(/[^A-Za-z0-9\s]+/gi)) {
