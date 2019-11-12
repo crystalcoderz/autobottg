@@ -44,7 +44,7 @@ import getHelp from './controllers/getHelp';
 const { enter, leave } = Stage;
 const expressApp = express();
 const Telegraf = require('telegraf');
-const bot = new Telegraf(process.env.API_BOT_KEY);
+const bot = new Telegraf(process.env.API_KEY);
 //  ------------------ APPLICATION ------------------
 mongoose.connection.on('open', () => {
  // Create scene manager
@@ -79,7 +79,7 @@ mongoose.connection.on('open', () => {
 });
 
 function startDevMode(bot) {
-  rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
+  rp(`https://api.telegram.org/bot${process.env.API_KEY}/deleteWebhook`).then(() =>
     bot.startPolling()
   );
 }
@@ -91,7 +91,7 @@ async function startProdMode(bot) {
     cert: fs.readFileSync('./fullchain.pem')
   };
   await bot.telegram.setWebhook(
-    `https://${process.env.APP_WEBHOOK}/exchange-bot/${process.env.API_BOT_KEY}`,
+    `https://${process.env.APP_WEBHOOK}/exchange-bot/${process.env.API_KEY}`,
     {
       source: '../privkey.pem'
     }
