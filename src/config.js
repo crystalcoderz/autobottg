@@ -16,6 +16,8 @@ export const config =
     cancel: '❌ Cancel exchange',
     next: '▶️ Next',
     back: '◀️ Back',
-    confirm: '✔️ Confirm'
-  }
+    confirm: '✔️ Confirm',
+    help: 'ℹ️ Support Info'
+  },
+  interval: 15000
 }

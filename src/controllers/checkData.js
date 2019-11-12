@@ -34,18 +34,24 @@ checkData.enter(async (ctx) => {
   }
 });
 
-checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel], ctx => {
-  if (config.kb.back === ctx.message.text) {
+checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.help], ctx => {
+  const txt = ctx.message.text;
+  if (config.kb.back === txt) {
     ctx.scene.enter('amount');
     return;
   }
-  if (config.kb.next === ctx.message.text) {
+  if (config.kb.next === txt) {
     ctx.scene.enter('agree');
     return;
   }
-  if(config.kb.cancel === ctx.message.text) {
+  if(config.kb.cancel === txt) {
     ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
     ctx.scene.leave();
+    return;
+  }
+  if (config.kb.help === txt) {
+    ctx.scene.leave();
+    ctx.scene.enter('help')
     return;
   }
   inputAdditionalDataAction(ctx);

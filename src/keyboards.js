@@ -17,7 +17,8 @@ export const getFromKeyboard = (currs) => {
     [btc, eth],
     [bch, ltc],
     [xmr, zec],
-    [config.kb.cancel]
+    [config.kb.cancel],
+    [config.kb.help]
   ]
   return Markup.keyboard(fullKb)
   .resize()
@@ -37,7 +38,8 @@ export const getToKeyboard = (ctx) => {
     [btc, eth],
     [bch, ltc],
     [xmr, zec],
-    [config.kb.back, config.kb.cancel]
+    [config.kb.back, config.kb.cancel],
+    [config.kb.help]
   ]
   return Markup.keyboard(fullKb)
   .resize()
@@ -46,7 +48,8 @@ export const getToKeyboard = (ctx) => {
 
 export const getAmountKeyboard = (ctx) => {
   return Markup.keyboard([
-    [config.kb.back, config.kb.cancel]
+    [config.kb.back, config.kb.cancel],
+    [config.kb.help]
   ])
   .resize()
   .extra()
@@ -55,7 +58,8 @@ export const getAmountKeyboard = (ctx) => {
 export const getExtraIDKeyboard = (ctx) => {
   return Markup.keyboard([
     [config.kb.back, config.kb.next],
-    [config.kb.cancel]
+    [config.kb.cancel],
+    [config.kb.help]
   ])
   .resize()
   .extra()
@@ -63,7 +67,8 @@ export const getExtraIDKeyboard = (ctx) => {
 
 export const getAgreeKeyboard = (ctx) => {
   return Markup.keyboard([
-    [config.kb.confirm, config.kb.back]
+    [config.kb.confirm, config.kb.back],
+    [config.kb.help]
   ])
   .resize()
   .extra()
@@ -71,7 +76,16 @@ export const getAgreeKeyboard = (ctx) => {
 
 export const getBackKeyboard = (ctx) => {
   return Markup.keyboard([
-    [config.kb.startNew]
+    [config.kb.startNew],
+    [config.kb.help]
+  ])
+  .resize()
+  .extra()
+}
+
+export const getHelpKeyboard = (ctx) => {
+  return Markup.keyboard([
+    [config.kb.cancel]
   ])
   .resize()
   .extra()

@@ -25,5 +25,6 @@ checkAgree.enter(async (ctx) => {
 
 checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));
 checkAgree.hears(config.kb.back, ctx => ctx.scene.enter('est_exch'));
+checkAgree.hears(config.kb.help, ctx => ctx.scene.enter('help'));
 
 export default checkAgree;

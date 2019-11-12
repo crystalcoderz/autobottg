@@ -19,7 +19,7 @@ currFrom.enter(ctx => {
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
 
-currFrom.hears([/(.*)/gi, config.kb.cancel], async ctx => {
+currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.cancel === txt) {
     ctx.reply(
@@ -27,6 +27,11 @@ currFrom.hears([/(.*)/gi, config.kb.cancel], async ctx => {
       getMainKeyboard(ctx)
     );
     ctx.scene.leave();
+    return;
+  }
+  if (config.kb.help === txt) {
+    ctx.scene.leave();
+    ctx.scene.enter('help')
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {

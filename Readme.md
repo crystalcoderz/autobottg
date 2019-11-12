@@ -19,7 +19,7 @@ To start using Exchange, simply add her in [Telegram](http://t.me/changeNOW_offi
 6. npm install
 7. create hidden _.env_ file with fields:
 ```
-  API_KEY={get from manager}
+  API_BOT_KEY={get from manager}
   APP_PORT=6000
   DB_HOST=localhost
   DB_PORT=27017

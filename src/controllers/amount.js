@@ -23,11 +23,11 @@ amount.enter(async (ctx) => {
     `Enter an amount of <b>${selectedFrom}</b> you want to change. ${minValueMsg}`,
      getAmountKeyboard(ctx)
   );
+  await pause(500);
 });
 
-amount.hears([/^[a-zA-Zа-яА-Я0-9]+/gi, config.kb.back, config.kb.cancel], async ctx => {
+amount.hears([/[.,0-9]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
-  const validTxt = txt.replace(/[,]/g, '.');
   if (config.kb.back === txt) {
     ctx.scene.enter('curr_to');
     return;
@@ -35,6 +35,11 @@ amount.hears([/^[a-zA-Zа-яА-Я0-9]+/gi, config.kb.back, config.kb.cancel], as
   if(config.kb.cancel === txt) {
     ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
     ctx.scene.leave();
+    return;
+  }
+  if (config.kb.help === txt) {
+    ctx.scene.leave();
+    ctx.scene.enter('help')
     return;
   }
   await selectAmountAction(ctx);
