@@ -90,7 +90,7 @@ export const inputAdditionalDataAction = async (ctx) => {
 export const selectAmountAction = async (ctx) => {
   const amount = Number(ctx.message.text.replace(',', '.'));
   if (!amount || isNaN(amount)) {
-    ctx.reply('Only numbers and dot are allowed');
+    ctx.reply('Only numbers and dot/comma are allowed');
     await pause(1000);
     ctx.scene.reenter();
     return;

@@ -26,10 +26,14 @@ addInfo.enter(async (ctx) => {
 });
 
 
-addInfo.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
+addInfo.hears([/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
     ctx.scene.enter('est_exch');
+    return;
+  }
+  if (config.kb.next === txt) {
+    ctx.scene.enter('agree');
     return;
   }
   if (config.kb.cancel === txt) {
@@ -40,11 +44,11 @@ addInfo.hears([/(.*)/gi, config.kb.back, config.kb.cancel], async ctx => {
     ctx.scene.leave();
     return;
   }
-  if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
+  if (txt.match(/[^A-Za-z0-9\s]+/gi)) {
     ctx.reply('Please, use only Latin letters');
     return;
   }
-  if (txt.match(/[()A-Za-z0-9\s]+/gi)) {
+  if (txt.match(/[A-Za-z0-9\s]+/gi)) {
     await inputAdditionalDataAction(ctx);
   }
 });
