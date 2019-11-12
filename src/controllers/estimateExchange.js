@@ -1,6 +1,6 @@
 //estimateExchange  scene
 import Scene from 'telegraf/scenes/base';
-import { saveToSession } from '../helpers';
+import { saveToSession, pause } from '../helpers';
 import { getExchAmount } from '../api';
 import { typeWalletAction } from '../actions';
 import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
@@ -17,6 +17,7 @@ estimateExchange.enter(async (ctx) => {
   const amountReq = await getExchAmount(amount, fromTo);
   const amountTotal = amountReq.estimatedAmount;
   saveToSession(ctx, 'amountTotal', amountTotal);
+  await pause(500);
   ctx.replyWithHTML(`You’re sending <b>${amount} ${curFrom}</b> and you’ll get <b>${amountTotal} ${curTo}</b>.\nEnter the recipient’s <b>${curTo}</b> address`, getAmountKeyboard(ctx));
 });
 
