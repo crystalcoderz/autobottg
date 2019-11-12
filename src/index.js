@@ -88,9 +88,9 @@ async function startProdMode(bot) {
   // };
   await bot.telegram.setWebhook(
     `https://${process.env.APP_WEBHOOK}/exchange-bot`,
-    {
-      source: 'cert.pem'
-    }
+    // {
+    //   source: 'cert.pem'
+    // }
   );
 }
 

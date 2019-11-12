@@ -15,6 +15,7 @@ amount.enter(async (ctx) => {
   const selectedFrom = ctx.session.curFrom;
   const selectedTo = ctx.session.curTo;
   const tradePair = `${selectedFrom}_${selectedTo}`;
+
   const minValue = await getMinimumAmount(tradePair);
   saveToSession(ctx, 'minValue', minValue);
   const minValueMsg = minValue ? `Minimal amount - <b>${minValue}</b>` : '';
