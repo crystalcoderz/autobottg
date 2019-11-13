@@ -7,7 +7,6 @@ import { config } from '../config';
 import { pause, intervalRequire, breakTransaction } from '../helpers';
 const { leave } = Stage;
 const getAddress = new Scene('get_addr');
-let intervalStatus;
 
 getAddress.enter(async (ctx) => {
   console.log('in get_addr scene');
@@ -20,6 +19,13 @@ getAddress.enter(async (ctx) => {
 
 
 getAddress.hears(config.kb.startNew, ctx => breakTransaction(ctx));
-getAddress.hears(config.kb.help, ctx => ctx.scene.enter('help'));
+getAddress.hears(config.kb.help, async ctx => {
+  ctx.reply(
+    'If you have any questions about your exchange, please contact our support team via email:'
+  );
+  await pause(500);
+  ctx.reply('support@changenow.io');
+  return;
+});
 
 export default getAddress;

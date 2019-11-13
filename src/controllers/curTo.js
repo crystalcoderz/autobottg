@@ -27,8 +27,11 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async 
     return;
   }
   if (config.kb.help === txt) {
-    ctx.scene.leave();
-    ctx.scene.enter('help')
+    ctx.reply(
+      'If you have any questions about your exchange, please contact our support team via email:'
+    );
+    await pause(500);
+    ctx.reply('support@changenow.io');
     return;
   }
   if (txt.match(/^[\u{2705}]/gu)) {
