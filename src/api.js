@@ -17,7 +17,7 @@ const _apiRequest = async (options) => {
 
 export const getUserIp = async () => {
   const options = {
-    uri: `/get-user-ip`,
+    uri: 'http://localhost:8080/get-api',
   };
   const req = await _apiRequest(options);
   return req;
