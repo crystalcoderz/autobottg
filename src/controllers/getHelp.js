@@ -1,7 +1,7 @@
 // getHelp scene
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-import { selectAmountAction } from '../actions';
+import { selectAmountAction, cancelTradeAction } from '../actions';
 import { getMinimumAmount, saveToSession, breakTransaction } from '../helpers';
 import { getHelpKeyboard, getMainKeyboard } from '../keyboards';
 import { config } from '../config';
@@ -25,7 +25,7 @@ getHelp.hears([config.kb.cancel], async ctx => {
   if(config.kb.cancel === txt) {
     breakTransaction(ctx);
     ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
-    ctx.scene.leave();
+    cancelTradeAction(ctx);
     return;
   }
 });

@@ -38,7 +38,8 @@ export const saveToSession = (ctx, field, data) => {
 }
 
 export const deleteFromSession = (ctx, field) => {
-  const hasField = ctx.session.field;
+  const hasField = ctx.session[field];
+  console.log("TCL: deleteFromSession -> hasField", hasField)
   hasField && delete ctx.session[field];
 }
 

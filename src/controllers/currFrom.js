@@ -5,7 +5,7 @@ const {enter, leave} = Stage;
 import {handler, deleteFromSession} from '../helpers';
 import {messages} from '../messages';
 import {getFromKeyboard, getMainKeyboard} from '../keyboards';
-import {selectFromCurrencyAction} from '../actions';
+import {selectFromCurrencyAction, cancelTradeAction} from '../actions';
 import {config} from '../config';
 
 import Markup from 'telegraf/markup';
@@ -26,7 +26,7 @@ currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
       'Your exchange is canceled. Do you want to start a new exchange?',
       getMainKeyboard(ctx)
     );
-    ctx.scene.leave();
+    cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
