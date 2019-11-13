@@ -14,6 +14,15 @@ const _apiRequest = async (options) => {
   }
 }
 
+
+export const getUserIp = async () => {
+  const options = {
+    uri: `/get-user-ip`,
+  };
+  const req = await _apiRequest(options);
+  return req;
+}
+
 export const getAllCurrencies = async () => {
   const options = {
     uri: `${config.api_url}/currencies?active=true?api_key=${config.api_key}`,
