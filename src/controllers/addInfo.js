@@ -24,7 +24,6 @@ addInfo.enter(async (ctx) => {
   }
 });
 
-
 addInfo.hears([/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
