@@ -34,7 +34,7 @@ checkData.enter(async (ctx) => {
   }
 });
 
-checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.help], ctx => {
+checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
     ctx.scene.enter('amount');
@@ -50,8 +50,11 @@ checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.help === txt) {
-    ctx.scene.leave();
-    ctx.scene.enter('help')
+    ctx.reply(
+      'If you have any questions about your exchange, please contact our support team via email:'
+    );
+    await pause(500);
+    ctx.reply('support@changenow.io');
     return;
   }
   inputAdditionalDataAction(ctx);

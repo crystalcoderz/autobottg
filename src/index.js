@@ -33,13 +33,11 @@ import start from './controllers/start';
 import currFrom from './controllers/currFrom';
 import curTo from './controllers/curTo';
 import amount from './controllers/amount';
-import prepareData from './controllers/prepareData';
 import checkData from './controllers/checkData';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
 import getAddress from './controllers/getAddr';
 import addInfo from './controllers/addInfo';
-import getHelp from './controllers/getHelp';
 
 const { enter, leave } = Stage;
 const expressApp = express();
@@ -57,8 +55,7 @@ mongoose.connection.on('open', () => {
    checkData,
    estimateExchange,
    checkAgree,
-   getAddress,
-   getHelp
+   getAddress
  ]);
  bot.use(session());
  bot.use(stage.middleware());

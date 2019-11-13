@@ -37,8 +37,11 @@ estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.help === txt) {
-    ctx.scene.leave();
-    ctx.scene.enter('help')
+    ctx.reply(
+      'If you have any questions about your exchange, please contact our support team via email:'
+    );
+    await pause(500);
+    ctx.reply('support@changenow.io');
     return;
   }
   if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {

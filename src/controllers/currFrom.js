@@ -2,7 +2,7 @@
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 const {enter, leave} = Stage;
-import {handler, deleteFromSession} from '../helpers';
+import {handler, deleteFromSession, pause} from '../helpers';
 import {messages} from '../messages';
 import {getFromKeyboard, getMainKeyboard} from '../keyboards';
 import {selectFromCurrencyAction, cancelTradeAction} from '../actions';
@@ -30,8 +30,11 @@ currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
     return;
   }
   if (config.kb.help === txt) {
-    ctx.scene.leave();
-    ctx.scene.enter('help');
+    ctx.reply(
+      'If you have any questions about your exchange, please contact our support team via email:'
+    );
+    await pause(500);
+    ctx.reply('support@changenow.io');
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {
