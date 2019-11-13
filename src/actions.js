@@ -24,6 +24,11 @@ export const handleStartAction = async (ctx) => {
   const user = ctx.message.from;
   UserModel.insertMany({id: user.id, username: user.username});
   saveToSession(ctx, 'userId', user.id);
+<<<<<<< HEAD
+=======
+  // const site = await getUserIp();
+  // console.log("TCL: handleStartAction -> site", site)
+>>>>>>> dev
   await ctx.scene.enter('start');
 }
 
