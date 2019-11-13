@@ -9,6 +9,8 @@ const curTo = new Scene('curr_to');
 
 curTo.enter((ctx) => {
   ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
+  console.log(ctx.seession.addDataName)
+  console.log(ctx.seession.addData)
 });
 
 
