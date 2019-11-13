@@ -38,7 +38,7 @@ export const saveToSession = (ctx, field, data) => {
 }
 
 export const deleteFromSession = (ctx, field) => {
-  const hasField = ctx.session.field;
+  const hasField = ctx.session[field];
   hasField && delete ctx.session[field];
 }
 

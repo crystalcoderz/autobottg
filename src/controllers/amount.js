@@ -1,7 +1,7 @@
 // Amount scene
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-import { selectAmountAction } from '../actions';
+import { selectAmountAction, cancelTradeAction } from '../actions';
 import { getMinimumAmount, saveToSession } from '../helpers';
 import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
 import { config } from '../config';
@@ -34,7 +34,7 @@ amount.hears([/[.,0-9]+/gi, config.kb.back, config.kb.cancel, config.kb.help], a
   }
   if(config.kb.cancel === txt) {
     ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
-    ctx.scene.leave();
+    cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {

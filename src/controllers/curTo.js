@@ -2,15 +2,13 @@
 import Scene from 'telegraf/scenes/base';
 import { messages } from '../messages';
 import { getToKeyboard, getMainKeyboard } from '../keyboards';
-import { selectToCurrencyAction } from '../actions';
+import { selectToCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
 
 const curTo = new Scene('curr_to');
 
 curTo.enter((ctx) => {
   ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
-  console.log(ctx.seession.addDataName)
-  console.log(ctx.seession.addData)
 });
 
 
@@ -25,7 +23,7 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async 
       'Your exchange is canceled. Do you want to start a new exchange?',
       getMainKeyboard(ctx)
     );
-    ctx.scene.leave();
+    cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {

@@ -2,7 +2,7 @@
 import Scene from 'telegraf/scenes/base';
 import { saveToSession, pause } from '../helpers';
 import { getExchAmount } from '../api';
-import { typeWalletAction } from '../actions';
+import { typeWalletAction, cancelTradeAction } from '../actions';
 import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
 import { config } from '../config';
 
@@ -33,7 +33,7 @@ estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.he
       'Your exchange is canceled. Do you want to start a new exchange?',
       getMainKeyboard(ctx)
     );
-    ctx.scene.leave();
+    cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {

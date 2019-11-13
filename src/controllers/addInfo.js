@@ -2,7 +2,7 @@
 
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-import { inputAdditionalDataAction } from '../actions';
+import { inputAdditionalDataAction, cancelTradeAction } from '../actions';
 import { saveToSession, pause } from '../helpers';
 import { getExtraIDKeyboard } from '../keyboards';
 import { config } from '../config';
@@ -41,7 +41,7 @@ addInfo.hears([/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel, confi
       'Your exchange is canceled. Do you want to start a new exchange?',
       getMainKeyboard(ctx)
     );
-    ctx.scene.leave();
+    cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
