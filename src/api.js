@@ -14,8 +14,6 @@ const _apiRequest = async (options) => {
   }
 }
 
-<<<<<<< HEAD
-=======
 
 export const getUserIp = async () => {
   const options = {
@@ -25,7 +23,6 @@ export const getUserIp = async () => {
   return req;
 }
 
->>>>>>> dev
 export const getAllCurrencies = async () => {
   const options = {
     uri: `${config.api_url}/currencies?active=true?api_key=${config.api_key}`,
