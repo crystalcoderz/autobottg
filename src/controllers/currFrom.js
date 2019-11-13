@@ -31,7 +31,7 @@ currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   }
   if (config.kb.help === txt) {
     ctx.scene.leave();
-    ctx.scene.enter('help')
+    ctx.scene.enter('help');
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {
