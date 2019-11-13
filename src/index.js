@@ -83,16 +83,20 @@ function startDevMode(bot) {
 
 async function startProdMode(bot) {
   console.log("TCL: startProdMode -> startProdMode")
-  const tlsOptions = {
-    key: fs.readFileSync('./privkey.pem'),
-    cert: fs.readFileSync('./fullchain.pem')
-  };
-  await bot.telegram.setWebhook(
-    `https://${process.env.APP_WEBHOOK}/exchange-bot/${process.env.API_KEY}`,
-    {
-      source: '../privkey.pem'
-    }
-  );
+  // const tlsOptions = {
+  //   key: fs.readFileSync('./privkey.pem'),
+  //   cert: fs.readFileSync('./fullchain.pem')
+  // };
+  try {
+    await bot.telegram.setWebhook(
+      `https://${process.env.APP_WEBHOOK}/exchange-bot`,
+      // {
+      //   source: '../privkey.pem'
+      // }
+    );
+  }catch(err) {
+    console.log(err);
+  }
 }
 
 
