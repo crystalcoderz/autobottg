@@ -12,12 +12,11 @@ const addInfo = new Scene('add_info');
 
 addInfo.enter(async (ctx) => {
   console.log('in add_info');
-  const curFromInfo = ctx.session.curFromInfo;
   const curToInfo = ctx.session.curToInfo;
 
-  if((curFromInfo.isAnonymous || curToInfo.isAnonymous) || curFromInfo.hasExternalId) {
-    ctx.reply(`Please, enter ${curFromInfo.externalIdName} for ${curFromInfo.name} (optional)`, getExtraIDKeyboard(ctx));
-    saveToSession(ctx, 'addDataName', curFromInfo.externalIdName);
+  if(curToInfo.isAnonymous || curToInfo.hasExternalId) {
+    ctx.reply(`Please, enter ${curToInfo.externalIdName} for ${curToInfo.name} (optional)`, getExtraIDKeyboard(ctx));
+    saveToSession(ctx, 'addDataName', curToInfo.externalIdName);
     await pause(1000);
   } else {
     ctx.scene.leave('add_info');
