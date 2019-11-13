@@ -4,6 +4,7 @@ import { messages } from '../messages';
 import { getToKeyboard, getMainKeyboard } from '../keyboards';
 import { selectToCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
+import { pause } from '../helpers';
 
 const curTo = new Scene('curr_to');
 

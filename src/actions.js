@@ -139,7 +139,7 @@ export const agreePressAction = async (ctx) => {
     await ctx.scene.leave('agree');
     await ctx.scene.enter('get_addr');
   } catch (err) {
-    await ctx.reply(`Sorry, the address you entered is invalid. Please enter a valid ${curTo} address`);
+    await ctx.reply('Sorry, the address you entered is invalid.');
     await pause(1000);
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');
