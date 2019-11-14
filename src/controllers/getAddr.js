@@ -26,7 +26,7 @@ getAddress.enter(async ctx => {
   await pause(500);
   ctx.reply(`${payinData.payinAddress}`);
   await pause(500);
-  // http://127.0.0.1
+  // http://127.0.0.1:6001
   await ctx.replyWithHTML(`To continue transaction please visit <a href="https://cn-bot.evercodelab.com/continue?id=${uid}">Our service site</a>`);
   await intervalRequire(ctx, payinData);
 });
