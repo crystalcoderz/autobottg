@@ -8,27 +8,22 @@ import Markup from 'telegraf/markup';
 import Extra from 'telegraf/extra';
 import Stage from 'telegraf/stage';
 import TelegrafInlineMenu from 'telegraf-inline-menu';
-import { messages } from './messages';
-import { config } from './config';
-const Telegram = require('telegraf/telegram')
+import {messages} from './messages';
+import {config} from './config';
+const Telegram = require('telegraf/telegram');
 import mongoose from 'mongoose';
-import { connectDatabase } from './connectDB';
-import { getAllCurrencies, getExchAmount } from './api';
+import {connectDatabase} from './connectDB';
+import {getAllCurrencies, getExchAmount} from './api';
 import {
- handler,
- saveToSession,
- deleteFromSession,
- convertAndCheckCurr,
- validatePair,
- getMinimumAmount
+  handler,
+  saveToSession,
+  deleteFromSession,
+  convertAndCheckCurr,
+  validatePair,
+  getMinimumAmount
 } from './helpers';
-import {
- getMainKeyboard,
- backKeyboard,
- getCurrenciesKeyboard,
- getAgreeButton
-} from './keyboards';
-import { handleStartAction, cancelTradeAction } from './actions';
+import {getMainKeyboard, backKeyboard, getCurrenciesKeyboard, getAgreeButton} from './keyboards';
+import {handleStartAction, cancelTradeAction} from './actions';
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
 import curTo from './controllers/curTo';
@@ -39,40 +34,40 @@ import checkAgree from './controllers/checkAgree';
 import getAddress from './controllers/getAddr';
 import addInfo from './controllers/addInfo';
 
-const { enter, leave } = Stage;
+const {enter, leave} = Stage;
 const expressApp = express();
 const Telegraf = require('telegraf');
 const bot = new Telegraf(process.env.API_KEY);
 //  ------------------ APPLICATION ------------------
 mongoose.connection.on('open', () => {
- // Create scene manager
- const stage = new Stage([
-   start,
-   currFrom,
-   curTo,
-   amount,
-   addInfo,
-   checkData,
-   estimateExchange,
-   checkAgree,
-   getAddress
- ]);
- bot.use(session());
- bot.use(stage.middleware());
- const logger = async (ctx, next) =>  {
-   const start = new Date();
-   console.log(ctx.from.first_name);
-   await next(ctx);
- }
- bot.use(logger);
- bot.start((ctx) => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
- bot.hears(/Start exchange/, ctx => handleStartAction(ctx) );
- bot.hears(config.kb.cancel, (ctx) => cancelTradeAction(ctx));
- // const webhookStatus = await bot.telegram.getWebhookInfo();
- // console.log('Webhook status', webhookStatus);
- bot.catch((err) => {
-   console.log('Ooops', err)
- })
+  // Create scene manager
+  const stage = new Stage([
+    start,
+    currFrom,
+    curTo,
+    amount,
+    addInfo,
+    checkData,
+    estimateExchange,
+    checkAgree,
+    getAddress
+  ]);
+  bot.use(session());
+  bot.use(stage.middleware());
+  const logger = async (ctx, next) => {
+    const start = new Date();
+    console.log(ctx.from.first_name);
+    await next(ctx);
+  };
+  bot.use(logger);
+  bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
+  bot.hears(/Start exchange/, ctx => handleStartAction(ctx));
+  bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
+  // const webhookStatus = await bot.telegram.getWebhookInfo();
+  // console.log('Webhook status', webhookStatus);
+  bot.catch(err => {
+    console.log('Ooops', err);
+  });
 });
 
 function startDevMode(bot) {
@@ -82,40 +77,48 @@ function startDevMode(bot) {
 }
 
 async function startProdMode(bot) {
-  console.log("TCL: startProdMode -> startProdMode")
+  console.log('TCL: startProdMode -> startProdMode');
   // const tlsOptions = {
   //   key: fs.readFileSync('./privkey.pem'),
   //   cert: fs.readFileSync('./fullchain.pem')
   // };
   try {
     await bot.telegram.setWebhook(
-      `https://${process.env.APP_WEBHOOK}/exchange-bot`,
+      `https://${process.env.APP_WEBHOOK}/exchange-bot`
       // {
       //   source: '../privkey.pem'
       // }
     );
-  }catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
 
-
 //--------------------------- Server -----------------------------------------------
 
-export async function startApp () {
- await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
- expressApp.use(bot.webhookCallback('/exchange-bot'));
- process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
- expressApp.use(morgan('combined'));
- expressApp.listen(process.env.APP_PORT, () => {
-   console.log(`Server listening on ${process.env.APP_PORT}`);
- })
+export async function startApp() {
+  await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
+  expressApp.use(bot.webhookCallback('/exchange-bot'));
+  process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
+  expressApp.use(morgan('combined'));
+  expressApp.listen(process.env.APP_PORT, () => {
+    console.log(`Server listening on ${process.env.APP_PORT}`);
+  });
 }
 startApp();
 
 expressApp.get('/continue', (req, res) => {
+  let ip;
+  if (req.headers['x-forwarded-for']) {
+      ip = req.headers['x-forwarded-for'].split(",")[0];
+  } else if (req.connection && req.connection.remoteAddress) {
+      ip = req.connection.remoteAddress;
+  } else {
+      ip = req.ip;
+  }
   const resp = `
-    User with ${req.query.id} has ${req.connection.remoteAddress} ip
-  `
+    User with ${req.query.id} has ${ip} ip
+  `;
+  // console.log(req.headers);
   res.send(resp);
 });
