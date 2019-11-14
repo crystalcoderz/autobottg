@@ -1,6 +1,6 @@
 //------------------------------- HELPERS -------------------------------------------
 
-import { getPairs, getMinimum, getTransactionStatus } from './api';
+import { getPairs, getMinimum, getTransactionStatus, getExchAmount } from './api';
 import { messages } from './messages';
 import { config } from './config';
 let intervalStatus;
@@ -62,6 +62,12 @@ export const validatePair = async (pair) => {
   const availablePairs = await getPairs();
   const hasPair = availablePairs.includes(pair);
   return hasPair;
+}
+
+export const getAmountTotal = async (amount, fromTo) => {
+  const amountReq = await getExchAmount(amount, fromTo);
+  const amountTotal = amountReq.estimatedAmount;
+  return amountTotal;
 }
 
 export const getMinimumAmount = async (pair) => {

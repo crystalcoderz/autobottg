@@ -6,7 +6,7 @@ import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
 import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
-import { sendTransactionData, getCurrInfo, getUserIp } from './api';
+import { sendTransactionData, getCurrInfo } from './api';
 
 const { enter, leave } = Stage;
 class Transaction {
@@ -24,8 +24,11 @@ export const handleStartAction = async (ctx) => {
   const user = ctx.message.from;
   UserModel.insertMany({id: user.id, username: user.username});
   saveToSession(ctx, 'userId', user.id);
+<<<<<<< HEAD
   const site = await getUserIp();
   // console.log("TCL: handleStartAction -> site", site)
+=======
+>>>>>>> dev
   await ctx.scene.enter('start');
 }
 
