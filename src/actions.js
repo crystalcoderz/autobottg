@@ -22,7 +22,6 @@ class Transaction {
 
 export const handleStartAction = async ctx => {
   const user = ctx.message.from;
-  console.log("TCL: user", user)
   const userInDB = await UserModel.findOne({id: user.id});
   if(!userInDB) {
     UserModel.insertMany({id: user.id, username: user.username, visits: []});
