@@ -22,7 +22,11 @@ class Transaction {
 
 export const handleStartAction = async ctx => {
   const user = ctx.message.from;
-  UserModel.insertMany({id: user.id, username: user.username, visits: []});
+  console.log("TCL: user", user)
+  const userInDB = await UserModel.findOne({id: user.id});
+  if(!userInDB) {
+    UserModel.insertMany({id: user.id, username: user.username, visits: []});
+  }
   saveToSession(ctx, 'userId', user.id);
   await ctx.scene.enter('start');
 };
