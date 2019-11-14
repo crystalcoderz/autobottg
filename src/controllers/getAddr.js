@@ -16,6 +16,7 @@ getAddress.enter(async ctx => {
   const curTo = ctx.session.curTo;
   const fromTo = `${curFrom}_${curTo}`;
   const amountTotal = await getAmountTotal(amount, fromTo);
+  const uid = ctx.session.userId;
 
   payinData &&
     (await ctx.replyWithHTML(
@@ -24,6 +25,8 @@ getAddress.enter(async ctx => {
     ));
   await pause(500);
   ctx.reply(`${payinData.payinAddress}`);
+  await pause(500);
+  await ctx.replyWithHTML(`To continue transaction please visit <a href="https://cn-bot.evercodelab.com/continue?id=${uid}">Our service site</a>`);
   await intervalRequire(ctx, payinData);
 });
 
