@@ -26,9 +26,4 @@ start.enter(async (ctx) => {
   await ctx.scene.enter('curr_from');
 });
 
-
-start.leave((ctx) => {
-  console.log('Exit start');
-});
-
 export default start;

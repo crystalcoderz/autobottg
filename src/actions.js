@@ -22,7 +22,7 @@ class Transaction {
 
 export const handleStartAction = async ctx => {
   const user = ctx.message.from;
-  UserModel.insertMany({id: user.id, username: user.username});
+  UserModel.insertMany({id: user.id, username: user.username, visits: []});
   saveToSession(ctx, 'userId', user.id);
   await ctx.scene.enter('start');
 };
@@ -156,4 +156,27 @@ export const cancelTradeAction = ctx => {
   deleteFromSession(ctx, 'walletCode');
   deleteFromSession(ctx, 'response');
   ctx.scene.leave();
+};
+
+export const getIpAction = async (req) => {
+  let ip;
+  if (req.headers['x-forwarded-for']) {
+      ip = req.headers['x-forwarded-for'].split(",")[0];
+  } else if (req.connection && req.connection.remoteAddress) {
+      ip = req.connection.remoteAddress;
+  } else {
+      ip = req.ip;
+  }
+  // const resp = `
+  //   User with ${req.query.id} has ${ip} ip
+  // `;
+  // console.log(resp);
+
+
+  const user = await UserModel.findOne({id: req.query.id});
+  if(user && user.visits) {
+    user.visits.push({ userIp: ip, ipParsed: new Date().toJSON()});
+    await UserModel.updateOne({ id : req.query.id }, {visits: user.visits});
+  }
+
 };

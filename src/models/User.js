@@ -4,7 +4,7 @@ export const UserSchema = new mongoose.Schema(
   {
     id: Number,
     username: String,
-    transactions: Array
+    visits: Array
   }
 );
 
