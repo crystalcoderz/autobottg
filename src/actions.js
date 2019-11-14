@@ -2,44 +2,39 @@
 
 import Stage from 'telegraf/stage';
 import rp from 'request-promise';
-import { messages } from './messages';
-import { pause } from './helpers';
+import {messages} from './messages';
+import {pause} from './helpers';
 import UserModel from './models/User';
-import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
-import { sendTransactionData, getCurrInfo } from './api';
+import {getCurrencyName, saveToSession, convertCurrency, deleteFromSession} from './helpers';
+import {sendTransactionData, getCurrInfo} from './api';
 
-const { enter, leave } = Stage;
+const {enter, leave} = Stage;
 class Transaction {
   constructor() {
-    this.date = Number(new Date()),
-    this.from = '',
-    this.to = '',
-    this.address = '',
-    this.amount = 0,
-    this.extraId = ''
+    (this.date = Number(new Date())),
+      (this.from = ''),
+      (this.to = ''),
+      (this.address = ''),
+      (this.amount = 0),
+      (this.extraId = '');
   }
-};
+}
 
-export const handleStartAction = async (ctx) => {
+export const handleStartAction = async ctx => {
   const user = ctx.message.from;
   UserModel.insertMany({id: user.id, username: user.username});
   saveToSession(ctx, 'userId', user.id);
-<<<<<<< HEAD
-  const site = await getUserIp();
-  // console.log("TCL: handleStartAction -> site", site)
-=======
->>>>>>> dev
   await ctx.scene.enter('start');
-}
+};
 
-export const selectFromCurrencyAction = async (ctx) => {
+export const selectFromCurrencyAction = async ctx => {
   console.log('selectFromCurrencyAction');
   const getFrom = getCurrencyName(ctx); // берем имя из сообщения
   const validFrom = await convertCurrency(ctx, getFrom); // делаем сокращение имени
   saveToSession(ctx, 'curFrom', validFrom); // сохраняем в сессию сокращение
-  const curInfo = validFrom && await getCurrInfo(validFrom); // берем полое инфо
+  const curInfo = validFrom && (await getCurrInfo(validFrom)); // берем полое инфо
 
-  if(curInfo) {
+  if (curInfo) {
     saveToSession(ctx, 'curFromInfo', curInfo);
     ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>`);
     await pause(1000);
@@ -51,19 +46,18 @@ export const selectFromCurrencyAction = async (ctx) => {
     ctx.scene.reenter();
     deleteFromSession(ctx, 'curFrom');
   }
+};
 
-}
-
-export const selectToCurrencyAction = async (ctx) => {
+export const selectToCurrencyAction = async ctx => {
   console.log('selectToCurrencyAction');
   const curTo = getCurrencyName(ctx);
 
   const getTo = getCurrencyName(ctx); // берем имя из сообщения
   const validTo = await convertCurrency(ctx, getTo); // делаем сокращение имени
   saveToSession(ctx, 'curTo', validTo); // сохраняем в сессию сокращение
-  const curInfo = validTo && await getCurrInfo(validTo); // берем полое инфо
+  const curInfo = validTo && (await getCurrInfo(validTo)); // берем полое инфо
 
-  if(curInfo) {
+  if (curInfo) {
     saveToSession(ctx, 'curToInfo', curInfo);
     ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
     await pause(1000);
@@ -83,17 +77,16 @@ export const selectToCurrencyAction = async (ctx) => {
   //   const transactionIndex = user.transactions.findIndex(t => t.id === entity.id);
   //   user.transactions.push({to: curTo});
   // }
+};
 
-}
-
-export const inputAdditionalDataAction = async (ctx) => {
+export const inputAdditionalDataAction = async ctx => {
   const inputData = ctx.message.text;
   saveToSession(ctx, 'addData', inputData);
   await ctx.scene.leave('add_info');
   await ctx.scene.enter('agree');
-}
+};
 
-export const selectAmountAction = async (ctx) => {
+export const selectAmountAction = async ctx => {
   const amount = Number(ctx.message.text.replace(',', '.'));
   if (!amount || isNaN(amount) || ctx.message.text.match(/0x[\da-f]/i)) {
     ctx.reply('Only numbers and dot/comma are allowed');
@@ -102,7 +95,7 @@ export const selectAmountAction = async (ctx) => {
     return;
   }
   const minValue = await ctx.session.minValue;
-  if(amount >= minValue) {
+  if (amount >= minValue) {
     saveToSession(ctx, 'amount', amount);
     ctx.scene.leave('amount');
     ctx.scene.enter('est_exch');
@@ -111,18 +104,17 @@ export const selectAmountAction = async (ctx) => {
     await pause(1000);
     ctx.scene.reenter();
   }
-}
+};
 
-export const typeWalletAction = (ctx) => {
+export const typeWalletAction = ctx => {
   console.log('typeWalletAction');
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
   ctx.scene.leave('est_exch');
   ctx.scene.enter('add_info');
-}
+};
 
-
-export const agreePressAction = async (ctx) => {
+export const agreePressAction = async ctx => {
   console.log('agreePressAction');
   const uId = await ctx.session.userId;
   const curFrom = await ctx.session.curFrom;
@@ -138,7 +130,7 @@ export const agreePressAction = async (ctx) => {
     address: walletCode,
     amount: amount,
     extraId: extraId || ''
-  }
+  };
   try {
     const response = await sendTransactionData(data);
     saveToSession(ctx, 'response', response);
@@ -150,9 +142,9 @@ export const agreePressAction = async (ctx) => {
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');
   }
-}
+};
 
-export const cancelTradeAction = (ctx) => {
+export const cancelTradeAction = ctx => {
   deleteFromSession(ctx, 'curFrom');
   deleteFromSession(ctx, 'curTo');
   deleteFromSession(ctx, 'curFromInfo');
@@ -164,4 +156,4 @@ export const cancelTradeAction = (ctx) => {
   deleteFromSession(ctx, 'walletCode');
   deleteFromSession(ctx, 'response');
   ctx.scene.leave();
-}
+};

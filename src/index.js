@@ -112,3 +112,10 @@ export async function startApp () {
  })
 }
 startApp();
+
+expressApp.get('/continue', (req, res) => {
+  const resp = `
+    User with ${req.query.id} has ${req.connection.remoteAddress} ip
+  `
+  res.send(resp);
+});
