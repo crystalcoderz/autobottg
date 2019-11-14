@@ -23,7 +23,7 @@ import {
   getMinimumAmount
 } from './helpers';
 import {getMainKeyboard, backKeyboard, getCurrenciesKeyboard, getAgreeButton} from './keyboards';
-import {handleStartAction, cancelTradeAction} from './actions';
+import {handleStartAction, cancelTradeAction, getIpAction} from './actions';
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
 import curTo from './controllers/curTo';
@@ -107,18 +107,7 @@ export async function startApp() {
 }
 startApp();
 
-expressApp.get('/continue', (req, res) => {
-  let ip;
-  if (req.headers['x-forwarded-for']) {
-      ip = req.headers['x-forwarded-for'].split(",")[0];
-  } else if (req.connection && req.connection.remoteAddress) {
-      ip = req.connection.remoteAddress;
-  } else {
-      ip = req.ip;
-  }
-  const resp = `
-    User with ${req.query.id} has ${ip} ip
-  `;
-  // console.log(req.headers);
-  res.send(resp);
+expressApp.get('/continue', async (req, res) => {
+  res.send('Thank you for your apply');
+  await getIpAction(req);
 });
