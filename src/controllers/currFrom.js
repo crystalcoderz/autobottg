@@ -46,6 +46,4 @@ currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   }
 });
 
-const {btc, eth, bch, ltc, xmr, zec} = config.popularCurrs;
-
 export default currFrom;

@@ -7,6 +7,7 @@ import { config } from './config';
 export const getMainKeyboard = (ctx) => {
   return Markup
   .keyboard([config.kb.start])
+  .oneTime()
   .resize()
   .extra()
 }

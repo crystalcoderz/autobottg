@@ -20,10 +20,11 @@ class Transaction {
   }
 }
 
-export const handleStartAction = async (ctx, status) => {
-  status.isVerified = false;
+export const handleStartAction = async (ctx) => {
+  // status.isVerified = false;
   const user = ctx.message.from;
-  saveToSession(ctx, 'status', status);
+  // console.log("TCL: handleStartAction -> user", user)
+  // saveToSession(ctx, 'status', status);
   saveToSession(ctx, 'userId', user.id);
   const userInDB = await UserModel.findOne({id: user.id});
   if(!userInDB) {
@@ -74,14 +75,6 @@ export const selectToCurrencyAction = async ctx => {
     ctx.scene.reenter();
     deleteFromSession(ctx, 'curTo');
   }
-
-  // DB
-  // const userId = await ctx.session.userId;
-  // const user = UserModel.findOne({ id : userId });
-  //   if(user && user.transactions) {
-  //   const transactionIndex = user.transactions.findIndex(t => t.id === entity.id);
-  //   user.transactions.push({to: curTo});
-  // }
 };
 
 export const inputAdditionalDataAction = async ctx => {
