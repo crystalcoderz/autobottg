@@ -16,8 +16,6 @@ getAddress.enter(async ctx => {
   const curTo = ctx.session.curTo;
   const fromTo = `${curFrom}_${curTo}`;
   const amountTotal = await getAmountTotal(amount, fromTo);
-  const uid = ctx.session.userId;
-
   payinData &&
     (await ctx.replyWithHTML(
       `You’re sending <b>${amount} ${curFrom}</b> and you’ll get ~<b>${amountTotal} ${curTo}</b>\nHere is the address for your exchange.\nCopy and paste this address into your wallet to start an exchange.`,
@@ -25,9 +23,6 @@ getAddress.enter(async ctx => {
     ));
   await pause(500);
   ctx.reply(`${payinData.payinAddress}`);
-  await pause(500);
-  // http://127.0.0.1:6001
-  await ctx.replyWithHTML(`To continue transaction please visit <a href="https://cn-bot.evercodelab.com/continue?id=${uid}">Our service site</a>`);
   await intervalRequire(ctx, payinData);
 });
 

@@ -8,12 +8,12 @@ import Markup from 'telegraf/markup';
 import Extra from 'telegraf/extra';
 import Stage from 'telegraf/stage';
 import TelegrafInlineMenu from 'telegraf-inline-menu';
-import {messages} from './messages';
-import {config} from './config';
+import { messages } from './messages';
+import { config } from './config';
 const Telegram = require('telegraf/telegram');
 import mongoose from 'mongoose';
-import {connectDatabase} from './connectDB';
-import {getAllCurrencies, getExchAmount} from './api';
+import { connectDatabase } from './connectDB';
+import { getAllCurrencies, getExchAmount } from './api';
 import {
   handler,
   saveToSession,
@@ -22,8 +22,8 @@ import {
   validatePair,
   getMinimumAmount
 } from './helpers';
-import {getMainKeyboard, backKeyboard, getCurrenciesKeyboard, getAgreeButton} from './keyboards';
-import {handleStartAction, cancelTradeAction, getIpAction} from './actions';
+import { getMainKeyboard, backKeyboard, getCurrenciesKeyboard, getAgreeButton } from './keyboards';
+import { handleStartAction, cancelTradeAction, getIpAction } from './actions';
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
 import curTo from './controllers/curTo';
@@ -34,40 +34,43 @@ import checkAgree from './controllers/checkAgree';
 import getAddress from './controllers/getAddr';
 import addInfo from './controllers/addInfo';
 
-const {enter, leave} = Stage;
+const { enter, leave } = Stage;
+
 const expressApp = express();
 const Telegraf = require('telegraf');
 const bot = new Telegraf(process.env.API_KEY);
+
 //  ------------------ APPLICATION ------------------
-mongoose.connection.on('open', () => {
-  // Create scene manager
-  const stage = new Stage([
-    start,
-    currFrom,
-    curTo,
-    amount,
-    addInfo,
-    checkData,
-    estimateExchange,
-    checkAgree,
-    getAddress
-  ]);
-  bot.use(session());
-  bot.use(stage.middleware());
-  const logger = async (ctx, next) => {
-    const start = new Date();
-    console.log(ctx.from.first_name);
-    await next(ctx);
-  };
-  bot.use(logger);
-  bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
-  bot.hears(/Start exchange/, ctx => handleStartAction(ctx));
-  bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
-  // const webhookStatus = await bot.telegram.getWebhookInfo();
-  // console.log('Webhook status', webhookStatus);
-  bot.catch(err => {
-    console.log('Ooops', err);
-  });
+
+let status = { isVerified: false };
+
+// Create scene manager
+const stage = new Stage([
+  start,
+  currFrom,
+  curTo,
+  amount,
+  addInfo,
+  checkData,
+  estimateExchange,
+  checkAgree,
+  getAddress
+]);
+bot.use(session());
+bot.use(stage.middleware());
+const logger = async (ctx, next) => {
+  const start = new Date();
+  console.log(ctx.from.first_name);
+  await next(ctx);
+};
+bot.use(logger);
+bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
+bot.hears(/Start exchange/, (ctx) => handleStartAction(ctx, status));
+bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
+// const webhookStatus = await bot.telegram.getWebhookInfo();
+// console.log('Webhook status', webhookStatus);
+bot.catch(err => {
+  console.log('Ooops', err);
 });
 
 function startDevMode(bot) {
@@ -101,13 +104,18 @@ export async function startApp() {
   expressApp.use(bot.webhookCallback('/exchange-bot'));
   process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
   expressApp.use(morgan('combined'));
-  expressApp.listen(process.env.APP_PORT, () => {
+  expressApp.listen(process.env.APP_PORT, '127.0.0.1', () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
   });
 }
 startApp();
 
-expressApp.get('/continue', async (req, res) => {
-  res.send('Thank you for your apply');
-  await getIpAction(req);
-});
+const getHandler = (status) => {
+  return async (req, res) => {
+    console.log(bot);
+    res.send('Thank you for your apply');
+    await getIpAction(req);
+  };
+};
+
+expressApp.get('/continue', getHandler(status));

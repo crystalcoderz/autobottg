@@ -20,14 +20,16 @@ class Transaction {
   }
 }
 
-export const handleStartAction = async ctx => {
+export const handleStartAction = async (ctx, status) => {
+  status.isVerified = false;
   const user = ctx.message.from;
+  saveToSession(ctx, 'status', status);
+  saveToSession(ctx, 'userId', user.id);
   const userInDB = await UserModel.findOne({id: user.id});
   if(!userInDB) {
     UserModel.insertMany({id: user.id, username: user.username, visits: []});
   }
-  saveToSession(ctx, 'userId', user.id);
-  await ctx.scene.enter('start');
+  ctx.scene.enter('start');
 };
 
 export const selectFromCurrencyAction = async ctx => {
@@ -170,10 +172,10 @@ export const getIpAction = async (req) => {
   } else {
       ip = req.ip;
   }
-  // const resp = `
-  //   User with ${req.query.id} has ${ip} ip
-  // `;
-  // console.log(resp);
+  const resp = `
+    User with ${req.query.id} has ${ip} ip
+  `;
+  console.log(resp);
 
 
   const user = await UserModel.findOne({id: req.query.id});
