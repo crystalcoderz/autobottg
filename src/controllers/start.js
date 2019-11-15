@@ -1,16 +1,31 @@
 // Start scene
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-// const { enter, leave } = Stage;
+import Extra from 'telegraf/extra';
+import Markup from 'telegraf/markup';
 import { getAllCurrencies } from '../api';
 import { saveToSession } from '../helpers';
 
 const start = new Scene('start');
-const { leave } = Stage
-
+const { leave } = Stage;
 
 start.enter(async (ctx) => {
+
   console.log('in start scene');
+  const uid = ctx.session.userId;
+  //  https://cn-bot.evercodelab.com
+  const termsOfUseBtn = Extra.HTML().markup(m =>
+    m.inlineKeyboard(
+      [
+        [m.urlButton(`Terms of Use and Privacy Policy`, `http://127.0.0.1:4001/continue?id=${uid}`, false)],
+      ],
+      {}
+    )
+  );
+
+
+  ctx.replyWithHTML(`In order to conduct an exchange you must read and agree to the ChangeNOW Terms of Use and Privacy Policy. You are agreeing to them by following the link`, termsOfUseBtn);
+
   try {
     const currs = await getAllCurrencies();
     if(!currs || !currs.length) {
@@ -22,8 +37,9 @@ start.enter(async (ctx) => {
     await ctx.reply('No currencies found');
     return;
   }
-  ctx.scene.leave();
-  await ctx.scene.enter('curr_from');
 });
+
+
+start.hears(/Start exchange/, (ctx) => ctx.scene.enter('curr_from'));
 
 export default start;

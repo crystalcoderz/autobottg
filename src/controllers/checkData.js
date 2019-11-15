@@ -26,7 +26,7 @@ checkData.enter(async (ctx) => {
     deleteFromSession(ctx, 'curTo');
     deleteFromSession(ctx, 'curFromInfo');
     deleteFromSession(ctx, 'curToInfo');
-    ctx.reply('No pair found');
+    ctx.reply('This pair is temporarily unavailable for exchanges');
     await pause(1000);
     ctx.scene.leave('check');
     ctx.scene.enter('curr_from');
