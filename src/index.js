@@ -116,7 +116,6 @@ export async function startApp() {
 startApp();
 
 const getHandle = async (req, res) => {
-  console.log('redirect')
     const replyKb = {
       reply_markup: {
         resize_keyboard: true,
@@ -128,7 +127,7 @@ const getHandle = async (req, res) => {
     };
     await getIpAction(req);
     await pause(1000);
-    bot.telegram.sendMessage(414191651, 'You have agreed to the Terms of Use and Privacy Policy. To start an exchange, please, tap on the button below', replyKb);
+    bot.telegram.sendMessage(req.query.id, 'You have agreed to the Terms of Use and Privacy Policy. To start an exchange, please, tap on the button below', replyKb);
     res.redirect(301, 'https://changenow.io/terms-of-use');
 };
 
