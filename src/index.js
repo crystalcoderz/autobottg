@@ -109,7 +109,7 @@ export async function startApp() {
   expressApp.use(bot.webhookCallback('/exchange-bot'));
   process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
   expressApp.use(morgan('combined'));
-  expressApp.listen(process.env.APP_PORT, '127.0.0.1',() => {
+  expressApp.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
   });
 }
