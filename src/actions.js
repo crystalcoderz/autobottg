@@ -21,10 +21,7 @@ class Transaction {
 }
 
 export const handleStartAction = async (ctx) => {
-  // status.isVerified = false;
   const user = ctx.message.from;
-  // console.log("TCL: handleStartAction -> user", user)
-  // saveToSession(ctx, 'status', status);
   saveToSession(ctx, 'userId', user.id);
   const userInDB = await UserModel.findOne({id: user.id});
   if(!userInDB) {

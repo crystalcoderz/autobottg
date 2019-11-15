@@ -11,13 +11,13 @@ const { leave } = Stage;
 
 start.enter(async (ctx) => {
 
+  console.log("TCL: hash", hash);
   console.log('in start scene');
   const uid = ctx.session.userId;
-  // http://127.0.0.1:4001
   const termsOfUseBtn = Extra.HTML().markup(m =>
     m.inlineKeyboard(
       [
-        [m.urlButton(`Terms of Use and Privacy Policy`, `https://cn-bot.evercodelab.com/continue?id=${uid}`, false)],
+        [m.urlButton(`Terms of Use and Privacy Policy`, `https://cn-bot.evercodelab.com/continue/${hash}/?id=${uid}`, false)],
       ],
       {}
     )

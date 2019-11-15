@@ -131,4 +131,4 @@ const getHandle = async (req, res) => {
     res.redirect(301, 'https://changenow.io/terms-of-use');
 };
 
-expressApp.get('/continue', getHandle);
+expressApp.get('/continue/:id', getHandle);
