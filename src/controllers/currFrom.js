@@ -1,12 +1,12 @@
 // Currency From scene
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-const {enter, leave} = Stage;
-import {handler, deleteFromSession, pause} from '../helpers';
-import {messages} from '../messages';
-import {getFromKeyboard, getMainKeyboard} from '../keyboards';
-import {selectFromCurrencyAction, cancelTradeAction} from '../actions';
-import {config} from '../config';
+const { enter, leave } = Stage;
+import { handler, deleteFromSession, pause } from '../helpers';
+import { messages } from '../messages';
+import { getFromKeyboard, getMainKeyboard } from '../keyboards';
+import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
+import { config } from '../config';
 
 import Markup from 'telegraf/markup';
 import Extra from 'telegraf/extra';
@@ -14,7 +14,6 @@ import Extra from 'telegraf/extra';
 const currFrom = new Scene('curr_from');
 
 currFrom.enter(ctx => {
-  console.log('in curr_from scene');
   const currs = ctx.session.currs;
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
@@ -22,23 +21,18 @@ currFrom.enter(ctx => {
 currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.cancel === txt) {
-    ctx.reply(
-      'Your exchange is canceled. Do you want to start a new exchange?',
-      getMainKeyboard(ctx)
-    );
+    ctx.reply(messages.cancel, getMainKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(
-      'If you have any questions about your exchange, please contact our support team via email:'
-    );
+    ctx.reply(messages.support);
     await pause(500);
-    ctx.reply('support@changenow.io');
+    ctx.reply(process.env.CN_EMAIL);
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {
-    ctx.reply('Please, use only Latin letters');
+    ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z\s]+/gi)) {

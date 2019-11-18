@@ -4,10 +4,11 @@ import { agreePressAction } from '../actions';
 import { getAgreeKeyboard } from '../keyboards';
 import { config } from '../config';
 import { pause, getAmountTotal } from '../helpers';
+import { messages } from '../messages';
+
 const checkAgree = new Scene('agree');
 
-checkAgree.enter(async (ctx) => {
-  console.log('in checkAgree scene');
+checkAgree.enter(async ctx => {
   const amount = ctx.session.amount;
   const curFrom = ctx.session.curFrom;
   const curTo = ctx.session.curTo;
@@ -17,21 +18,21 @@ checkAgree.enter(async (ctx) => {
   const fromTo = `${curFrom}_${curTo}`;
   const amountTotal = await getAmountTotal(amount, fromTo);
 
-  const addMsg = addData ? `Your ${addDataName} is <b>${addData}</b>\n`: '';
+  const addMsg = addData ? `Your ${addDataName} is <b>${addData}</b>\n` : '';
 
-  await ctx.replyWithHTML(`
+  await ctx.replyWithHTML(
+    `
     You’re sending <b>${amount} ${curFrom}</b> and you’ll get ~<b>${amountTotal} ${curTo}</b>\nYour recipient’s <b>${curTo}</b> address is <b>${walletCode}</b>\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
-    getAgreeKeyboard(ctx));
+    getAgreeKeyboard(ctx)
+  );
 });
 
 checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));
 checkAgree.hears(config.kb.back, ctx => ctx.scene.enter('est_exch'));
-checkAgree.hears(config.kb.help,async ctx => {
-  ctx.reply(
-    'If you have any questions about your exchange, please contact our support team via email:'
-  );
+checkAgree.hears(config.kb.help, async ctx => {
+  ctx.reply(messages.support);
   await pause(500);
-  ctx.reply('support@changenow.io');
+  ctx.reply(process.env.CN_EMAIL);
   return;
 });
 
