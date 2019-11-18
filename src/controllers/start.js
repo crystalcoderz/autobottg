@@ -20,7 +20,7 @@ start.enter(async ctx => {
         [
           m.urlButton(
             config.kb.terms,
-            `${process.env.APP_HOST}:${process.env.APP_PORT}/terms-of-use/${hash}?id=${uid}`,
+            `${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}`,
             false
           )
         ]
