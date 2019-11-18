@@ -8,10 +8,9 @@ import { pause } from '../helpers';
 
 const curTo = new Scene('curr_to');
 
-curTo.enter((ctx) => {
+curTo.enter(ctx => {
   ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
 });
-
 
 curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
@@ -20,27 +19,22 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async 
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(
-      'Your exchange is canceled. Do you want to start a new exchange?',
-      getMainKeyboard(ctx)
-    );
+    ctx.reply(messages.cancel, getMainKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(
-      'If you have any questions about your exchange, please contact our support team via email:'
-    );
+    ctx.reply(messages.support);
     await pause(500);
-    ctx.reply('support@changenow.io');
+    ctx.reply(process.env.CN_EMAIL);
     return;
   }
   if (txt.match(/^[\u{2705}]/gu)) {
-    ctx.reply('You’ve already chosen this currency. Please chose another one');
+    ctx.reply(messages.sameCurErr);
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {
-    ctx.reply('Please, use only Latin letters');
+    ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z\s]+/gi)) {

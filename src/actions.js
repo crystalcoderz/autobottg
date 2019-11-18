@@ -2,13 +2,13 @@
 
 import Stage from 'telegraf/stage';
 import rp from 'request-promise';
-import {messages} from './messages';
-import {pause} from './helpers';
+import { messages } from './messages';
+import { pause } from './helpers';
 import UserModel from './models/User';
-import {getCurrencyName, saveToSession, convertCurrency, deleteFromSession} from './helpers';
-import {sendTransactionData, getCurrInfo} from './api';
+import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
+import { sendTransactionData, getCurrInfo } from './api';
 
-const {enter, leave} = Stage;
+const { enter, leave } = Stage;
 class Transaction {
   constructor() {
     (this.date = Number(new Date())),
@@ -20,18 +20,17 @@ class Transaction {
   }
 }
 
-export const handleStartAction = async (ctx) => {
+export const handleStartAction = async ctx => {
   const user = ctx.message.from;
   saveToSession(ctx, 'userId', user.id);
-  const userInDB = await UserModel.findOne({id: user.id});
-  if(!userInDB) {
-    UserModel.insertMany({id: user.id, username: user.username, visits: []});
+  const userInDB = await UserModel.findOne({ id: user.id });
+  if (!userInDB) {
+    UserModel.insertMany({ id: user.id, username: user.username, visits: [] });
   }
   ctx.scene.enter('start');
 };
 
 export const selectFromCurrencyAction = async ctx => {
-  console.log('selectFromCurrencyAction');
   const getFrom = getCurrencyName(ctx); // берем имя из сообщения
   const validFrom = await convertCurrency(ctx, getFrom); // делаем сокращение имени
   saveToSession(ctx, 'curFrom', validFrom); // сохраняем в сессию сокращение
@@ -44,7 +43,7 @@ export const selectFromCurrencyAction = async ctx => {
     ctx.scene.leave('curr_from');
     ctx.scene.enter('curr_to');
   } else {
-    ctx.reply(messages.errorNameMsg);
+    ctx.reply(messages.notFound);
     await pause(1000);
     ctx.scene.reenter();
     deleteFromSession(ctx, 'curFrom');
@@ -52,9 +51,7 @@ export const selectFromCurrencyAction = async ctx => {
 };
 
 export const selectToCurrencyAction = async ctx => {
-  console.log('selectToCurrencyAction');
   const curTo = getCurrencyName(ctx);
-
   const getTo = getCurrencyName(ctx); // берем имя из сообщения
   const validTo = await convertCurrency(ctx, getTo); // делаем сокращение имени
   saveToSession(ctx, 'curTo', validTo); // сохраняем в сессию сокращение
@@ -67,7 +64,7 @@ export const selectToCurrencyAction = async ctx => {
     ctx.scene.leave('curr_to');
     ctx.scene.enter('check');
   } else {
-    ctx.reply(messages.errorNameMsg);
+    ctx.reply(messages.notFound);
     await pause(1000);
     ctx.scene.reenter();
     deleteFromSession(ctx, 'curTo');
@@ -84,7 +81,7 @@ export const inputAdditionalDataAction = async ctx => {
 export const selectAmountAction = async ctx => {
   const amount = Number(ctx.message.text.replace(',', '.'));
   if (!amount || isNaN(amount) || ctx.message.text.match(/0x[\da-f]/i)) {
-    ctx.reply('Only numbers and dot/comma are allowed');
+    ctx.reply(messages.numErr);
     await pause(1000);
     ctx.scene.reenter();
     return;
@@ -102,7 +99,6 @@ export const selectAmountAction = async ctx => {
 };
 
 export const typeWalletAction = ctx => {
-  console.log('typeWalletAction');
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
   ctx.scene.leave('est_exch');
@@ -110,7 +106,6 @@ export const typeWalletAction = ctx => {
 };
 
 export const agreePressAction = async ctx => {
-  console.log('agreePressAction');
   const uId = await ctx.session.userId;
   const curFrom = await ctx.session.curFrom;
   const curTo = await ctx.session.curTo;
@@ -132,7 +127,7 @@ export const agreePressAction = async ctx => {
     await ctx.scene.leave('agree');
     await ctx.scene.enter('get_addr');
   } catch (err) {
-    await ctx.reply('Sorry, the address you entered is invalid.');
+    await ctx.reply(messages.addrErr);
     await pause(1000);
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');
@@ -153,25 +148,19 @@ export const cancelTradeAction = ctx => {
   ctx.scene.leave();
 };
 
-export const getIpAction = async (req) => {
+export const getIpAction = async req => {
   let ip;
   if (req.headers['x-forwarded-for']) {
-      ip = req.headers['x-forwarded-for'].split(",")[0];
+    ip = req.headers['x-forwarded-for'].split(',')[0];
   } else if (req.connection && req.connection.remoteAddress) {
-      ip = req.connection.remoteAddress;
+    ip = req.connection.remoteAddress;
   } else {
-      ip = req.ip;
-  }
-  const resp = `
-    User with ${req.query.id} has ${ip} ip
-  `;
-  console.log(resp);
-
-
-  const user = await UserModel.findOne({id: req.query.id});
-  if(user && user.visits) {
-    user.visits.push({ userIp: ip, ipParsed: new Date().toJSON()});
-    await UserModel.updateOne({ id : req.query.id }, {visits: user.visits});
+    ip = req.ip;
   }
 
+  const user = await UserModel.findOne({ id: req.query.id });
+  if (user && user.visits) {
+    user.visits.push({ userIp: ip, ipParsed: new Date().toJSON() });
+    await UserModel.updateOne({ id: req.query.id }, { visits: user.visits });
+  }
 };

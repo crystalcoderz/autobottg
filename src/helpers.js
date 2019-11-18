@@ -7,43 +7,37 @@ let intervalStatus;
 
 export const pause = time => new Promise(resolve => setTimeout(resolve, time));
 
-// export const getPopularCurrs = (currs) => {
-//   let popCurrs = [];
-//   currs.filter(curr => config.popularCurrs.includes(curr.name))
-//     .map(curr => popCurrs.push({name: curr.name, ticker: curr.ticker}));
-//   return popCurrs;
-// }
-
-export const handler = (fn) => {
+export const handler = fn => {
   return async function(ctx, next) {
     try {
       return await fn(ctx);
     } catch (error) {
       console.log(error);
-      await ctx.reply('Something went wrong');
+      await ctx.reply('Error: ' + error);
       return next();
     }
   };
 };
 
-
-
-export const getCurrencyName = (ctx) => {
-  const selectedCurName = ctx.message.text.replace('✅', '').split('(')[0].trim();
+export const getCurrencyName = ctx => {
+  const selectedCurName = ctx.message.text
+    .replace('✅', '')
+    .split('(')[0]
+    .trim();
   return selectedCurName;
-}
+};
 
 export const saveToSession = (ctx, field, data) => {
   ctx.session[field] = data;
-}
+};
 
 export const deleteFromSession = (ctx, field) => {
   const hasField = ctx.session[field];
   hasField && delete ctx.session[field];
-}
+};
 
-export const prepareName = (name) => {
-  if(typeof name === 'string') {
+export const prepareName = name => {
+  if (typeof name === 'string') {
     return name.trim().toLowerCase();
   }
 };
@@ -51,36 +45,37 @@ export const prepareName = (name) => {
 export const convertCurrency = async (ctx, curName) => {
   let curAbbr;
   const allCurrs = await ctx.session.currs;
-  const currAvailable = allCurrs.find(item =>
-    prepareName(item.ticker) === prepareName(curName) ||
-    prepareName(item.name) === prepareName(curName)
+  const currAvailable = allCurrs.find(
+    item =>
+      prepareName(item.ticker) === prepareName(curName) ||
+      prepareName(item.name) === prepareName(curName)
   );
-  return curAbbr = currAvailable ? currAvailable.ticker : null;
-}
+  return (curAbbr = currAvailable ? currAvailable.ticker : null);
+};
 
-export const validatePair = async (pair) => {
+export const validatePair = async pair => {
   const availablePairs = await getPairs();
   const hasPair = availablePairs.includes(pair);
   return hasPair;
-}
+};
 
 export const getAmountTotal = async (amount, fromTo) => {
   const amountReq = await getExchAmount(amount, fromTo);
   const amountTotal = amountReq.estimatedAmount;
   return amountTotal;
-}
+};
 
-export const getMinimumAmount = async (pair) => {
+export const getMinimumAmount = async pair => {
   const getMin = await getMinimum(pair);
   return getMin.minAmount;
-}
+};
 
 const processStatus = async (ctx, status, payinData) => {
-  if(status === 'waiting') {
+  if (status === 'waiting') {
     ctx.replyWithHTML(`Transaction ID - <b>${payinData.id}</b>`);
     return;
   }
-  if(status === 'finished') {
+  if (status === 'finished') {
     const newStatus = await getTransactionStatus(payinData.id);
     ctx.replyWithHTML('Transaction hash is');
     await pause(500);
@@ -97,23 +92,25 @@ export const intervalRequire = async (ctx, payinData) => {
     confirming: 'We received your deposit.',
     exchanging: 'The exchange process has initiated.',
     finished: `The transaction was successfully finished. Your ${curTo} coins were sent to your wallet.\nThank you for choosing us.`,
-    failed: 'Sorry, something is wrong. We didn’t manage to start the transaction process. Please, try again later.',
-    expired: 'The transaction status is Expired. We didn’t get your coins for exchange. Do you want to start a new exchange?'
-  }
+    failed:
+      'Sorry, something is wrong. We didn’t manage to start the transaction process. Please, try again later.',
+    expired:
+      'The transaction status is Expired. We didn’t get your coins for exchange. Do you want to start a new exchange?'
+  };
 
   let status = '';
   intervalStatus = setInterval(async () => {
     const getStatus = await getTransactionStatus(payinData.id);
-    if(status !== getStatus.status) {
+    if (status !== getStatus.status) {
       ctx.reply(statusMap[getStatus.status]);
       status = getStatus.status;
       await pause(1000);
       await processStatus(ctx, status, payinData);
     }
   }, config.interval);
-}
+};
 
-export const breakTransaction = (ctx) => {
+export const breakTransaction = ctx => {
   clearInterval(intervalStatus);
   ctx.scene.enter('start');
-}
+};

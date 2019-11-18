@@ -5,7 +5,6 @@ const options = {
   useUnifiedTopology: true
 };
 
-
 export async function connectDatabase(host, port, database) {
   try {
     await mongoose.connect(`mongodb://${host}:${port}/${database}`, options);

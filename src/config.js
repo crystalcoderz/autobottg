@@ -1,7 +1,5 @@
 export const config =
 {
-  api_url: 'https://changenow.io/api/v1',
-  api_key: '0a6d67c58b40a35f949329157a99e96753e64c06aa252d574fd32aa26631f5c2',
   popularCurrs: {
     btc: 'Bitcoin (BTC)',
     eth: 'Ethereum (ETH)',
@@ -13,11 +11,12 @@ export const config =
   kb: {
     start: 'Start trading',
     startNew: 'Start new exchange',
+    terms: 'Terms of Use and Privacy Policy',
     cancel: '❌ Cancel exchange',
     next: '▶️ Next',
     back: '◀️ Back',
     confirm: '✔️ Confirm',
-    help: 'ℹ️ Support Info'
+    help: 'ℹ️ Support Info',
   },
   interval: 15000
 }

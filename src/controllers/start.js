@@ -5,40 +5,48 @@ import Extra from 'telegraf/extra';
 import Markup from 'telegraf/markup';
 import { getAllCurrencies } from '../api';
 import { saveToSession } from '../helpers';
+import { messages } from '../messages';
+import { config } from '../config';
 
 const start = new Scene('start');
 const { leave } = Stage;
 
-start.enter(async (ctx) => {
-  console.log('in start scene');
+start.enter(async ctx => {
   const hash = +new Date();
   const uid = ctx.session.userId;
   const termsOfUseBtn = Extra.HTML().markup(m =>
     m.inlineKeyboard(
       [
-        [m.urlButton(`Terms of Use and Privacy Policy`, `https://cn-bot.evercodelab.com/continue/${hash}/?id=${uid}`, false)],
+        [
+          m.urlButton(
+            config.kb.terms,
+            `${process.env.APP_HOST}:${process.env.APP_PORT}/terms-of-use/${hash}?id=${uid}`,
+            false
+          )
+        ]
       ],
       {}
     )
   );
 
-
-  ctx.replyWithHTML(`In order to conduct an exchange you must read and agree to the ChangeNOW Terms of Use and Privacy Policy. You are agreeing to them by following the link`, termsOfUseBtn);
+  ctx.replyWithHTML(
+    messages.requireAgree,
+    termsOfUseBtn
+  );
 
   try {
     const currs = await getAllCurrencies();
-    if(!currs || !currs.length) {
-      await ctx.reply('No currencies found');
+    if (!currs || !currs.length) {
+      await ctx.reply();
       return;
     }
     saveToSession(ctx, 'currs', currs);
   } catch (error) {
-    await ctx.reply('No currencies found');
+    await ctx.reply('Server error. Try later');
     return;
   }
 });
 
-
-start.hears(/Start exchange/, (ctx) => ctx.scene.enter('curr_from'));
+start.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
 
 export default start;

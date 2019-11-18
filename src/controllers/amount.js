@@ -6,12 +6,12 @@ import { getMinimumAmount, saveToSession } from '../helpers';
 import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
 import { config } from '../config';
 import { pause } from '../helpers';
+import { messages } from '../messages';
 
 const { leave } = Stage;
 const amount = new Scene('amount');
 
 amount.enter(async (ctx) => {
-  console.log('in amount scene');
   const selectedFrom = ctx.session.curFrom;
   const selectedTo = ctx.session.curTo;
   const tradePair = `${selectedFrom}_${selectedTo}`;
@@ -33,16 +33,14 @@ amount.hears([/[.,0-9]+/gi, config.kb.back, config.kb.cancel, config.kb.help], a
     return;
   }
   if(config.kb.cancel === txt) {
-    ctx.reply('Your exchange is canceled. Do you want to start a new exchange?', getMainKeyboard(ctx));
+    ctx.reply(messages.cancel, getMainKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(
-      'If you have any questions about your exchange, please contact our support team via email:'
-    );
+    ctx.reply(messages.support);
     await pause(500);
-    ctx.reply('support@changenow.io');
+    ctx.reply(process.env.CN_EMAIL);
     return;
   }
   await selectAmountAction(ctx);

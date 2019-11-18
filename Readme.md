@@ -19,9 +19,15 @@ To start using Exchange, simply add her in [Telegram](http://t.me/changeNOW_offi
 6. npm install
 7. create hidden _.env_ file with fields:
 ```
-  API_KEY={get from manager}
-  APP_PORT=6000
-  DB_HOST=localhost
+  CN_API_URL=https://changenow.io/api/v1
+  CN_API_KEY={get from manager}
+  CN_EMAIL=support@changenow.io
+  API_BOT_KEY={get from manager}
+
+  APP_HOST={your domain}
+  APP_PORT=4001
+  APP_WEBHOOK={webhook domain in case you use webhooks}
+  DB_HOST=127.0.0.1
   DB_PORT=27017
   DB_NAME=changenow_bot
 

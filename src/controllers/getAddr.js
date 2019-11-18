@@ -1,15 +1,16 @@
 // Amount scene
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
-import {getTransactionStatus} from '../api';
-import {getBackKeyboard} from '../keyboards';
-import {config} from '../config';
-import {pause, intervalRequire, breakTransaction, getAmountTotal} from '../helpers';
-const {leave} = Stage;
+import { getTransactionStatus } from '../api';
+import { getBackKeyboard } from '../keyboards';
+import { config } from '../config';
+import { pause, intervalRequire, breakTransaction, getAmountTotal } from '../helpers';
+import { messages } from '../messages';
+
+const { leave } = Stage;
 const getAddress = new Scene('get_addr');
 
 getAddress.enter(async ctx => {
-  console.log('in get_addr scene');
   const payinData = await ctx.session.response;
   const amount = ctx.session.amount;
   const curFrom = ctx.session.curFrom;
@@ -28,11 +29,9 @@ getAddress.enter(async ctx => {
 
 getAddress.hears(config.kb.startNew, ctx => breakTransaction(ctx));
 getAddress.hears(config.kb.help, async ctx => {
-  ctx.reply(
-    'If you have any questions about your exchange, please contact our support team via email:'
-  );
+  ctx.reply(messages.support);
   await pause(500);
-  ctx.reply('support@changenow.io');
+  ctx.reply(process.env.CN_EMAIL);
   return;
 });
 
