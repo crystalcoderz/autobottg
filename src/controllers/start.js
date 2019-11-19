@@ -30,8 +30,12 @@ start.enter(async ctx => {
 //     {}
 //   )
 // );
+  const opts = {
+    parse_mode: 'HTML',
+    disable_web_page_preview: true,
+  }
 
-  ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`, true);
+  ctx.reply(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`, opts);
 
   // ctx.reply('Please follow the link to accept our Terms of Use and Privacy Policy. Then, return to the bot to proceed.', termsOfUseBtn);
 
