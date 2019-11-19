@@ -31,9 +31,9 @@ start.enter(async ctx => {
   )
 );
 
-  ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`);
+  // ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`);
 
-  // ctx.reply('Press button', termsOfUseBtn);
+  ctx.reply('Press button', termsOfUseBtn);
 
   try {
     const currs = await getAllCurrencies();
