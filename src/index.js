@@ -105,7 +105,7 @@ export async function startApp() {
   expressApp.use(bot.webhookCallback('/exchange-bot'));
   process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
   expressApp.use(morgan('combined'));
-  expressApp.listen(process.env.APP_PORT, () => {
+  expressApp.listen(process.env.APP_PORT, '127.0.0.1',() => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
   });
 }
@@ -126,7 +126,7 @@ const getHandle = async (req, res) => {
     messages.agreed,
     replyKeyboard
   );
-  res.redirect(301, 'https://changenow.io/terms-of-use');
+  // res.redirect(301, 'https://changenow.io/terms-of-use');
 };
 
 expressApp.get('/terms-of-use/:id', getHandle);
