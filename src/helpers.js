@@ -1,6 +1,7 @@
 //------------------------------- HELPERS -------------------------------------------
 
 import { getPairs, getMinimum, getTransactionStatus, getExchAmount } from './api';
+import { getMainKeyboard } from './keyboards';
 import { messages } from './messages';
 import { config } from './config';
 let intervalStatus;
@@ -114,3 +115,8 @@ export const breakTransaction = ctx => {
   clearInterval(intervalStatus);
   ctx.scene.enter('curr_from');
 };
+
+export const startHandler = (ctx) => {
+  ctx.scene.leave();
+  ctx.reply(messages.startMsg, getMainKeyboard(ctx));
+}

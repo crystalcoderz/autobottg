@@ -4,7 +4,7 @@ import Stage from 'telegraf/stage';
 import { getTransactionStatus } from '../api';
 import { getBackKeyboard } from '../keyboards';
 import { config } from '../config';
-import { pause, intervalRequire, breakTransaction, getAmountTotal } from '../helpers';
+import { pause, intervalRequire, breakTransaction, getAmountTotal, startHandler } from '../helpers';
 import { messages } from '../messages';
 
 const { leave } = Stage;
@@ -27,6 +27,7 @@ getAddress.enter(async ctx => {
   await intervalRequire(ctx, payinData);
 });
 
+getAddress.command('start', ctx => startHandler(ctx));
 getAddress.hears(config.kb.startNew, ctx => breakTransaction(ctx));
 getAddress.hears(config.kb.help, async ctx => {
   ctx.reply(messages.support);

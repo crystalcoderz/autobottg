@@ -3,7 +3,7 @@ import Scene from 'telegraf/scenes/base';
 import { agreePressAction } from '../actions';
 import { getAgreeKeyboard } from '../keyboards';
 import { config } from '../config';
-import { pause, getAmountTotal } from '../helpers';
+import { pause, getAmountTotal, startHandler } from '../helpers';
 import { messages } from '../messages';
 
 const checkAgree = new Scene('agree');
@@ -27,6 +27,7 @@ checkAgree.enter(async ctx => {
   );
 });
 
+checkAgree.command('start', ctx => startHandler(ctx));
 checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));
 checkAgree.hears(config.kb.back, ctx => ctx.scene.enter('est_exch'));
 checkAgree.hears(config.kb.help, async ctx => {
