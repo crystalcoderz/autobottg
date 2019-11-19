@@ -5,7 +5,7 @@ import { selectAmountAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
 import { validatePair, saveToSession, deleteFromSession, pause } from '../helpers';
 import { inputAdditionalDataAction } from '../actions';
-import { getExtraIDKeyboard } from '../keyboards';
+import { getExtraIDKeyboard, getReplyKeyboard } from '../keyboards';
 import { messages } from '../messages';
 
 const { leave } = Stage;
@@ -45,7 +45,7 @@ checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getMainKeyboard(ctx));
+    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }

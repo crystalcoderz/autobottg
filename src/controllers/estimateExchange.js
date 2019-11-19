@@ -3,7 +3,7 @@ import Scene from 'telegraf/scenes/base';
 import { saveToSession, pause, getAmountTotal } from '../helpers';
 import { getExchAmount } from '../api';
 import { typeWalletAction, cancelTradeAction } from '../actions';
-import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
+import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { messages } from '../messages';
 
@@ -18,7 +18,7 @@ estimateExchange.enter(async ctx => {
   saveToSession(ctx, 'amountTotal', amountTotal);
   await pause(1000);
   ctx.replyWithHTML(
-    `You’re sending <b>${amount} ${curFrom}</b> and you’ll get ~<b>${amountTotal} ${curTo}</b>.\nEnter the recipient’s <b>${curTo}</b> address`,
+    `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b> and you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nEnter the recipient <b>${curTo.toUpperCase()}</b> wallet address`,
     getAmountKeyboard(ctx)
   );
 });
@@ -30,7 +30,7 @@ estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getMainKeyboard(ctx));
+    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }

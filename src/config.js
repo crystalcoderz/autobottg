@@ -9,7 +9,8 @@ export const config =
     zec: 'Zcash (ZEC)'
   },
   kb: {
-    start: 'Start trading',
+    start: 'Start exchange',
+    accept: 'Read and Accept',
     startNew: 'Start new exchange',
     terms: 'Terms of Use and Privacy Policy',
     cancel: '❌ Cancel exchange',

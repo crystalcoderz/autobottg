@@ -22,7 +22,7 @@ import {
   validatePair,
   getMinimumAmount
 } from './helpers';
-import { getMainKeyboard, backKeyboard, getCurrenciesKeyboard, getAgreeButton } from './keyboards';
+import { getMainKeyboard, backKeyboard, getCurrenciesKeyboard, getAgreeButton, replyKeyboard } from './keyboards';
 import { handleStartAction, cancelTradeAction, getIpAction } from './actions';
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
@@ -64,7 +64,9 @@ mongoose.connection.on('open', () => {
   // };
   // bot.use(logger);
   bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
-  bot.hears(/Start trading/, ctx => handleStartAction(ctx));
+  bot.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
+  bot.hears(/Start new exchange/, ctx => ctx.scene.enter('curr_from'));
+  bot.hears(/Read and Accept/, ctx => handleStartAction(ctx));
 
   bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
   bot.catch(err => {
@@ -110,7 +112,7 @@ export async function startApp() {
 startApp();
 
 const getHandle = async (req, res) => {
-  const replyKb = {
+  const replyKeyboard = {
     reply_markup: {
       resize_keyboard: true,
       one_time_keyboard: true,
@@ -122,7 +124,7 @@ const getHandle = async (req, res) => {
   bot.telegram.sendMessage(
     req.query.id,
     messages.agreed,
-    replyKb
+    replyKeyboard
   );
   res.redirect(301, 'https://changenow.io/terms-of-use');
 };
