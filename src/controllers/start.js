@@ -16,7 +16,7 @@ start.enter(async ctx => {
   const hash = +new Date();
   const uid = ctx.session.userId;
 
-  ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">"${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}"</a>`);
+  ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`);
 
   try {
     const currs = await getAllCurrencies();
