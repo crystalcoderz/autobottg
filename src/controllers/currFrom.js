@@ -2,7 +2,7 @@
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 const { enter, leave } = Stage;
-import { handler, deleteFromSession, pause } from '../helpers';
+import { handler, deleteFromSession, pause, startHandler } from '../helpers';
 import { messages } from '../messages';
 import { getFromKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
 import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
@@ -19,8 +19,10 @@ currFrom.enter(ctx => {
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
 
+currFrom.command('start', ctx => startHandler(ctx));
 currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
+  console.log("TCL: txt", txt)
   if (config.kb.cancel === txt) {
     ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
@@ -40,5 +42,7 @@ currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
     await selectFromCurrencyAction(ctx);
   }
 });
+
+currFrom.command('start', leave());
 
 export default currFrom;

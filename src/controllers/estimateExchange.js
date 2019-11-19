@@ -1,6 +1,6 @@
 //estimateExchange  scene
 import Scene from 'telegraf/scenes/base';
-import { saveToSession, pause, getAmountTotal } from '../helpers';
+import { saveToSession, pause, getAmountTotal, startHandler } from '../helpers';
 import { getExchAmount } from '../api';
 import { typeWalletAction, cancelTradeAction } from '../actions';
 import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
@@ -23,6 +23,7 @@ estimateExchange.enter(async ctx => {
   );
 });
 
+estimateExchange.command('start', ctx => startHandler(ctx));
 estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {

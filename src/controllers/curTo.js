@@ -4,7 +4,7 @@ import { messages } from '../messages';
 import { getToKeyboard, getReplyKeyboard } from '../keyboards';
 import { selectToCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
-import { pause } from '../helpers';
+import { pause, startHandler } from '../helpers';
 
 const curTo = new Scene('curr_to');
 
@@ -12,6 +12,7 @@ curTo.enter(ctx => {
   ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
 });
 
+curTo.command('start', ctx => startHandler(ctx));
 curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {

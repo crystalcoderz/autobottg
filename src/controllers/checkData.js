@@ -3,7 +3,7 @@ import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 import { selectAmountAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
-import { validatePair, saveToSession, deleteFromSession, pause } from '../helpers';
+import { validatePair, saveToSession, deleteFromSession, pause, startHandler } from '../helpers';
 import { inputAdditionalDataAction } from '../actions';
 import { getExtraIDKeyboard, getReplyKeyboard } from '../keyboards';
 import { messages } from '../messages';
@@ -34,6 +34,7 @@ checkData.enter(async ctx => {
   }
 });
 
+checkData.command('start', ctx => startHandler(ctx));
 checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {

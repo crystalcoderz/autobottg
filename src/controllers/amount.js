@@ -2,7 +2,7 @@
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 import { selectAmountAction, cancelTradeAction } from '../actions';
-import { getMinimumAmount, saveToSession } from '../helpers';
+import { getMinimumAmount, saveToSession, startHandler } from '../helpers';
 import { getAmountKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { pause } from '../helpers';
@@ -26,6 +26,7 @@ amount.enter(async (ctx) => {
   await pause(500);
 });
 
+amount.command('start', ctx => startHandler(ctx));
 amount.hears([/[.,0-9]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {

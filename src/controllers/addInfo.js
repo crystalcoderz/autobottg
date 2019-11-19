@@ -1,7 +1,7 @@
 import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 import { inputAdditionalDataAction, cancelTradeAction } from '../actions';
-import { saveToSession, pause } from '../helpers';
+import { saveToSession, pause, startHandler } from '../helpers';
 import { getExtraIDKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { messages } from '../messages';
@@ -25,6 +25,7 @@ addInfo.enter(async ctx => {
   }
 });
 
+addInfo.command('start', ctx => startHandler(ctx));
 addInfo.hears(
   [/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel, config.kb.help],
   async ctx => {
