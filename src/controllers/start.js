@@ -16,24 +16,24 @@ start.enter(async ctx => {
   const hash = +new Date();
   const uid = ctx.session.userId;
 
-  const termsOfUseBtn = Extra.HTML().markup(m =>
-  m.inlineKeyboard(
-    [
-      [
-        m.urlButton(
-          config.kb.terms,
-          `${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}`,
-          false
-        )
-      ]
-    ],
-    {}
-  )
-);
+//   const termsOfUseBtn = Extra.HTML().markup(m =>
+//   m.inlineKeyboard(
+//     [
+//       [
+//         m.urlButton(
+//           config.kb.terms,
+//           `${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}`,
+//           false
+//         )
+//       ]
+//     ],
+//     {}
+//   )
+// );
 
-  // ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`);
+  ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">Terms of Use and Privacy policy</a>`, true);
 
-  ctx.reply('Press button', termsOfUseBtn);
+  // ctx.reply('Press button', termsOfUseBtn);
 
   try {
     const currs = await getAllCurrencies();
