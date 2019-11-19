@@ -2,7 +2,7 @@ import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 import { inputAdditionalDataAction, cancelTradeAction } from '../actions';
 import { saveToSession, pause } from '../helpers';
-import { getExtraIDKeyboard } from '../keyboards';
+import { getExtraIDKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { messages } from '../messages';
 
@@ -14,7 +14,7 @@ addInfo.enter(async ctx => {
 
   if (curToInfo.isAnonymous || curToInfo.hasExternalId) {
     ctx.reply(
-      `Please, enter ${curToInfo.externalIdName} for ${curToInfo.name} (optional)`,
+      `Enter the ${curToInfo.externalIdName}`,
       getExtraIDKeyboard(ctx)
     );
     saveToSession(ctx, 'addDataName', curToInfo.externalIdName);
@@ -38,7 +38,7 @@ addInfo.hears(
       return;
     }
     if (config.kb.cancel === txt) {
-      ctx.reply(messages.cancel, getMainKeyboard(ctx));
+      ctx.reply(messages.cancel, getReplyKeyboard(ctx));
       cancelTradeAction(ctx);
       return;
     }

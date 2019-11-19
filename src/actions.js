@@ -92,7 +92,7 @@ export const selectAmountAction = async ctx => {
     ctx.scene.leave('amount');
     ctx.scene.enter('est_exch');
   } else {
-    ctx.reply(`Enter an amount bigger than or equal to ${minValue}`);
+    ctx.reply(`Oops! Wrong amount.`);
     await pause(1000);
     ctx.scene.reenter();
   }
@@ -127,7 +127,7 @@ export const agreePressAction = async ctx => {
     await ctx.scene.leave('agree');
     await ctx.scene.enter('get_addr');
   } catch (err) {
-    await ctx.reply(messages.addrErr);
+    await ctx.reply(`Sorry, the address you’ve entered is invalid.`);
     await pause(1000);
     await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');

@@ -3,7 +3,7 @@ import Scene from 'telegraf/scenes/base';
 import Stage from 'telegraf/stage';
 import { selectAmountAction, cancelTradeAction } from '../actions';
 import { getMinimumAmount, saveToSession } from '../helpers';
-import { getAmountKeyboard, getMainKeyboard } from '../keyboards';
+import { getAmountKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { pause } from '../helpers';
 import { messages } from '../messages';
@@ -20,7 +20,7 @@ amount.enter(async (ctx) => {
   saveToSession(ctx, 'minValue', minValue);
   const minValueMsg = minValue ? `Minimal amount - <b>${minValue}</b>` : '';
   return ctx.replyWithHTML(
-    `Enter an amount of <b>${selectedFrom}</b> you want to change. ${minValueMsg}`,
+    `Enter the amount of <b>${selectedFrom.toUpperCase()}</b> you would like to exchange.\n${minValueMsg}`,
      getAmountKeyboard(ctx)
   );
   await pause(500);
@@ -33,7 +33,7 @@ amount.hears([/[.,0-9]+/gi, config.kb.back, config.kb.cancel, config.kb.help], a
     return;
   }
   if(config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getMainKeyboard(ctx));
+    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }

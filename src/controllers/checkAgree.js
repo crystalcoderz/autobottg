@@ -22,7 +22,7 @@ checkAgree.enter(async ctx => {
 
   await ctx.replyWithHTML(
     `
-    You’re sending <b>${amount} ${curFrom}</b> and you’ll get ~<b>${amountTotal} ${curTo}</b>\nYour recipient’s <b>${curTo}</b> address is <b>${walletCode}</b>\n${addMsg}\nPlease, check all the information. If everything is correct, tap on the “Confirm” button below.`,
+    You’re sending <b>${amount} ${curFrom.toUpperCase()}</b> and you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>\nYour recipient <b>${curTo.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. If you’re sure that everything is A-OK, tap the Confirm button below.`,
     getAgreeKeyboard(ctx)
   );
 });

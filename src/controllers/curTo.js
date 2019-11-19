@@ -1,7 +1,7 @@
 // Currency To scene
 import Scene from 'telegraf/scenes/base';
 import { messages } from '../messages';
-import { getToKeyboard, getMainKeyboard } from '../keyboards';
+import { getToKeyboard, getReplyKeyboard } from '../keyboards';
 import { selectToCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
 import { pause } from '../helpers';
@@ -19,7 +19,7 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async 
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getMainKeyboard(ctx));
+    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }

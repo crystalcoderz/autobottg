@@ -77,7 +77,7 @@ const processStatus = async (ctx, status, payinData) => {
   }
   if (status === 'finished') {
     const newStatus = await getTransactionStatus(payinData.id);
-    ctx.replyWithHTML('Transaction hash is');
+    ctx.replyWithHTML(' The transaction hash is');
     await pause(500);
     ctx.reply(`${newStatus.payoutHash}`);
     return;
@@ -88,14 +88,14 @@ export const intervalRequire = async (ctx, payinData) => {
   const curTo = await ctx.session.curTo;
   const statusMap = {
     new: '',
-    waiting: 'We are waiting for your coins to be received.',
-    confirming: 'We received your deposit.',
-    exchanging: 'The exchange process has initiated.',
-    finished: `The transaction was successfully finished. Your ${curTo} coins were sent to your wallet.\nThank you for choosing us.`,
+    waiting: 'We are waiting for your coins to be received. No pressure, though.',
+    confirming: 'We have received your deposit. Nice!',
+    exchanging: 'The exchange process has been initiated. Just a little bit left...',
+    finished: `Yay! The transaction is successfully finished. Your ${curTo} have been sent to your wallet.\nThank you for choosing ChangeNOW - hope to see you again soon!`,
     failed:
-      'Sorry, something is wrong. We didn’t manage to start the transaction process. Please, try again later.',
+      'We weren’t able to start the transaction process. Please, try again later.',
     expired:
-      'The transaction status is Expired. We didn’t get your coins for exchange. Do you want to start a new exchange?'
+      'We didn’t get your deposit. :(\nWould you like to start a new exchange?'
   };
 
   let status = '';
@@ -112,5 +112,5 @@ export const intervalRequire = async (ctx, payinData) => {
 
 export const breakTransaction = ctx => {
   clearInterval(intervalStatus);
-  ctx.scene.enter('start');
+  ctx.scene.enter('curr_from');
 };

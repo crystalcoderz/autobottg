@@ -12,27 +12,11 @@ const start = new Scene('start');
 const { leave } = Stage;
 
 start.enter(async ctx => {
+  console.log('in start scene');
   const hash = +new Date();
   const uid = ctx.session.userId;
-  const termsOfUseBtn = Extra.HTML().markup(m =>
-    m.inlineKeyboard(
-      [
-        [
-          m.urlButton(
-            config.kb.terms,
-            `${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}`,
-            false
-          )
-        ]
-      ],
-      {}
-    )
-  );
 
-  ctx.replyWithHTML(
-    messages.requireAgree,
-    termsOfUseBtn
-  );
+  ctx.replyWithHTML(`Please follow the link: <a href="${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}">"${process.env.APP_HOST}/terms-of-use/${hash}?id=${uid}"</a>`);
 
   try {
     const currs = await getAllCurrencies();

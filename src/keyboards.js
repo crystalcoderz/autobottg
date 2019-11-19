@@ -5,11 +5,18 @@ import Extra from 'telegraf/extra';
 import { config } from './config';
 
 export const getMainKeyboard = ctx => {
-  return Markup.keyboard([config.kb.start])
+  return Markup.keyboard([config.kb.accept])
     .oneTime()
     .resize()
     .extra();
 };
+
+export const getReplyKeyboard = ctx => {
+  return Markup.keyboard([config.kb.start])
+    .oneTime()
+    .resize()
+    .extra();
+}
 
 export const getFromKeyboard = currs => {
   const { btc, eth, bch, ltc, xmr, zec } = config.popularCurrs;
