@@ -126,7 +126,7 @@ const getHandle = async (req, res) => {
     messages.agreed,
     replyKeyboard
   );
-  res.redirect(301, 'https://changenow.io/terms-of-use');
+  // res.redirect(301, 'https://changenow.io/terms-of-use');
 };
 
 expressApp.get('/terms-of-use/:id', getHandle);
