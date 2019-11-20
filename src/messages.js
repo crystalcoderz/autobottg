@@ -5,7 +5,7 @@ export const messages = {
   welcomeMsg: `@ChangeNOW_officialbot is a Telegram-bot that allows exchanging cryptocurrency securely and anonymously. All cryptocurrencies on the tip of your fingers.\n\nWe don’t ask for ID verification or registration. Just smooth crypto exchange. Enjoy!
 `,
   agreed:
-    'You have agreed to the Terms of Use and Privacy Policy. To start an exchange, please, tap on the button below',
+    'You have agreed to the Terms of Use and Privacy Policy. To start an exchange, please, tap on the button below.',
   selectFromMsg: `Choose one of the popular currencies offered below or enter the currency you would like to <b>send</b> in the “BTC” or “Bitcoin” format.`,
   selectToMsg:
     `Choose one of the popular currencies offered below or enter the currency you would like to <b>get</b> in the “BTC” or “Bitcoin” format.`,

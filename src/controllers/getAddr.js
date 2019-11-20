@@ -19,7 +19,7 @@ getAddress.enter(async ctx => {
   const amountTotal = await getAmountTotal(amount, fromTo);
   payinData &&
     (await ctx.replyWithHTML(
-      `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b> and you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
+      `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
       getBackKeyboard(ctx)
     ));
   await pause(500);
