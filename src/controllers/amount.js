@@ -27,7 +27,7 @@ amount.enter(async (ctx) => {
 });
 
 amount.command('start', ctx => startHandler(ctx));
-amount.hears([/[.,0-9]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
+amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
     ctx.scene.enter('curr_to');
