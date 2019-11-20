@@ -12,7 +12,6 @@ const start = new Scene('start');
 const { leave } = Stage;
 
 start.enter(async ctx => {
-  console.log('in start scene');
   const hash = +new Date();
   const uid = ctx.session.userId;
 

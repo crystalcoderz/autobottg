@@ -74,35 +74,12 @@ mongoose.connection.on('open', () => {
   });
 });
 
-function startDevMode(bot) {
-  rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
-    bot.startPolling()
-  );
-}
-
-async function startProdMode(bot) {
-  // const tlsOptions = {
-  //   key: fs.readFileSync('./privkey.pem'),
-  //   cert: fs.readFileSync('./fullchain.pem')
-  // };
-  try {
-    await bot.telegram.setWebhook(
-      `https://${process.env.APP_WEBHOOK}/exchange-bot`
-      // {
-      //   source: '../privkey.pem'
-      // }
-    );
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 //--------------------------- Server -----------------------------------------------
 
 export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
   expressApp.use(bot.webhookCallback('/exchange-bot'));
-  startDevMode(bot);
+  bot.startPolling();
   expressApp.use(morgan('combined'));
   expressApp.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
