@@ -17,7 +17,19 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 4. npm i @babel/core @babel/node @babel/preset-env -g
 5. install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/) and enter `DB_HOST`, `DB_PORT`, `DB_NAME` from .env
 6. npm install
-7. create hidden _.env_ file with fields:
+7. Enter fields from _.env_ file
+8. npm run start
+
+## Development setup
+
+1. git clone https://github.com/EvercodeLab/changenow-bot.git
+2. cd changenow-bot
+3. install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/) and enter `DB_HOST`, `DB_PORT`, `DB_NAME` from .env
+4. npm install
+5. Create _.env_ file
+6. npm run dev
+
+**.env:**
 ```
   CN_API_URL=https://changenow.io/api/v1
   CN_API_KEY={get from manager}
@@ -32,12 +44,6 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
   DB_NAME=changenow_bot
 
 ```
-8. npm run start
-
-## Development setup
-
-1. Same steps as above
-2. npm run dev
 
 Tip: Use `dev` branch for testing environment!
 
