@@ -78,7 +78,6 @@ mongoose.connection.on('open', () => {
 
 export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
-  expressApp.use(bot.webhookCallback('/exchange-bot'));
   bot.startPolling();
   expressApp.use(morgan('combined'));
   expressApp.listen(process.env.APP_PORT, () => {
