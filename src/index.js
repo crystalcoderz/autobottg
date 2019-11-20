@@ -102,7 +102,7 @@ async function startProdMode(bot) {
 export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
   expressApp.use(bot.webhookCallback('/exchange-bot'));
-  process.env.NODE_ENV === 'production' ? startProdMode(bot) : startDevMode(bot);
+  startDevMode(bot);
   expressApp.use(morgan('combined'));
   expressApp.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
