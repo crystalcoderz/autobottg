@@ -7,35 +7,29 @@
 
 ## How to start
 
-To start using Exchange, simply add her in [Telegram](http://t.me/changeNOW_officialbot_) and press /start!
+To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and press /start!
 
 ## Server setup
 
-1. git clone https://github.com/EvercodeLab/changenow-bot.git
-2. Use `dev` branch for testing environment!
+1. Setup domain with SSL-certificate
+2. git clone https://github.com/EvercodeLab/changenow-bot.git
 3. cd changenow-bot
 4. npm i @babel/core @babel/node @babel/preset-env -g
-5. install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/) and enter `DB_HOST`, `DB_PORT`, `DB_NAME` from .env
+5. install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/)
 6. npm install
-7. create hidden _.env_ file with fields:
-```
-  CN_API_URL=https://changenow.io/api/v1
-  CN_API_KEY={get from manager}
-  CN_EMAIL=support@changenow.io
-  API_BOT_KEY={get from manager}
-
-  APP_HOST={your domain}
-  APP_PORT=4001
-  APP_WEBHOOK={webhook domain in case you use webhooks}
-  DB_HOST=127.0.0.1
-  DB_PORT=27017
-  DB_NAME=changenow_bot
-
-```
+7. create _.env_ file and enter fields from .env.example
 8. npm run start
 
+## Development setup
 
-П.С. Планируется использовать webhook для работы бота. Для этого заранее установить для production домена ssl-сертфикиат.
-Если сертификат будет самописный - нужны будут пути к .pem файлам на сервере.
+1. git clone https://github.com/EvercodeLab/changenow-bot.git
+2. cd changenow-bot
+3. install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/)
+4. npm install
+5. create _.env_ file and enter fields from .env.example
+6. npm run dev
+
+Tip: Use `dev` branch for testing environment!
+
 
 
