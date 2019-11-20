@@ -31,7 +31,7 @@ start.enter(async ctx => {
     }
     saveToSession(ctx, 'currs', currs);
   } catch (error) {
-    await ctx.reply('Server error. Try later');
+    await ctx.reply('Server error. Try later.');
     return;
   }
 });

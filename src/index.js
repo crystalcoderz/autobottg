@@ -81,7 +81,6 @@ function startDevMode(bot) {
 }
 
 async function startProdMode(bot) {
-  console.log('TCL: startProdMode -> startProdMode');
   // const tlsOptions = {
   //   key: fs.readFileSync('./privkey.pem'),
   //   cert: fs.readFileSync('./fullchain.pem')

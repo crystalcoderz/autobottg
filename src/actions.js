@@ -38,7 +38,7 @@ export const selectFromCurrencyAction = async ctx => {
 
   if (curInfo) {
     saveToSession(ctx, 'curFromInfo', curInfo);
-    ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>`);
+    ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>.`);
     await pause(1000);
     ctx.scene.leave('curr_from');
     ctx.scene.enter('curr_to');
@@ -59,7 +59,7 @@ export const selectToCurrencyAction = async ctx => {
 
   if (curInfo) {
     saveToSession(ctx, 'curToInfo', curInfo);
-    ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>`);
+    ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>.`);
     await pause(1000);
     ctx.scene.leave('curr_to');
     ctx.scene.enter('check');

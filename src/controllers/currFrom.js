@@ -14,7 +14,6 @@ import Extra from 'telegraf/extra';
 const currFrom = new Scene('curr_from');
 
 currFrom.enter(ctx => {
-  console.log('in start scene');
   const currs = ctx.session.currs;
   ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
@@ -22,7 +21,6 @@ currFrom.enter(ctx => {
 currFrom.command('start', ctx => startHandler(ctx));
 currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
-  console.log("TCL: txt", txt)
   if (config.kb.cancel === txt) {
     ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
