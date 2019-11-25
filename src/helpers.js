@@ -4,6 +4,7 @@ import { getPairs, getMinimum, getTransactionStatus, getExchAmount } from './api
 import { getMainKeyboard } from './keyboards';
 import { messages } from './messages';
 import { config } from './config';
+import UserModel from './models/User';
 let intervalStatus;
 
 export const pause = time => new Promise(resolve => setTimeout(resolve, time));
@@ -119,4 +120,12 @@ export const breakTransaction = ctx => {
 export const startHandler = (ctx) => {
   ctx.scene.leave();
   ctx.reply(messages.startMsg, getMainKeyboard(ctx));
+}
+
+export const addTransactionToDB = async (trID, uId) => {
+  const user = await UserModel.findOne({ id: uId });
+  if (user && user.transactions) {
+    user.transactions.push({ transactionId: trID});
+    await UserModel.updateOne({ id: uId }, { transactions: user.transactions });
+  }
 }
