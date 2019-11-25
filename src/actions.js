@@ -5,7 +5,7 @@ import rp from 'request-promise';
 import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
-import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession, getIpFromDB } from './helpers';
+import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
 import { sendTransactionData, getCurrInfo } from './api';
 
 const { enter, leave } = Stage;
@@ -25,7 +25,7 @@ export const handleStartAction = async ctx => {
   saveToSession(ctx, 'userId', user.id);
   const userInDB = await UserModel.findOne({ id: user.id });
   if (!userInDB) {
-    UserModel.insertMany({ id: user.id, username: user.username, visits: [] });
+    UserModel.insertMany({ id: user.id, username: user.username, visits: [], transactions: [] });
   }
   ctx.scene.enter('start');
 };
