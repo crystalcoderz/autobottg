@@ -5,7 +5,7 @@ import rp from 'request-promise';
 import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
-import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
+import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession, getIpFromDB } from './helpers';
 import { sendTransactionData, getCurrInfo } from './api';
 
 const { enter, leave } = Stage;
@@ -113,13 +113,22 @@ export const agreePressAction = async ctx => {
   const amount = await ctx.session.amount;
   const extraId = await ctx.session.addData;
 
+  const getIpFromDB = async () => {
+    const userInDB = await UserModel.findOne({ id: uId });
+    const visits = userInDB && userInDB.visits;
+    if(!userInDB.visits.length) return '';
+    const lastVisitIP = visits[visits.length - 1].userIp;
+    return lastVisitIP;
+  }
+
   const data = {
     userId: uId,
     from: curFrom,
     to: curTo,
     address: walletCode,
     amount: amount,
-    extraId: extraId || ''
+    extraId: extraId || '',
+    ip: await getIpFromDB()
   };
   try {
     const response = await sendTransactionData(data);
