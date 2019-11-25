@@ -5,7 +5,7 @@ import rp from 'request-promise';
 import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
-import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession, getIpFromDB } from './helpers';
+import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
 import { sendTransactionData, getCurrInfo } from './api';
 
 const { enter, leave } = Stage;
