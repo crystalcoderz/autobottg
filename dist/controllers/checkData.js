@@ -13,6 +13,11 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _base = _interopRequireDefault(require("telegraf/scenes/base"));
 
+<<<<<<< HEAD
+=======
+var _stage = _interopRequireDefault(require("telegraf/stage"));
+
+>>>>>>> [65]Added pwd and ssl connection
 var _actions = require("../actions");
 
 var _config = require("../config");
@@ -24,6 +29,10 @@ var _keyboards = require("../keyboards");
 var _messages = require("../messages");
 
 // Amount scene
+<<<<<<< HEAD
+=======
+var leave = _stage["default"].leave;
+>>>>>>> [65]Added pwd and ssl connection
 var checkData = new _base["default"]('check');
 checkData.enter(
 /*#__PURE__*/
@@ -50,10 +59,15 @@ function () {
               break;
             }
 
+<<<<<<< HEAD
             _context.next = 9;
             return ctx.scene.enter('amount');
 
           case 9:
+=======
+            ctx.scene.leave('check');
+            ctx.scene.enter('amount');
+>>>>>>> [65]Added pwd and ssl connection
             return _context.abrupt("return");
 
           case 12:
@@ -61,6 +75,7 @@ function () {
             (0, _helpers.deleteFromSession)(ctx, 'curTo');
             (0, _helpers.deleteFromSession)(ctx, 'curFromInfo');
             (0, _helpers.deleteFromSession)(ctx, 'curToInfo');
+<<<<<<< HEAD
             _context.next = 18;
             return ctx.reply(_messages.messages.invalidPair);
 
@@ -76,6 +91,18 @@ function () {
             return _context.abrupt("return");
 
           case 23:
+=======
+            ctx.reply(_messages.messages.invalidPair);
+            _context.next = 19;
+            return (0, _helpers.pause)(1000);
+
+          case 19:
+            ctx.scene.leave('check');
+            ctx.scene.enter('curr_from');
+            return _context.abrupt("return");
+
+          case 22:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context.stop();
         }
@@ -87,16 +114,28 @@ function () {
     return _ref.apply(this, arguments);
   };
 }());
+<<<<<<< HEAD
 checkData.command('start',
+=======
+checkData.command('start', function (ctx) {
+  return (0, _helpers.startHandler)(ctx);
+});
+checkData.hears([/[A-Za-z0-9]/gi, _config.config.kb.back, _config.config.kb.cancel, _config.config.kb.help],
+>>>>>>> [65]Added pwd and ssl connection
 /*#__PURE__*/
 function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(ctx) {
+<<<<<<< HEAD
+=======
+    var txt;
+>>>>>>> [65]Added pwd and ssl connection
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+<<<<<<< HEAD
             _context2.next = 2;
             return (0, _helpers.startHandler)(ctx);
 
@@ -201,6 +240,64 @@ function () {
 
   return function (_x3) {
     return _ref3.apply(this, arguments);
+=======
+            txt = ctx.message.text;
+
+            if (!(_config.config.kb.back === txt)) {
+              _context2.next = 4;
+              break;
+            }
+
+            ctx.scene.enter('amount');
+            return _context2.abrupt("return");
+
+          case 4:
+            if (!(_config.config.kb.next === txt)) {
+              _context2.next = 7;
+              break;
+            }
+
+            ctx.scene.enter('agree');
+            return _context2.abrupt("return");
+
+          case 7:
+            if (!(_config.config.kb.cancel === txt)) {
+              _context2.next = 11;
+              break;
+            }
+
+            ctx.reply(_messages.messages.cancel, (0, _keyboards.getReplyKeyboard)(ctx));
+            (0, _actions.cancelTradeAction)(ctx);
+            return _context2.abrupt("return");
+
+          case 11:
+            if (!(_config.config.kb.help === txt)) {
+              _context2.next = 17;
+              break;
+            }
+
+            ctx.reply(_messages.messages.support);
+            _context2.next = 15;
+            return (0, _helpers.pause)(500);
+
+          case 15:
+            ctx.reply(process.env.CN_EMAIL);
+            return _context2.abrupt("return");
+
+          case 17:
+            (0, _actions.inputAdditionalDataAction)(ctx);
+
+          case 18:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function (_x2) {
+    return _ref2.apply(this, arguments);
+>>>>>>> [65]Added pwd and ssl connection
   };
 }());
 var _default = checkData;

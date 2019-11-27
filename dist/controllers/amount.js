@@ -13,6 +13,11 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _base = _interopRequireDefault(require("telegraf/scenes/base"));
 
+<<<<<<< HEAD
+=======
+var _stage = _interopRequireDefault(require("telegraf/stage"));
+
+>>>>>>> [65]Added pwd and ssl connection
 var _actions = require("../actions");
 
 var _helpers = require("../helpers");
@@ -24,6 +29,10 @@ var _config = require("../config");
 var _messages = require("../messages");
 
 // Amount scene
+<<<<<<< HEAD
+=======
+var leave = _stage["default"].leave;
+>>>>>>> [65]Added pwd and ssl connection
 var amount = new _base["default"]('amount');
 amount.enter(
 /*#__PURE__*/
@@ -46,10 +55,16 @@ function () {
             minValue = _context.sent;
             (0, _helpers.saveToSession)(ctx, 'minValue', minValue);
             minValueMsg = minValue ? "Minimal amount - <b>".concat(minValue, "</b>") : '';
+<<<<<<< HEAD
             _context.next = 10;
             return ctx.replyWithHTML("Enter the amount of <b>".concat(selectedFrom.toUpperCase(), "</b> you would like to exchange.\n").concat(minValueMsg), (0, _keyboards.getAmountKeyboard)(ctx));
 
           case 10:
+=======
+            return _context.abrupt("return", ctx.replyWithHTML("Enter the amount of <b>".concat(selectedFrom.toUpperCase(), "</b> you would like to exchange.\n").concat(minValueMsg), (0, _keyboards.getAmountKeyboard)(ctx)));
+
+          case 11:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context.stop();
         }
@@ -61,16 +76,28 @@ function () {
     return _ref.apply(this, arguments);
   };
 }());
+<<<<<<< HEAD
 amount.command('start',
+=======
+amount.command('start', function (ctx) {
+  return (0, _helpers.startHandler)(ctx);
+});
+amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, _config.config.kb.back, _config.config.kb.cancel, _config.config.kb.help],
+>>>>>>> [65]Added pwd and ssl connection
 /*#__PURE__*/
 function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(ctx) {
+<<<<<<< HEAD
+=======
+    var txt;
+>>>>>>> [65]Added pwd and ssl connection
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+<<<<<<< HEAD
             _context2.next = 2;
             return (0, _helpers.startHandler)(ctx);
 
@@ -163,6 +190,56 @@ function () {
 
   return function (_x3) {
     return _ref3.apply(this, arguments);
+=======
+            txt = ctx.message.text;
+
+            if (!(_config.config.kb.back === txt)) {
+              _context2.next = 4;
+              break;
+            }
+
+            ctx.scene.enter('curr_to');
+            return _context2.abrupt("return");
+
+          case 4:
+            if (!(_config.config.kb.cancel === txt)) {
+              _context2.next = 8;
+              break;
+            }
+
+            ctx.reply(_messages.messages.cancel, (0, _keyboards.getReplyKeyboard)(ctx));
+            (0, _actions.cancelTradeAction)(ctx);
+            return _context2.abrupt("return");
+
+          case 8:
+            if (!(_config.config.kb.help === txt)) {
+              _context2.next = 14;
+              break;
+            }
+
+            ctx.reply(_messages.messages.support);
+            _context2.next = 12;
+            return (0, _helpers.pause)(500);
+
+          case 12:
+            ctx.reply(process.env.CN_EMAIL);
+            return _context2.abrupt("return");
+
+          case 14:
+            _context2.next = 16;
+            return (0, _actions.selectAmountAction)(ctx);
+
+          case 16:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function (_x2) {
+    return _ref2.apply(this, arguments);
+>>>>>>> [65]Added pwd and ssl connection
   };
 }());
 var _default = amount;

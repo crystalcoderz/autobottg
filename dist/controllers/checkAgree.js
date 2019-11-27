@@ -65,7 +65,24 @@ function () {
   };
 }());
 
+<<<<<<< HEAD
 var backAgreeHandler =
+=======
+var backAgreeHandler = function backAgreeHandler(ctx) {
+  (0, _helpers.deleteFromSession)(ctx, 'addData');
+  (0, _helpers.deleteFromSession)(ctx, 'addDataName');
+  ctx.scene.enter('est_exch');
+};
+
+checkAgree.command('start', function (ctx) {
+  return (0, _helpers.startHandler)(ctx);
+});
+checkAgree.hears(_config.config.kb.confirm, function (ctx) {
+  return (0, _actions.agreePressAction)(ctx);
+});
+checkAgree.hears(_config.config.kb.back, backAgreeHandler);
+checkAgree.hears(_config.config.kb.help,
+>>>>>>> [65]Added pwd and ssl connection
 /*#__PURE__*/
 function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
@@ -75,12 +92,24 @@ function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+<<<<<<< HEAD
             (0, _helpers.deleteFromSession)(ctx, 'addData');
             (0, _helpers.deleteFromSession)(ctx, 'addDataName');
             _context2.next = 4;
             return ctx.scene.enter('est_exch');
 
           case 4:
+=======
+            ctx.reply(_messages.messages.support);
+            _context2.next = 3;
+            return (0, _helpers.pause)(500);
+
+          case 3:
+            ctx.reply(process.env.CN_EMAIL);
+            return _context2.abrupt("return");
+
+          case 5:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context2.stop();
         }
@@ -88,6 +117,7 @@ function () {
     }, _callee2);
   }));
 
+<<<<<<< HEAD
   return function backAgreeHandler(_x2) {
     return _ref2.apply(this, arguments);
   };
@@ -171,6 +201,11 @@ function () {
   return function (_x3) {
     return _ref3.apply(this, arguments);
   };
+=======
+  return function (_x2) {
+    return _ref2.apply(this, arguments);
+  };
+>>>>>>> [65]Added pwd and ssl connection
 }());
 var _default = checkAgree;
 exports["default"] = _default;

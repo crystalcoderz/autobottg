@@ -9,6 +9,11 @@ exports.getHelpKeyboard = exports.getBackKeyboard = exports.getAgreeKeyboard = e
 
 var _markup = _interopRequireDefault(require("telegraf/markup"));
 
+<<<<<<< HEAD
+=======
+var _extra = _interopRequireDefault(require("telegraf/extra"));
+
+>>>>>>> [65]Added pwd and ssl connection
 var _config = require("./config");
 
 //----------------- Keyboards ---------------------------------------------------------

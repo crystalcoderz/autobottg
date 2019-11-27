@@ -13,6 +13,13 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _base = _interopRequireDefault(require("telegraf/scenes/base"));
 
+<<<<<<< HEAD
+=======
+var _stage = _interopRequireDefault(require("telegraf/stage"));
+
+var _api = require("../api");
+
+>>>>>>> [65]Added pwd and ssl connection
 var _keyboards = require("../keyboards");
 
 var _config = require("../config");
@@ -21,7 +28,14 @@ var _helpers = require("../helpers");
 
 var _messages = require("../messages");
 
+<<<<<<< HEAD
 // Amount scene
+=======
+var _User = _interopRequireDefault(require("../models/User"));
+
+// Amount scene
+var leave = _stage["default"].leave;
+>>>>>>> [65]Added pwd and ssl connection
 var getAddress = new _base["default"]('get_addr');
 getAddress.enter(
 /*#__PURE__*/
@@ -34,12 +48,26 @@ function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
+<<<<<<< HEAD
             uId = ctx.session.userId;
             payinData = ctx.session.response;
+=======
+            _context.next = 2;
+            return ctx.session.userId;
+
+          case 2:
+            uId = _context.sent;
+            _context.next = 5;
+            return ctx.session.response;
+
+          case 5:
+            payinData = _context.sent;
+>>>>>>> [65]Added pwd and ssl connection
             amount = ctx.session.amount;
             curFrom = ctx.session.curFrom;
             curTo = ctx.session.curTo;
             fromTo = "".concat(curFrom, "_").concat(curTo);
+<<<<<<< HEAD
             _context.next = 8;
             return (0, _helpers.getAmountTotal)(amount, fromTo);
 
@@ -71,6 +99,34 @@ function () {
             return (0, _helpers.intervalRequire)(ctx, payinData);
 
           case 20:
+=======
+            _context.next = 12;
+            return (0, _helpers.getAmountTotal)(amount, fromTo);
+
+          case 12:
+            amountTotal = _context.sent;
+            payinData && (0, _helpers.addTransactionToDB)(payinData.id, uId);
+            _context.t0 = payinData;
+
+            if (!_context.t0) {
+              _context.next = 18;
+              break;
+            }
+
+            _context.next = 18;
+            return ctx.replyWithHTML("You\u2019re sending <b>".concat(amount, " ").concat(curFrom.toUpperCase(), "</b>; you\u2019ll get ~<b>").concat(amountTotal, " ").concat(curTo.toUpperCase(), "</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address."), (0, _keyboards.getBackKeyboard)(ctx));
+
+          case 18:
+            _context.next = 20;
+            return (0, _helpers.pause)(500);
+
+          case 20:
+            ctx.reply("".concat(payinData.payinAddress));
+            _context.next = 23;
+            return (0, _helpers.intervalRequire)(ctx, payinData);
+
+          case 23:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context.stop();
         }
@@ -82,7 +138,17 @@ function () {
     return _ref.apply(this, arguments);
   };
 }());
+<<<<<<< HEAD
 getAddress.command('start',
+=======
+getAddress.command('start', function (ctx) {
+  return (0, _helpers.startHandler)(ctx);
+});
+getAddress.hears(_config.config.kb.startNew, function (ctx) {
+  return (0, _helpers.breakTransaction)(ctx);
+});
+getAddress.hears(_config.config.kb.help,
+>>>>>>> [65]Added pwd and ssl connection
 /*#__PURE__*/
 function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
@@ -92,6 +158,7 @@ function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+<<<<<<< HEAD
             _context2.next = 2;
             return (0, _helpers.startHandler)(ctx);
 
@@ -99,6 +166,17 @@ function () {
             return _context2.abrupt("return", _context2.sent);
 
           case 3:
+=======
+            ctx.reply(_messages.messages.support);
+            _context2.next = 3;
+            return (0, _helpers.pause)(500);
+
+          case 3:
+            ctx.reply(process.env.CN_EMAIL);
+            return _context2.abrupt("return");
+
+          case 5:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context2.stop();
         }
@@ -110,6 +188,7 @@ function () {
     return _ref2.apply(this, arguments);
   };
 }());
+<<<<<<< HEAD
 getAddress.hears(_config.config.kb.startNew,
 /*#__PURE__*/
 function () {
@@ -174,5 +253,7 @@ function () {
     return _ref4.apply(this, arguments);
   };
 }());
+=======
+>>>>>>> [65]Added pwd and ssl connection
 var _default = getAddress;
 exports["default"] = _default;

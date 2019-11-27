@@ -19,28 +19,55 @@ var _helpers = require("../helpers");
 
 var _messages = require("../messages");
 
+<<<<<<< HEAD
 var _api = require("../api");
 
+=======
+>>>>>>> [65]Added pwd and ssl connection
 var _keyboards = require("../keyboards");
 
 var _actions = require("../actions");
 
 var _config = require("../config");
 
+<<<<<<< HEAD
 // Currency From scene
 var leave = _stage["default"].leave;
 var currFrom = new _base["default"]('curr_from');
 currFrom.enter(
+=======
+var _markup = _interopRequireDefault(require("telegraf/markup"));
+
+var _extra = _interopRequireDefault(require("telegraf/extra"));
+
+// Currency From scene
+var enter = _stage["default"].enter,
+    leave = _stage["default"].leave;
+var currFrom = new _base["default"]('curr_from');
+currFrom.enter(function (ctx) {
+  var currs = ctx.session.currs;
+  ctx.replyWithHTML(_messages.messages.selectFromMsg, (0, _keyboards.getFromKeyboard)(currs));
+});
+currFrom.command('start', function (ctx) {
+  return (0, _helpers.startHandler)(ctx);
+});
+currFrom.hears([/(.*)/gi, _config.config.kb.cancel, _config.config.kb.help],
+>>>>>>> [65]Added pwd and ssl connection
 /*#__PURE__*/
 function () {
   var _ref = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee(ctx) {
+<<<<<<< HEAD
     var currs;
+=======
+    var txt;
+>>>>>>> [65]Added pwd and ssl connection
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
+<<<<<<< HEAD
             _context.t0 = ctx.session.currs;
 
             if (_context.t0) {
@@ -178,6 +205,61 @@ function () {
 
   return function (_x3) {
     return _ref3.apply(this, arguments);
+=======
+            txt = ctx.message.text;
+
+            if (!(_config.config.kb.cancel === txt)) {
+              _context.next = 5;
+              break;
+            }
+
+            ctx.reply(_messages.messages.cancel, (0, _keyboards.getReplyKeyboard)(ctx));
+            (0, _actions.cancelTradeAction)(ctx);
+            return _context.abrupt("return");
+
+          case 5:
+            if (!(_config.config.kb.help === txt)) {
+              _context.next = 11;
+              break;
+            }
+
+            ctx.reply(_messages.messages.support);
+            _context.next = 9;
+            return (0, _helpers.pause)(500);
+
+          case 9:
+            ctx.reply(process.env.CN_EMAIL);
+            return _context.abrupt("return");
+
+          case 11:
+            if (!txt.match(/[^()A-Za-z\s]+/gi)) {
+              _context.next = 14;
+              break;
+            }
+
+            ctx.reply(_messages.messages.validErr);
+            return _context.abrupt("return");
+
+          case 14:
+            if (!txt.match(/[()A-Za-z\s]+/gi)) {
+              _context.next = 17;
+              break;
+            }
+
+            _context.next = 17;
+            return (0, _actions.selectFromCurrencyAction)(ctx);
+
+          case 17:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+
+  return function (_x) {
+    return _ref.apply(this, arguments);
+>>>>>>> [65]Added pwd and ssl connection
   };
 }());
 currFrom.command('start', leave());

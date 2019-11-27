@@ -24,7 +24,11 @@ var config = {
     confirm: '✔️ Confirm',
     help: 'ℹ️ Support Info'
   },
+<<<<<<< HEAD
   interval: 15000,
   email: process.env.CN_EMAIL || 'user@config.email.com'
+=======
+  interval: 15000
+>>>>>>> [65]Added pwd and ssl connection
 };
 exports.config = config;

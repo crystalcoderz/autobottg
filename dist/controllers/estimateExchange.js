@@ -15,6 +15,11 @@ var _base = _interopRequireDefault(require("telegraf/scenes/base"));
 
 var _helpers = require("../helpers");
 
+<<<<<<< HEAD
+=======
+var _api = require("../api");
+
+>>>>>>> [65]Added pwd and ssl connection
 var _actions = require("../actions");
 
 var _keyboards = require("../keyboards");
@@ -50,10 +55,16 @@ function () {
             return (0, _helpers.pause)(1000);
 
           case 10:
+<<<<<<< HEAD
             _context.next = 12;
             return ctx.replyWithHTML("You\u2019re sending <b>".concat(amount, " ").concat(curFrom.toUpperCase(), "</b>; you\u2019ll get ~<b>").concat(amountTotal, " ").concat(curTo.toUpperCase(), "</b>.\nEnter the recipient <b>").concat(curTo.toUpperCase(), "</b> wallet address."), (0, _keyboards.getAmountKeyboard)(ctx));
 
           case 12:
+=======
+            ctx.replyWithHTML("You\u2019re sending <b>".concat(amount, " ").concat(curFrom.toUpperCase(), "</b>; you\u2019ll get ~<b>").concat(amountTotal, " ").concat(curTo.toUpperCase(), "</b>.\nEnter the recipient <b>").concat(curTo.toUpperCase(), "</b> wallet address."), (0, _keyboards.getAmountKeyboard)(ctx));
+
+          case 11:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context.stop();
         }
@@ -65,16 +76,28 @@ function () {
     return _ref.apply(this, arguments);
   };
 }());
+<<<<<<< HEAD
 estimateExchange.command('start',
+=======
+estimateExchange.command('start', function (ctx) {
+  return (0, _helpers.startHandler)(ctx);
+});
+estimateExchange.hears([/(.*)/gi, _config.config.kb.back, _config.config.kb.cancel, _config.config.kb.help],
+>>>>>>> [65]Added pwd and ssl connection
 /*#__PURE__*/
 function () {
   var _ref2 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee2(ctx) {
+<<<<<<< HEAD
+=======
+    var txt;
+>>>>>>> [65]Added pwd and ssl connection
     return _regenerator["default"].wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+<<<<<<< HEAD
             _context2.next = 2;
             return (0, _helpers.startHandler)(ctx);
 
@@ -184,6 +207,70 @@ function () {
 
   return function (_x3) {
     return _ref3.apply(this, arguments);
+=======
+            txt = ctx.message.text;
+
+            if (!(_config.config.kb.back === txt)) {
+              _context2.next = 4;
+              break;
+            }
+
+            ctx.scene.enter('amount');
+            return _context2.abrupt("return");
+
+          case 4:
+            if (!(_config.config.kb.cancel === txt)) {
+              _context2.next = 8;
+              break;
+            }
+
+            ctx.reply(_messages.messages.cancel, (0, _keyboards.getReplyKeyboard)(ctx));
+            (0, _actions.cancelTradeAction)(ctx);
+            return _context2.abrupt("return");
+
+          case 8:
+            if (!(_config.config.kb.help === txt)) {
+              _context2.next = 14;
+              break;
+            }
+
+            ctx.reply(_messages.messages.support);
+            _context2.next = 12;
+            return (0, _helpers.pause)(500);
+
+          case 12:
+            ctx.reply(process.env.CN_EMAIL);
+            return _context2.abrupt("return");
+
+          case 14:
+            if (!txt.match(/[^()A-Za-z0-9\s]+/gi)) {
+              _context2.next = 17;
+              break;
+            }
+
+            ctx.reply(_messages.messages.validErr);
+            return _context2.abrupt("return");
+
+          case 17:
+            if (!txt.match(/[()A-Za-z0-9\s]+/gi)) {
+              _context2.next = 20;
+              break;
+            }
+
+            _context2.next = 20;
+            return (0, _actions.typeWalletAction)(ctx);
+
+          case 20:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+
+  return function (_x2) {
+    return _ref2.apply(this, arguments);
+>>>>>>> [65]Added pwd and ssl connection
   };
 }());
 var _default = estimateExchange;

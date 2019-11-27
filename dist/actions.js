@@ -11,6 +11,15 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
+<<<<<<< HEAD
+=======
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _stage = _interopRequireDefault(require("telegraf/stage"));
+
+var _requestPromise = _interopRequireDefault(require("request-promise"));
+
+>>>>>>> [65]Added pwd and ssl connection
 var _messages = require("./messages");
 
 var _helpers = require("./helpers");
@@ -20,6 +29,17 @@ var _User = _interopRequireDefault(require("./models/User"));
 var _api = require("./api");
 
 //--------------------------- Actions -----------------------------------------------
+<<<<<<< HEAD
+=======
+var enter = _stage["default"].enter,
+    leave = _stage["default"].leave;
+
+var Transaction = function Transaction() {
+  (0, _classCallCheck2["default"])(this, Transaction);
+  this.date = Number(new Date()), this.from = '', this.to = '', this.address = '', this.amount = 0, this.extraId = '';
+};
+
+>>>>>>> [65]Added pwd and ssl connection
 var handleStartAction =
 /*#__PURE__*/
 function () {
@@ -41,6 +61,7 @@ function () {
           case 4:
             userInDB = _context.sent;
 
+<<<<<<< HEAD
             if (userInDB) {
               _context.next = 8;
               break;
@@ -59,6 +80,20 @@ function () {
             return ctx.scene.enter('start');
 
           case 10:
+=======
+            if (!userInDB) {
+              _User["default"].insertMany({
+                id: user.id,
+                username: user.username,
+                visits: [],
+                transactions: []
+              });
+            }
+
+            ctx.scene.enter('start');
+
+          case 7:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context.stop();
         }
@@ -111,11 +146,16 @@ function () {
             curInfo = _context2.t0;
 
             if (!curInfo) {
+<<<<<<< HEAD
               _context2.next = 21;
+=======
+              _context2.next = 20;
+>>>>>>> [65]Added pwd and ssl connection
               break;
             }
 
             (0, _helpers.saveToSession)(ctx, 'curFromInfo', curInfo);
+<<<<<<< HEAD
             _context2.next = 15;
             return ctx.replyWithHTML("Selected currency - <b>".concat(getFrom, "</b>."));
 
@@ -147,6 +187,28 @@ function () {
             (0, _helpers.deleteFromSession)(ctx, 'curFrom');
 
           case 28:
+=======
+            ctx.replyWithHTML("Selected currency - <b>".concat(getFrom, "</b>."));
+            _context2.next = 16;
+            return (0, _helpers.pause)(1000);
+
+          case 16:
+            ctx.scene.leave('curr_from');
+            ctx.scene.enter('curr_to');
+            _context2.next = 25;
+            break;
+
+          case 20:
+            ctx.reply(_messages.messages.notFound);
+            _context2.next = 23;
+            return (0, _helpers.pause)(1000);
+
+          case 23:
+            ctx.scene.reenter();
+            (0, _helpers.deleteFromSession)(ctx, 'curFrom');
+
+          case 25:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context2.stop();
         }
@@ -200,11 +262,16 @@ function () {
             curInfo = _context3.t0;
 
             if (!curInfo) {
+<<<<<<< HEAD
               _context3.next = 22;
+=======
+              _context3.next = 21;
+>>>>>>> [65]Added pwd and ssl connection
               break;
             }
 
             (0, _helpers.saveToSession)(ctx, 'curToInfo', curInfo);
+<<<<<<< HEAD
             _context3.next = 16;
             return ctx.replyWithHTML("Selected currency - <b>".concat(curTo, "</b>."));
 
@@ -236,6 +303,28 @@ function () {
             (0, _helpers.deleteFromSession)(ctx, 'curTo');
 
           case 29:
+=======
+            ctx.replyWithHTML("Selected currency - <b>".concat(curTo, "</b>."));
+            _context3.next = 17;
+            return (0, _helpers.pause)(1000);
+
+          case 17:
+            ctx.scene.leave('curr_to');
+            ctx.scene.enter('check');
+            _context3.next = 26;
+            break;
+
+          case 21:
+            ctx.reply(_messages.messages.notFound);
+            _context3.next = 24;
+            return (0, _helpers.pause)(1000);
+
+          case 24:
+            ctx.scene.reenter();
+            (0, _helpers.deleteFromSession)(ctx, 'curTo');
+
+          case 26:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context3.stop();
         }
@@ -264,9 +353,19 @@ function () {
             inputData = ctx.message.text;
             (0, _helpers.saveToSession)(ctx, 'addData', inputData);
             _context4.next = 4;
+<<<<<<< HEAD
             return ctx.scene.enter('agree');
 
           case 4:
+=======
+            return ctx.scene.leave('add_info');
+
+          case 4:
+            _context4.next = 6;
+            return ctx.scene.enter('agree');
+
+          case 6:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context4.stop();
         }
@@ -295,6 +394,7 @@ function () {
             amount = Number(ctx.message.text.replace(',', '.'));
 
             if (!(!amount || isNaN(amount) || ctx.message.text.match(/0x[\da-f]/i))) {
+<<<<<<< HEAD
               _context5.next = 9;
               break;
             }
@@ -315,6 +415,26 @@ function () {
 
           case 9:
             minValue = ctx.session.minValue;
+=======
+              _context5.next = 7;
+              break;
+            }
+
+            ctx.reply(_messages.messages.numErr);
+            _context5.next = 5;
+            return (0, _helpers.pause)(1000);
+
+          case 5:
+            ctx.scene.reenter();
+            return _context5.abrupt("return");
+
+          case 7:
+            _context5.next = 9;
+            return ctx.session.minValue;
+
+          case 9:
+            minValue = _context5.sent;
+>>>>>>> [65]Added pwd and ssl connection
 
             if (!(amount >= minValue)) {
               _context5.next = 16;
@@ -322,6 +442,7 @@ function () {
             }
 
             (0, _helpers.saveToSession)(ctx, 'amount', amount);
+<<<<<<< HEAD
             _context5.next = 14;
             return ctx.scene.enter('est_exch');
 
@@ -342,6 +463,22 @@ function () {
             return ctx.scene.reenter();
 
           case 22:
+=======
+            ctx.scene.leave('amount');
+            ctx.scene.enter('est_exch');
+            _context5.next = 20;
+            break;
+
+          case 16:
+            ctx.reply("Oops! Wrong amount.");
+            _context5.next = 19;
+            return (0, _helpers.pause)(1000);
+
+          case 19:
+            ctx.scene.reenter();
+
+          case 20:
+>>>>>>> [65]Added pwd and ssl connection
           case "end":
             return _context5.stop();
         }
@@ -356,6 +493,7 @@ function () {
 
 exports.selectAmountAction = selectAmountAction;
 
+<<<<<<< HEAD
 var typeWalletAction =
 /*#__PURE__*/
 function () {
@@ -384,12 +522,21 @@ function () {
     return _ref6.apply(this, arguments);
   };
 }();
+=======
+var typeWalletAction = function typeWalletAction(ctx) {
+  var walletCode = ctx.message.text;
+  (0, _helpers.saveToSession)(ctx, 'walletCode', walletCode);
+  ctx.scene.leave('est_exch');
+  ctx.scene.enter('add_info');
+};
+>>>>>>> [65]Added pwd and ssl connection
 
 exports.typeWalletAction = typeWalletAction;
 
 var agreePressAction =
 /*#__PURE__*/
 function () {
+<<<<<<< HEAD
   var _ref7 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee8(ctx) {
@@ -404,10 +551,51 @@ function () {
             walletCode = ctx.session.walletCode;
             amount = ctx.session.amount;
             extraId = ctx.session.addData;
+=======
+  var _ref6 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee7(ctx) {
+    var uId, curFrom, curTo, walletCode, amount, extraId, getIpFromDB, data, response;
+    return _regenerator["default"].wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.next = 2;
+            return ctx.session.userId;
+
+          case 2:
+            uId = _context7.sent;
+            _context7.next = 5;
+            return ctx.session.curFrom;
+
+          case 5:
+            curFrom = _context7.sent;
+            _context7.next = 8;
+            return ctx.session.curTo;
+
+          case 8:
+            curTo = _context7.sent;
+            _context7.next = 11;
+            return ctx.session.walletCode;
+
+          case 11:
+            walletCode = _context7.sent;
+            _context7.next = 14;
+            return ctx.session.amount;
+
+          case 14:
+            amount = _context7.sent;
+            _context7.next = 17;
+            return ctx.session.addData;
+
+          case 17:
+            extraId = _context7.sent;
+>>>>>>> [65]Added pwd and ssl connection
 
             getIpFromDB =
             /*#__PURE__*/
             function () {
+<<<<<<< HEAD
               var _ref8 = (0, _asyncToGenerator2["default"])(
               /*#__PURE__*/
               _regenerator["default"].mark(function _callee7() {
@@ -417,11 +605,23 @@ function () {
                     switch (_context7.prev = _context7.next) {
                       case 0:
                         _context7.next = 2;
+=======
+              var _ref7 = (0, _asyncToGenerator2["default"])(
+              /*#__PURE__*/
+              _regenerator["default"].mark(function _callee6() {
+                var userInDB, visits, lastVisitIP;
+                return _regenerator["default"].wrap(function _callee6$(_context6) {
+                  while (1) {
+                    switch (_context6.prev = _context6.next) {
+                      case 0:
+                        _context6.next = 2;
+>>>>>>> [65]Added pwd and ssl connection
                         return _User["default"].findOne({
                           id: uId
                         });
 
                       case 2:
+<<<<<<< HEAD
                         userInDB = _context7.sent;
                         visits = userInDB && userInDB.visits;
 
@@ -506,11 +706,107 @@ function () {
 
   return function agreePressAction(_x7) {
     return _ref7.apply(this, arguments);
+=======
+                        userInDB = _context6.sent;
+                        visits = userInDB && userInDB.visits;
+
+                        if (userInDB.visits.length) {
+                          _context6.next = 6;
+                          break;
+                        }
+
+                        return _context6.abrupt("return", '');
+
+                      case 6:
+                        lastVisitIP = visits[visits.length - 1].userIp;
+                        return _context6.abrupt("return", lastVisitIP);
+
+                      case 8:
+                      case "end":
+                        return _context6.stop();
+                    }
+                  }
+                }, _callee6);
+              }));
+
+              return function getIpFromDB() {
+                return _ref7.apply(this, arguments);
+              };
+            }();
+
+            _context7.t0 = uId;
+            _context7.t1 = curFrom;
+            _context7.t2 = curTo;
+            _context7.t3 = walletCode;
+            _context7.t4 = amount;
+            _context7.t5 = extraId || '';
+            _context7.next = 27;
+            return getIpFromDB();
+
+          case 27:
+            _context7.t6 = _context7.sent;
+            data = {
+              userId: _context7.t0,
+              from: _context7.t1,
+              to: _context7.t2,
+              address: _context7.t3,
+              amount: _context7.t4,
+              extraId: _context7.t5,
+              ip: _context7.t6
+            };
+            _context7.prev = 29;
+            _context7.next = 32;
+            return (0, _api.sendTransactionData)(data);
+
+          case 32:
+            response = _context7.sent;
+            (0, _helpers.saveToSession)(ctx, 'response', response);
+            _context7.next = 36;
+            return ctx.scene.leave('agree');
+
+          case 36:
+            _context7.next = 38;
+            return ctx.scene.enter('get_addr');
+
+          case 38:
+            _context7.next = 50;
+            break;
+
+          case 40:
+            _context7.prev = 40;
+            _context7.t7 = _context7["catch"](29);
+            _context7.next = 44;
+            return ctx.reply("Sorry, the address you\u2019ve entered is invalid.");
+
+          case 44:
+            _context7.next = 46;
+            return (0, _helpers.pause)(1000);
+
+          case 46:
+            _context7.next = 48;
+            return ctx.scene.leave('agree');
+
+          case 48:
+            _context7.next = 50;
+            return ctx.scene.enter('est_exch');
+
+          case 50:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, null, [[29, 40]]);
+  }));
+
+  return function agreePressAction(_x6) {
+    return _ref6.apply(this, arguments);
+>>>>>>> [65]Added pwd and ssl connection
   };
 }();
 
 exports.agreePressAction = agreePressAction;
 
+<<<<<<< HEAD
 var cancelTradeAction =
 /*#__PURE__*/
 function () {
@@ -547,12 +843,28 @@ function () {
     return _ref9.apply(this, arguments);
   };
 }();
+=======
+var cancelTradeAction = function cancelTradeAction(ctx) {
+  (0, _helpers.deleteFromSession)(ctx, 'curFrom');
+  (0, _helpers.deleteFromSession)(ctx, 'curTo');
+  (0, _helpers.deleteFromSession)(ctx, 'curFromInfo');
+  (0, _helpers.deleteFromSession)(ctx, 'curToInfo');
+  (0, _helpers.deleteFromSession)(ctx, 'addData');
+  (0, _helpers.deleteFromSession)(ctx, 'addDataName');
+  (0, _helpers.deleteFromSession)(ctx, 'amount');
+  (0, _helpers.deleteFromSession)(ctx, 'minValue');
+  (0, _helpers.deleteFromSession)(ctx, 'walletCode');
+  (0, _helpers.deleteFromSession)(ctx, 'response');
+  ctx.scene.leave();
+};
+>>>>>>> [65]Added pwd and ssl connection
 
 exports.cancelTradeAction = cancelTradeAction;
 
 var getIpAction =
 /*#__PURE__*/
 function () {
+<<<<<<< HEAD
   var _ref10 = (0, _asyncToGenerator2["default"])(
   /*#__PURE__*/
   _regenerator["default"].mark(function _callee10(req) {
@@ -560,6 +872,15 @@ function () {
     return _regenerator["default"].wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
+=======
+  var _ref8 = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee8(req) {
+    var ip, user;
+    return _regenerator["default"].wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+>>>>>>> [65]Added pwd and ssl connection
           case 0:
             if (req.headers['x-forwarded-for']) {
               ip = req.headers['x-forwarded-for'].split(',')[0];
@@ -569,12 +890,17 @@ function () {
               ip = req.ip;
             }
 
+<<<<<<< HEAD
             _context10.next = 3;
+=======
+            _context8.next = 3;
+>>>>>>> [65]Added pwd and ssl connection
             return _User["default"].findOne({
               id: req.query.id
             });
 
           case 3:
+<<<<<<< HEAD
             user = _context10.sent;
 
             if (user) {
@@ -595,6 +921,12 @@ function () {
           case 8:
             if (!(user && user.visits)) {
               _context10.next = 12;
+=======
+            user = _context8.sent;
+
+            if (!(user && user.visits)) {
+              _context8.next = 8;
+>>>>>>> [65]Added pwd and ssl connection
               break;
             }
 
@@ -602,6 +934,7 @@ function () {
               userIp: ip,
               ipParsed: new Date().toJSON()
             });
+<<<<<<< HEAD
             _context10.next = 12;
             return user.save();
 
@@ -615,6 +948,25 @@ function () {
 
   return function getIpAction(_x9) {
     return _ref10.apply(this, arguments);
+=======
+            _context8.next = 8;
+            return _User["default"].updateOne({
+              id: req.query.id
+            }, {
+              visits: user.visits
+            });
+
+          case 8:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8);
+  }));
+
+  return function getIpAction(_x7) {
+    return _ref8.apply(this, arguments);
+>>>>>>> [65]Added pwd and ssl connection
   };
 }();
 
