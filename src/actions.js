@@ -25,7 +25,7 @@ export const handleStartAction = async ctx => {
   saveToSession(ctx, 'userId', user.id);
   const userInDB = await UserModel.findOne({ id: user.id });
   if (!userInDB) {
-    UserModel.insertMany({ id: user.id, username: user.username, visits: [] });
+    UserModel.insertMany({ id: user.id, username: user.username, visits: [], transactions: [] });
   }
   ctx.scene.enter('start');
 };
@@ -113,13 +113,22 @@ export const agreePressAction = async ctx => {
   const amount = await ctx.session.amount;
   const extraId = await ctx.session.addData;
 
+  const getIpFromDB = async () => {
+    const userInDB = await UserModel.findOne({ id: uId });
+    const visits = userInDB && userInDB.visits;
+    if(!userInDB.visits.length) return '';
+    const lastVisitIP = visits[visits.length - 1].userIp;
+    return lastVisitIP;
+  }
+
   const data = {
     userId: uId,
     from: curFrom,
     to: curTo,
     address: walletCode,
     amount: amount,
-    extraId: extraId || ''
+    extraId: extraId || '',
+    ip: await getIpFromDB()
   };
   try {
     const response = await sendTransactionData(data);
