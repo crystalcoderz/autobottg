@@ -15,10 +15,16 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 2. git clone https://github.com/EvercodeLab/changenow-bot.git
 3. cd changenow-bot
 4. npm i @babel/core @babel/node @babel/preset-env -g
-5. install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/)
-6. npm install
-7. create _.env_ file and enter fields from .env.example
-8. npm run start
+5. npm install
+6. create _.env_ file and enter fields from .env.example
+7. npm run start
+
+## Database setup
+1. Install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/)
+2. Set db name in DB_NAME .env parameter
+3. Create user and password in this db name (`db.createUser()`)
+4. Set DB_USERNAME and DB_PASS parameters
+5. MongoDB should use ssl connection
 
 ## Development setup
 
