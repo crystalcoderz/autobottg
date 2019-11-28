@@ -3,10 +3,6 @@ import mongoose from 'mongoose';
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-<<<<<<< HEAD
-  // ssl: true,
-=======
->>>>>>> [65]Added pwd and ssl connection
 };
 
 let optionss = {};
