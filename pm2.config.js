@@ -1,13 +1,13 @@
 module.exports = {
     apps: [{
         name: 'changenow-bot',
-        script: 'npm',
-        args: 'serve',
+        script: 'node',
+        args: 'dist/index.js',
         cwd: __dirname,
         restart_delay: 3000,
         autorestart: true,
         max_restarts: 50,
         merge_logs: true,
-        log_type: 'json'
+        log_type: ‘json’
     }]
 }
