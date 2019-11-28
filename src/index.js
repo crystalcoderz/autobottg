@@ -1,7 +1,9 @@
+import "@babel/polyfill";
 import express from 'express';
 import morgan from 'morgan';
 import rp from 'request-promise';
 import fs from 'fs';
+import path from 'path';
 import 'dotenv/config';
 import session from 'telegraf/session';
 import Markup from 'telegraf/markup';
@@ -128,4 +130,10 @@ const getHandle = async (req, res) => {
   return;
 };
 
-expressApp.get('/terms-of-use/:id', getHandle);
+expressApp.get('/terms-of-use/', getHandle);
+
+expressApp.get('*', (req, res) => {
+    res.sendFile('404.html', {
+        root: path.join(__dirname, './')
+    })
+})
