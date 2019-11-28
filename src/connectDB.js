@@ -3,11 +3,10 @@ import mongoose from 'mongoose';
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  server: {
+      ssl: true,
+  }
 };
-
-let optionss = {};
-const SSL = true;
-optionss.SSL = SSL;
 
 export async function connectDatabase(host, port, database) {
   try {
