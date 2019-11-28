@@ -1,8 +1,8 @@
+import "@babel/polyfill";
 import express from 'express';
 import morgan from 'morgan';
 import rp from 'request-promise';
 import fs from 'fs';
-// import bodyParser from 'body-parser';
 import path from 'path';
 import 'dotenv/config';
 import session from 'telegraf/session';
@@ -41,9 +41,6 @@ import { getAmountKeyboard } from './keyboards';
 const { enter, leave } = Stage;
 
 const expressApp = express();
-// expressApp.use(bodyParser.urlencoded({
-//   extended: true
-// }));
 const Telegraf = require('telegraf');
 const bot = new Telegraf(process.env.API_BOT_KEY);
 
@@ -108,7 +105,7 @@ export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
   process.env.NODE_ENV === 'production' ? startDevMode(bot) : startDevMode(bot);
   expressApp.use(morgan('combined'));
-  expressApp.listen(process.env.APP_PORT, '127.0.0.1',() => {
+  expressApp.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
   });
 }
