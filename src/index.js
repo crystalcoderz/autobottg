@@ -105,7 +105,7 @@ export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
   process.env.NODE_ENV === 'production' ? startDevMode(bot) : startDevMode(bot);
   expressApp.use(morgan('combined'));
-  expressApp.listen(process.env.APP_PORT, () => {
+  expressApp.listen(process.env.APP_PORT,, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
   });
 }
@@ -130,7 +130,7 @@ const getHandle = async (req, res) => {
   return;
 };
 
-expressApp.get('/terms-of-use/', getHandle);
+expressApp.get('/terms-of-use/:id', getHandle);
 
 expressApp.get('*', (req, res) => {
     res.sendFile('404.html', {
