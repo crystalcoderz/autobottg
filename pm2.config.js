@@ -8,6 +8,6 @@ module.exports = {
         autorestart: true,
         max_restarts: 50,
         merge_logs: true,
-        log_type: ‘json’
+        log_type: 'json'
     }]
 }
