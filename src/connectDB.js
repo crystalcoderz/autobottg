@@ -3,9 +3,7 @@ import mongoose from 'mongoose';
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  server: {
-      ssl: true,
-  }
+  ssl: true,
 };
 
 export async function connectDatabase(host, port, database) {

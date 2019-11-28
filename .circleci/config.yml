@@ -21,7 +21,7 @@ jobs:
             - run:
                   name: update-npm
                   command: 'npm install -g npm@6.4.1'
-            - run: npm install
+            - run: npm install --unsafe-perm
             - save_cache:
                 key: 'changenow-bot-{{ checksum "package.json" }}'
                 paths:
