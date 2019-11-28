@@ -7,5 +7,7 @@ module.exports = {
         restart_delay: 3000,
         autorestart: true,
         max_restarts: 50,
+        merge_logs: true,
+        log_type: ‘json’
     }]
 }
