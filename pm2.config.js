@@ -1,8 +1,8 @@
 module.exports = {
     apps: [{
         name: 'changenow-bot',
-        script: 'npm',
-        args: 'serve',
+        script: 'node',
+        args: 'dist/index.js',
         cwd: __dirname,
         restart_delay: 3000,
         autorestart: true,

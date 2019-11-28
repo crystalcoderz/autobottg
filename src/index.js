@@ -134,6 +134,6 @@ expressApp.get('/terms-of-use/', getHandle);
 
 expressApp.get('*', (req, res) => {
     res.sendFile('404.html', {
-        root: path.join(__dirname, './')
+        root: path.join(__dirname, '../public')
     })
 })
