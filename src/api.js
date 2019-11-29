@@ -15,6 +15,9 @@ const _apiRequest = async options => {
 export const getAllCurrencies = async () => {
   const options = {
     uri: `${process.env.CN_API_URL}/currencies?active=true?api_key=${process.env.CN_API_KEY}`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
     json: true
   };
   const currs = await _apiRequest(options);
@@ -24,6 +27,9 @@ export const getAllCurrencies = async () => {
 export const getPairs = async () => {
   const options = {
     uri: `${process.env.CN_API_URL}/market-info/available-pairs/?api_key=${process.env.CN_API_KEY}`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
     json: true
   };
   const currs = await _apiRequest(options);
@@ -33,6 +39,9 @@ export const getPairs = async () => {
 export const getMinimum = async pair => {
   const options = {
     uri: `${process.env.CN_API_URL}/min-amount/${pair}?api_key=${process.env.CN_API_KEY}`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
     json: true
   };
   const amount = await _apiRequest(options);
@@ -42,6 +51,9 @@ export const getMinimum = async pair => {
 export const getCurrInfo = async cur => {
   const options = {
     uri: `${process.env.CN_API_URL}/currencies/${cur}?api_key=${process.env.CN_API_KEY}`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
     json: true
   };
   const curr = await _apiRequest(options);
@@ -51,6 +63,9 @@ export const getCurrInfo = async cur => {
 export const getExchAmount = async (amount, fromTo) => {
   const options = {
     uri: `${process.env.CN_API_URL}/exchange-amount/${amount}/${fromTo}?api_key=${process.env.CN_API_KEY}`,
+    headers: {
+        'Content-Type': 'application/json'
+    },
     json: true
   };
   const summ = await _apiRequest(options);
@@ -62,6 +77,9 @@ export const sendTransactionData = async data => {
     method: 'POST',
     uri: `${process.env.CN_API_URL}/transactions/${process.env.CN_API_KEY}`,
     body: data,
+    headers: {
+      'Content-Type': 'application/json'
+    },
     json: true
   };
   const curr = await _apiRequest(options);

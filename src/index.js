@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import express from 'express';
 import morgan from 'morgan';
 import rp from 'request-promise';
@@ -72,40 +71,19 @@ mongoose.connection.on('open', () => {
 
   bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
   bot.catch(err => {
-    console.log('Error: ', err);
+    console.log(err)
+    // bot.telegram.sendMessage('Something went wrong, please press "/start"');
+    // bot.telegram.sendChatAction('414191651', bot.telegram.sendMessage('Something went wrong'));
   });
 });
-
-function startDevMode(bot) {
-  rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
-    bot.startPolling()
-  );
-}
-
-async function startProdMode(bot) {
-  // const tlsOptions = {
-  //   key: fs.readFileSync('./privkey.pem'),
-  //   cert: fs.readFileSync('./fullchain.pem')
-  // };
-  try {
-    await bot.telegram.setWebhook(
-      `https://${process.env.APP_WEBHOOK}/exchange-bot`
-      // {
-      //   source: '../privkey.pem'
-      // }
-    );
-  } catch (err) {
-    console.log(err);
-  }
-}
 
 //--------------------------- Server -----------------------------------------------
 
 export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
-  process.env.NODE_ENV === 'production' ? startDevMode(bot) : startDevMode(bot);
+  bot.startPolling();
   expressApp.use(morgan('combined'));
-  expressApp.listen(process.env.APP_PORT,() => {
+  expressApp.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
   });
 }
