@@ -64,7 +64,7 @@ mongoose.connection.on('open', () => {
   //   await next(ctx);
   // };
   // bot.use(logger);
-  bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
+  bot.start(async ctx => await ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
   bot.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
   bot.hears(/Start new exchange/, ctx => ctx.scene.enter('curr_from'));
   bot.hears(/Read and Accept/, ctx => handleStartAction(ctx));
@@ -72,8 +72,6 @@ mongoose.connection.on('open', () => {
   bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
   bot.catch(err => {
     console.log(err)
-    // bot.telegram.sendMessage('Something went wrong, please press "/start"');
-    // bot.telegram.sendChatAction('414191651', bot.telegram.sendMessage('Something went wrong'));
   });
 });
 
@@ -115,3 +113,10 @@ expressApp.get('*', (req, res) => {
         root: path.join(__dirname, '../public')
     })
 })
+
+
+// process.on('unhandledRejection', (err) => {
+//   // console.log('unhandledRejection: ' + err);
+//   bot.telegram.sendMessage('please, press /start')
+//   throw new Error('unhandledRejection: ' + err)
+// })

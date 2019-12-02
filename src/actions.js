@@ -38,12 +38,12 @@ export const selectFromCurrencyAction = async ctx => {
 
   if (curInfo) {
     saveToSession(ctx, 'curFromInfo', curInfo);
-    ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>.`);
+    await ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>.`);
     await pause(1000);
     ctx.scene.leave('curr_from');
     ctx.scene.enter('curr_to');
   } else {
-    ctx.reply(messages.notFound);
+    await ctx.reply(messages.notFound);
     await pause(1000);
     ctx.scene.reenter();
     deleteFromSession(ctx, 'curFrom');
@@ -59,12 +59,12 @@ export const selectToCurrencyAction = async ctx => {
 
   if (curInfo) {
     saveToSession(ctx, 'curToInfo', curInfo);
-    ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>.`);
+    await ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>.`);
     await pause(1000);
     ctx.scene.leave('curr_to');
     ctx.scene.enter('check');
   } else {
-    ctx.reply(messages.notFound);
+    await ctx.reply(messages.notFound);
     await pause(1000);
     ctx.scene.reenter();
     deleteFromSession(ctx, 'curTo');
@@ -81,7 +81,7 @@ export const inputAdditionalDataAction = async ctx => {
 export const selectAmountAction = async ctx => {
   const amount = Number(ctx.message.text.replace(',', '.'));
   if (!amount || isNaN(amount) || ctx.message.text.match(/0x[\da-f]/i)) {
-    ctx.reply(messages.numErr);
+    await ctx.reply(messages.numErr);
     await pause(1000);
     ctx.scene.reenter();
     return;
@@ -92,7 +92,7 @@ export const selectAmountAction = async ctx => {
     ctx.scene.leave('amount');
     ctx.scene.enter('est_exch');
   } else {
-    ctx.reply(`Oops! Wrong amount.`);
+    await ctx.reply(`Oops! Wrong amount.`);
     await pause(1000);
     ctx.scene.reenter();
   }

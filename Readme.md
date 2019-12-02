@@ -17,7 +17,7 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 4. npm i @babel/core @babel/node @babel/preset-env -g
 5. npm install
 6. create _.env_ file and enter fields from .env.example
-7. npm run start
+7. npm run serve
 
 ## Database setup
 1. Install mongodb (https://docs.mongodb.com/v4.0/administration/install-on-linux/)
