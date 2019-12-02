@@ -169,7 +169,7 @@ export const getIpAction = async req => {
 
   const user = await UserModel.findOne({ id: req.query.id });
   if (user && user.visits) {
-    user.visits.push({ userIp: ip, ipParsed: new Date().toJSON() });
+    user.visits.push({ userIp: ip, visitDate: new Date().toJSON() });
     await UserModel.updateOne({ id: req.query.id }, { visits: user.visits });
   }
 };
