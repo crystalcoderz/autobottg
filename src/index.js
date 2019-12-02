@@ -71,7 +71,10 @@ mongoose.connection.on('open', () => {
 
   bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
   bot.catch(err => {
-    console.log(err)
+    console.log(err);
+    process.stderr.write(`${err}`);
+    // bot.telegram.sendMessage('Something went wrong, please press "/start"');
+    // bot.telegram.sendChatAction('414191651', bot.telegram.sendMessage('Something went wrong'));
   });
 });
 
@@ -113,10 +116,3 @@ expressApp.get('*', (req, res) => {
         root: path.join(__dirname, '../public')
     })
 })
-
-
-// process.on('unhandledRejection', (err) => {
-//   // console.log('unhandledRejection: ' + err);
-//   bot.telegram.sendMessage('please, press /start')
-//   throw new Error('unhandledRejection: ' + err)
-// })
