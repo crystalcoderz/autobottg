@@ -4,6 +4,7 @@ import Stage from 'telegraf/stage';
 const { enter, leave } = Stage;
 import { handler, deleteFromSession, pause, startHandler } from '../helpers';
 import { messages } from '../messages';
+import { getAllCurrencies } from '../api';
 import { getFromKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
 import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
@@ -14,11 +15,10 @@ import Extra from 'telegraf/extra';
 const currFrom = new Scene('curr_from');
 
 currFrom.enter(async ctx => {
-  console.log('in curr from scene');
-  const currs = ctx.session.currs;
-  await ctx.replyWithHTML('', getFromKeyboard(currs));
+  const currs = ctx.session.currs || getAllCurrencies();
+  // const currs = ctx.session.currs;
+  await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
-//messages.selectFromMsg
 currFrom.command('start', ctx => startHandler(ctx));
 currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;

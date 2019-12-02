@@ -68,6 +68,7 @@ mongoose.connection.on('open', () => {
   bot.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
   bot.hears(/Start new exchange/, ctx => ctx.scene.enter('curr_from'));
   bot.hears(/Read and Accept/, ctx => handleStartAction(ctx));
+  bot.hears(/Restart exchange/, ctx => handleStartAction(ctx));
 
   bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
   bot.catch(err => {
@@ -80,9 +81,27 @@ mongoose.connection.on('open', () => {
 
 //--------------------------- Server -----------------------------------------------
 
+
+const getCrashHandler = () => {
+  const replyKeyboard = {
+    reply_markup: {
+      resize_keyboard: true,
+      one_time_keyboard: true,
+      keyboard: [['Start exchange']]
+      // keyboard: [['Restart exchange']]
+    }
+  };
+  bot.telegram.sendMessage(
+    '414191651',
+    'Press restart',
+    replyKeyboard
+  );
+}
+
 export async function startApp() {
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
   bot.startPolling();
+  // getCrashHandler();
   expressApp.use(morgan('combined'));
   expressApp.listen(process.env.APP_PORT, () => {
     console.log(`Server listening on ${process.env.APP_PORT}`);
