@@ -74,14 +74,14 @@ export const getMinimumAmount = async pair => {
 
 const processStatus = async (ctx, status, payinData) => {
   if (status === 'waiting') {
-    ctx.replyWithHTML(`Transaction ID - <b>${payinData.id}</b>`);
+    await ctx.replyWithHTML(`Transaction ID - <b>${payinData.id}</b>`);
     return;
   }
   if (status === 'finished') {
     const newStatus = await getTransactionStatus(payinData.id);
-    ctx.replyWithHTML(' The transaction hash is');
+    await ctx.replyWithHTML(' The transaction hash is');
     await pause(500);
-    ctx.reply(`${newStatus.payoutHash}`);
+    await ctx.reply(`${newStatus.payoutHash}`);
     return;
   }
 };
@@ -104,7 +104,7 @@ export const intervalRequire = async (ctx, payinData) => {
   intervalStatus = setInterval(async () => {
     const getStatus = await getTransactionStatus(payinData.id);
     if (status !== getStatus.status) {
-      ctx.reply(statusMap[getStatus.status]);
+      await ctx.reply(statusMap[getStatus.status]);
       status = getStatus.status;
       await pause(1000);
       await processStatus(ctx, status, payinData);
@@ -117,9 +117,9 @@ export const breakTransaction = ctx => {
   ctx.scene.enter('curr_from');
 };
 
-export const startHandler = (ctx) => {
+export const startHandler = async (ctx) => {
   ctx.scene.leave();
-  ctx.reply(messages.startMsg, getMainKeyboard(ctx));
+  await ctx.reply(messages.startMsg, getMainKeyboard(ctx));
 }
 
 export const addTransactionToDB = async (trID, uId) => {

@@ -19,11 +19,10 @@ amount.enter(async (ctx) => {
   const minValue = await getMinimumAmount(tradePair);
   saveToSession(ctx, 'minValue', minValue);
   const minValueMsg = minValue ? `Minimal amount - <b>${minValue}</b>` : '';
-  return ctx.replyWithHTML(
+  return await ctx.replyWithHTML(
     `Enter the amount of <b>${selectedFrom.toUpperCase()}</b> you would like to exchange.\n${minValueMsg}`,
      getAmountKeyboard(ctx)
   );
-  await pause(500);
 });
 
 amount.command('start', ctx => startHandler(ctx));
@@ -34,14 +33,14 @@ amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, config.kb.back, config.kb.cancel, co
     return;
   }
   if(config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(process.env.CN_EMAIL);
     return;
   }
   await selectAmountAction(ctx);

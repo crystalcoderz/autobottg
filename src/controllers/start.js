@@ -20,7 +20,7 @@ start.enter(async ctx => {
     disable_web_page_preview: true,
   }
 
-  ctx.reply(`Please follow this <a href="${process.env.APP_HOST_PORT}/terms-of-use/${hash}?id=${uid}">link</a> to accept our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
+  await ctx.reply(`Please follow this <a href="${process.env.APP_HOST_PORT}/terms-of-use/${hash}?id=${uid}">link</a> to accept our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
 
   try {
     const currs = await getAllCurrencies();

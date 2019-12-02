@@ -8,12 +8,13 @@ import { messages } from '../messages';
 
 const { leave } = Stage;
 const addInfo = new Scene('add_info');
+const email = process.env.CN_EMAIL || 'user@email.com';
 
 addInfo.enter(async ctx => {
   const curToInfo = ctx.session.curToInfo;
 
   if (curToInfo.isAnonymous || curToInfo.hasExternalId) {
-    ctx.reply(
+    await ctx.reply(
       `Enter the ${curToInfo.externalIdName}`,
       getExtraIDKeyboard(ctx)
     );
@@ -39,18 +40,18 @@ addInfo.hears(
       return;
     }
     if (config.kb.cancel === txt) {
-      ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+      await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
       cancelTradeAction(ctx);
       return;
     }
     if (config.kb.help === txt) {
-      ctx.reply(messages.support);
+      await ctx.reply(messages.support);
       await pause(500);
-      ctx.reply(process.env.CN_EMAIL);
+      await ctx.reply(email);
       return;
     }
     if (txt.match(/[^A-Za-z0-9\s]+/gi)) {
-      ctx.reply(messages.validErr);
+      await ctx.reply(messages.validErr);
       return;
     }
     if (txt.match(/[A-Za-z0-9\s]+/gi)) {
