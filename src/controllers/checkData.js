@@ -26,7 +26,7 @@ checkData.enter(async ctx => {
     deleteFromSession(ctx, 'curTo');
     deleteFromSession(ctx, 'curFromInfo');
     deleteFromSession(ctx, 'curToInfo');
-    ctx.reply(messages.invalidPair);
+    await ctx.reply(messages.invalidPair);
     await pause(1000);
     ctx.scene.leave('check');
     ctx.scene.enter('curr_from');
@@ -46,14 +46,14 @@ checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(process.env.CN_EMAIL);
     return;
   }
   inputAdditionalDataAction(ctx);

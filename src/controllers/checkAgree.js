@@ -37,9 +37,9 @@ checkAgree.command('start', ctx => startHandler(ctx));
 checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));
 checkAgree.hears(config.kb.back, backAgreeHandler);
 checkAgree.hears(config.kb.help, async ctx => {
-  ctx.reply(messages.support);
+  await ctx.reply(messages.support);
   await pause(500);
-  ctx.reply(process.env.CN_EMAIL);
+  await ctx.reply(process.env.CN_EMAIL);
   return;
 });
 

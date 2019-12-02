@@ -8,8 +8,8 @@ import { pause, startHandler } from '../helpers';
 
 const curTo = new Scene('curr_to');
 
-curTo.enter(ctx => {
-  ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
+curTo.enter(async ctx => {
+  await ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
 });
 
 curTo.command('start', ctx => startHandler(ctx));
@@ -20,22 +20,22 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async 
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(process.env.CN_EMAIL);
     return;
   }
   if (txt.match(/^[\u{2705}]/gu)) {
-    ctx.reply(messages.sameCurErr);
+    await ctx.reply(messages.sameCurErr);
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {
-    ctx.reply(messages.validErr);
+    await ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z\s]+/gi)) {

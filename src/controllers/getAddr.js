@@ -26,16 +26,16 @@ getAddress.enter(async ctx => {
       getBackKeyboard(ctx)
     ));
   await pause(500);
-  ctx.reply(`${payinData.payinAddress}`);
+  await ctx.reply(`${payinData.payinAddress}`);
   await intervalRequire(ctx, payinData);
 });
 
 getAddress.command('start', ctx => startHandler(ctx));
 getAddress.hears(config.kb.startNew, ctx => breakTransaction(ctx));
 getAddress.hears(config.kb.help, async ctx => {
-  ctx.reply(messages.support);
+  await ctx.reply(messages.support);
   await pause(500);
-  ctx.reply(process.env.CN_EMAIL);
+  await ctx.reply(process.env.CN_EMAIL);
   return;
 });
 

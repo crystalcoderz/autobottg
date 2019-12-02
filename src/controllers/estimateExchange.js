@@ -17,7 +17,7 @@ estimateExchange.enter(async ctx => {
   const amountTotal = await getAmountTotal(amount, fromTo);
   saveToSession(ctx, 'amountTotal', amountTotal);
   await pause(1000);
-  ctx.replyWithHTML(
+  await ctx.replyWithHTML(
     `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nEnter the recipient <b>${curTo.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
   );
@@ -31,18 +31,18 @@ estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(process.env.CN_EMAIL);
     return;
   }
   if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
-    ctx.reply(messages.validErr);
+    await ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z0-9\s]+/gi)) {
