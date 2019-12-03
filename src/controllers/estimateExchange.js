@@ -1,7 +1,6 @@
 //estimateExchange  scene
 import Scene from 'telegraf/scenes/base';
 import { saveToSession, pause, getAmountTotal, startHandler } from '../helpers';
-import { getExchAmount } from '../api';
 import { typeWalletAction, cancelTradeAction } from '../actions';
 import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
@@ -27,22 +26,22 @@ estimateExchange.command('start', ctx => startHandler(ctx));
 estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
-    ctx.scene.enter('amount');
+    await ctx.scene.enter('amount');
     return;
   }
   if (config.kb.cancel === txt) {
-    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    cancelTradeAction(ctx);
+    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    await ctx.reply(messages.support);
+    ctx.reply(messages.support);
     await pause(500);
-    await ctx.reply(process.env.CN_EMAIL);
+    ctx.reply(process.env.CN_EMAIL);
     return;
   }
   if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
-    await ctx.reply(messages.validErr);
+    ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z0-9\s]+/gi)) {
