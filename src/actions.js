@@ -1,33 +1,19 @@
 //--------------------------- Actions -----------------------------------------------
 
-import Stage from 'telegraf/stage';
-import rp from 'request-promise';
 import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
 import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
 import { sendTransactionData, getCurrInfo } from './api';
 
-const { enter, leave } = Stage;
-class Transaction {
-  constructor() {
-    (this.date = Number(new Date())),
-      (this.from = ''),
-      (this.to = ''),
-      (this.address = ''),
-      (this.amount = 0),
-      (this.extraId = '');
-  }
-}
-
 export const handleStartAction = async ctx => {
   const user = ctx.message.from;
   saveToSession(ctx, 'userId', user.id);
   const userInDB = await UserModel.findOne({ id: user.id });
   if (!userInDB) {
-    UserModel.insertMany({ id: user.id, username: user.username, visits: [], transactions: [] });
+    await UserModel.create({ id: user.id, username: user.username, visits: [], transactions: [] });
   }
-  ctx.scene.enter('start');
+  await ctx.scene.enter('start');
 };
 
 export const selectFromCurrencyAction = async ctx => {
@@ -40,12 +26,11 @@ export const selectFromCurrencyAction = async ctx => {
     saveToSession(ctx, 'curFromInfo', curInfo);
     await ctx.replyWithHTML(`Selected currency - <b>${getFrom}</b>.`);
     await pause(1000);
-    ctx.scene.leave('curr_from');
-    ctx.scene.enter('curr_to');
+    await ctx.scene.enter('curr_to');
   } else {
     await ctx.reply(messages.notFound);
     await pause(1000);
-    ctx.scene.reenter();
+    await ctx.scene.reenter();
     deleteFromSession(ctx, 'curFrom');
   }
 };
@@ -61,12 +46,11 @@ export const selectToCurrencyAction = async ctx => {
     saveToSession(ctx, 'curToInfo', curInfo);
     await ctx.replyWithHTML(`Selected currency - <b>${curTo}</b>.`);
     await pause(1000);
-    ctx.scene.leave('curr_to');
-    ctx.scene.enter('check');
+    await ctx.scene.enter('check');
   } else {
     await ctx.reply(messages.notFound);
     await pause(1000);
-    ctx.scene.reenter();
+    await ctx.scene.reenter();
     deleteFromSession(ctx, 'curTo');
   }
 };
@@ -74,52 +58,48 @@ export const selectToCurrencyAction = async ctx => {
 export const inputAdditionalDataAction = async ctx => {
   const inputData = ctx.message.text;
   saveToSession(ctx, 'addData', inputData);
-  await ctx.scene.leave('add_info');
   await ctx.scene.enter('agree');
 };
 
 export const selectAmountAction = async ctx => {
   const amount = Number(ctx.message.text.replace(',', '.'));
   if (!amount || isNaN(amount) || ctx.message.text.match(/0x[\da-f]/i)) {
-    await ctx.reply(messages.numErr);
+    ctx.reply(messages.numErr);
     await pause(1000);
-    ctx.scene.reenter();
+    await ctx.scene.reenter();
     return;
   }
-  const minValue = await ctx.session.minValue;
+  const minValue = ctx.session.minValue;
   if (amount >= minValue) {
     saveToSession(ctx, 'amount', amount);
-    ctx.scene.leave('amount');
-    ctx.scene.enter('est_exch');
+    await ctx.scene.enter('est_exch');
   } else {
-    await ctx.reply(`Oops! Wrong amount.`);
+    ctx.reply(`Oops! Wrong amount.`);
     await pause(1000);
-    ctx.scene.reenter();
+    await ctx.scene.reenter();
   }
 };
 
-export const typeWalletAction = ctx => {
+export const typeWalletAction = async ctx => {
   const walletCode = ctx.message.text;
   saveToSession(ctx, 'walletCode', walletCode);
-  ctx.scene.leave('est_exch');
-  ctx.scene.enter('add_info');
+  await ctx.scene.enter('add_info');
 };
 
 export const agreePressAction = async ctx => {
-  const uId = await ctx.session.userId;
-  const curFrom = await ctx.session.curFrom;
-  const curTo = await ctx.session.curTo;
-  const walletCode = await ctx.session.walletCode;
-  const amount = await ctx.session.amount;
-  const extraId = await ctx.session.addData;
+  const uId = ctx.session.userId;
+  const curFrom = ctx.session.curFrom;
+  const curTo = ctx.session.curTo;
+  const walletCode = ctx.session.walletCode;
+  const amount = ctx.session.amount;
+  const extraId = ctx.session.addData;
 
   const getIpFromDB = async () => {
     const userInDB = await UserModel.findOne({ id: uId });
     const visits = userInDB && userInDB.visits;
     if(!userInDB.visits.length) return '';
-    const lastVisitIP = visits[visits.length - 1].userIp;
-    return lastVisitIP;
-  }
+    return visits[visits.length - 1].userIp;
+  };
 
   const data = {
     userId: uId,
@@ -133,17 +113,15 @@ export const agreePressAction = async ctx => {
   try {
     const response = await sendTransactionData(data);
     saveToSession(ctx, 'response', response);
-    await ctx.scene.leave('agree');
     await ctx.scene.enter('get_addr');
   } catch (err) {
     await ctx.reply(`Sorry, the address you’ve entered is invalid.`);
     await pause(1000);
-    await ctx.scene.leave('agree');
     await ctx.scene.enter('est_exch');
   }
 };
 
-export const cancelTradeAction = ctx => {
+export const cancelTradeAction = async ctx => {
   deleteFromSession(ctx, 'curFrom');
   deleteFromSession(ctx, 'curTo');
   deleteFromSession(ctx, 'curFromInfo');
@@ -154,7 +132,7 @@ export const cancelTradeAction = ctx => {
   deleteFromSession(ctx, 'minValue');
   deleteFromSession(ctx, 'walletCode');
   deleteFromSession(ctx, 'response');
-  ctx.scene.leave();
+  await ctx.scene.leave();
 };
 
 export const getIpAction = async req => {
@@ -169,7 +147,7 @@ export const getIpAction = async req => {
 
   const user = await UserModel.findOne({ id: req.query.id });
   if (user && user.visits) {
-    user.visits.push({ userIp: ip, visitDate: new Date().toJSON() });
-    await UserModel.updateOne({ id: req.query.id }, { visits: user.visits });
+    user.visits.push({ userIp: ip, ipParsed: new Date().toJSON() });
+    await user.save();
   }
 };

@@ -75,14 +75,14 @@ export const getMinimumAmount = async pair => {
 
 const processStatus = async (ctx, status, payinData) => {
   if (status === 'waiting') {
-    await ctx.replyWithHTML(`Transaction ID - <b>${payinData.id}</b>`);
+    ctx.replyWithHTML(`Transaction ID - <b>${payinData.id}</b>`);
     return;
   }
   if (status === 'finished') {
     const newStatus = await getTransactionStatus(payinData.id);
-    await ctx.replyWithHTML(' The transaction hash is');
+    ctx.replyWithHTML(' The transaction hash is');
     await pause(500);
-    await ctx.reply(`${newStatus.payoutHash}`);
+    ctx.reply(`${newStatus.payoutHash}`);
     return;
   }
 };
@@ -105,7 +105,7 @@ export const intervalRequire = async (ctx, payinData) => {
   intervalStatus = setInterval(async () => {
     const getStatus = await getTransactionStatus(payinData.id);
     if (status !== getStatus.status) {
-      await ctx.reply(statusMap[getStatus.status]);
+      ctx.reply(statusMap[getStatus.status]);
       status = getStatus.status;
       await pause(1000);
       await processStatus(ctx, status, payinData);
@@ -113,15 +113,15 @@ export const intervalRequire = async (ctx, payinData) => {
   }, config.interval);
 };
 
-export const breakTransaction = ctx => {
+export const breakTransaction = async ctx => {
   clearInterval(intervalStatus);
-  ctx.scene.enter('curr_from');
+  await ctx.scene.enter('curr_from');
 };
 
-export const startHandler = async (ctx) => {
-  ctx.scene.leave();
+export const startHandler = async ctx => {
+  await ctx.scene.leave();
   await ctx.reply(messages.startMsg, getMainKeyboard(ctx));
-}
+};
 
 export const addTransactionToDB = async (trID, uId) => {
   const user = await UserModel.findOne({ id: uId });
@@ -129,4 +129,4 @@ export const addTransactionToDB = async (trID, uId) => {
     user.transactions.push({ transactionId: trID});
     await UserModel.updateOne({ id: uId }, { transactions: user.transactions });
   }
-}
+};

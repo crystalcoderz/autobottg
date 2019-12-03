@@ -16,12 +16,12 @@ curTo.command('start', ctx => startHandler(ctx));
 curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
-    ctx.scene.enter('curr_from');
+    await ctx.scene.enter('curr_from');
     return;
   }
   if (config.kb.cancel === txt) {
     await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    cancelTradeAction(ctx);
+    await cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
