@@ -20,7 +20,7 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 1. Setup domain with SSL-certificate
 2. git clone https://github.com/EvercodeLab/changenow-bot.git
 3. cd changenow-bot
-4. npm i @babel/core @babel/node @babel/preset-env -g
+4. Install RedisDB (https://redis.io/) and insert parameters to .env
 5. npm install
 6. create _.env_ file and enter fields from .env.example
 7. npm run serve
