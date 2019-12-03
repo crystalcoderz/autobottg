@@ -1,5 +1,4 @@
 import Telegraf from 'telegraf';
-// import session from 'telegraf/session';
 import RedisSession from 'telegraf-session-redis';
 import Stage from 'telegraf/stage';
 import start from './controllers/start';

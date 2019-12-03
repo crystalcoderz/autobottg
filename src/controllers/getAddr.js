@@ -27,8 +27,8 @@ getAddress.enter(async ctx => {
   await intervalRequire(ctx, payinData);
 });
 
-getAddress.command('start', ctx => startHandler(ctx));
-getAddress.hears(config.kb.startNew, ctx => breakTransaction(ctx));
+getAddress.command('start', async ctx => await startHandler(ctx));
+getAddress.hears(config.kb.startNew, async ctx => await breakTransaction(ctx));
 getAddress.hears(config.kb.help, async ctx => {
   await ctx.reply(messages.support);
   await pause(500);

@@ -64,7 +64,7 @@ export const inputAdditionalDataAction = async ctx => {
 export const selectAmountAction = async ctx => {
   const amount = Number(ctx.message.text.replace(',', '.'));
   if (!amount || isNaN(amount) || ctx.message.text.match(/0x[\da-f]/i)) {
-    ctx.reply(messages.numErr);
+    await ctx.reply(messages.numErr);
     await pause(1000);
     await ctx.scene.reenter();
     return;
@@ -74,7 +74,7 @@ export const selectAmountAction = async ctx => {
     saveToSession(ctx, 'amount', amount);
     await ctx.scene.enter('est_exch');
   } else {
-    ctx.reply(`Oops! Wrong amount.`);
+    await ctx.reply(`Oops! Wrong amount.`);
     await pause(1000);
     await ctx.scene.reenter();
   }
