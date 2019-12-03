@@ -114,6 +114,7 @@ export const intervalRequire = async (ctx, payinData) => {
 
 export const breakTransaction = async ctx => {
   clearInterval(intervalStatus);
+  ctx.session = null;
   await ctx.scene.enter('curr_from');
 };
 
