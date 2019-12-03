@@ -1,15 +1,9 @@
 // Start scene
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
-import Extra from 'telegraf/extra';
-import Markup from 'telegraf/markup';
 import { getAllCurrencies } from '../api';
 import { saveToSession } from '../helpers';
-import { messages } from '../messages';
-import { config } from '../config';
 
 const start = new Scene('start');
-const { leave } = Stage;
 
 start.enter(async ctx => {
   const hash = +new Date();
@@ -18,7 +12,7 @@ start.enter(async ctx => {
   const opts = {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
-  }
+  };
 
   await ctx.reply(`Please follow this <a href="${process.env.APP_HOST_PORT}/terms-of-use/${hash}?id=${uid}">link</a> to accept our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
 
@@ -35,6 +29,6 @@ start.enter(async ctx => {
   }
 });
 
-start.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
+start.hears(/Start exchange/, async ctx => await ctx.scene.enter('curr_from'));
 
 export default start;

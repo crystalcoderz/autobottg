@@ -1,14 +1,12 @@
 // Amount scene
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
 import { selectAmountAction, cancelTradeAction } from '../actions';
 import { getMinimumAmount, saveToSession, startHandler } from '../helpers';
-import { getAmountKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
+import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { pause } from '../helpers';
 import { messages } from '../messages';
 
-const { leave } = Stage;
 const amount = new Scene('amount');
 
 amount.enter(async (ctx) => {
@@ -19,7 +17,7 @@ amount.enter(async (ctx) => {
   const minValue = await getMinimumAmount(tradePair);
   saveToSession(ctx, 'minValue', minValue);
   const minValueMsg = minValue ? `Minimal amount - <b>${minValue}</b>` : '';
-  return await ctx.replyWithHTML(
+  await ctx.replyWithHTML(
     `Enter the amount of <b>${selectedFrom.toUpperCase()}</b> you would like to exchange.\n${minValueMsg}`,
      getAmountKeyboard(ctx)
   );
@@ -29,12 +27,12 @@ amount.command('start', ctx => startHandler(ctx));
 amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
-    ctx.scene.enter('curr_to');
+    await ctx.scene.enter('curr_to');
     return;
   }
   if(config.kb.cancel === txt) {
     await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    cancelTradeAction(ctx);
+    await cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
