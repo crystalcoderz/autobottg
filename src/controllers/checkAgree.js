@@ -34,7 +34,7 @@ const backAgreeHandler = async ctx => {
 };
 
 checkAgree.command('start', ctx => startHandler(ctx));
-checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));
+checkAgree.hears(config.kb.confirm, async ctx => await agreePressAction(ctx));
 checkAgree.hears(config.kb.back, backAgreeHandler);
 checkAgree.hears(config.kb.help, async ctx => {
   await ctx.reply(messages.support);

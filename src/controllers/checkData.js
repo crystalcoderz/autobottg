@@ -30,7 +30,7 @@ checkData.enter(async ctx => {
   }
 });
 
-checkData.command('start', ctx => startHandler(ctx));
+checkData.command('start', async ctx => await startHandler(ctx));
 checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {

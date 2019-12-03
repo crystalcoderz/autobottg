@@ -22,7 +22,7 @@ addInfo.enter(async ctx => {
   }
 });
 
-addInfo.command('start', ctx => startHandler(ctx));
+addInfo.command('start', async ctx => await startHandler(ctx));
 addInfo.hears(
   [/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel, config.kb.help],
   async ctx => {

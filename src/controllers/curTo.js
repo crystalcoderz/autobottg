@@ -12,7 +12,7 @@ curTo.enter(async ctx => {
   await ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(ctx));
 });
 
-curTo.command('start', ctx => startHandler(ctx));
+curTo.command('start', async ctx => await startHandler(ctx));
 curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {

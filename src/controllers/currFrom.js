@@ -5,18 +5,18 @@ const { leave } = Stage;
 import { pause, startHandler } from '../helpers';
 import { messages } from '../messages';
 import { getAllCurrencies } from '../api';
-import { getFromKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
+import { getFromKeyboard, getReplyKeyboard } from '../keyboards';
 import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
 
 const currFrom = new Scene('curr_from');
 
 currFrom.enter(async ctx => {
-  const currs = ctx.session.currs || getAllCurrencies();
+  const currs = ctx.session.currs || await getAllCurrencies();
   await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
 
-currFrom.command('start', ctx => startHandler(ctx));
+currFrom.command('start', async ctx => await startHandler(ctx));
 currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.cancel === txt) {

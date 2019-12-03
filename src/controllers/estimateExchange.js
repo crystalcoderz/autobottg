@@ -22,7 +22,7 @@ estimateExchange.enter(async ctx => {
   );
 });
 
-estimateExchange.command('start', ctx => startHandler(ctx));
+estimateExchange.command('start', async ctx => await startHandler(ctx));
 estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
@@ -30,18 +30,18 @@ estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.he
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
     await cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(process.env.CN_EMAIL);
     return;
   }
   if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
-    ctx.reply(messages.validErr);
+    await ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z0-9\s]+/gi)) {
