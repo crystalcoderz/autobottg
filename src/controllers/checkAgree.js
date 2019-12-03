@@ -27,11 +27,11 @@ checkAgree.enter(async ctx => {
   );
 });
 
-const backAgreeHandler = (ctx) => {
+const backAgreeHandler = async ctx => {
   deleteFromSession(ctx, 'addData');
   deleteFromSession(ctx, 'addDataName');
-  ctx.scene.enter('est_exch');
-}
+  await ctx.scene.enter('est_exch');
+};
 
 checkAgree.command('start', ctx => startHandler(ctx));
 checkAgree.hears(config.kb.confirm, ctx => agreePressAction(ctx));

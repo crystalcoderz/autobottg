@@ -1,14 +1,11 @@
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
 import { inputAdditionalDataAction, cancelTradeAction } from '../actions';
 import { saveToSession, pause, startHandler } from '../helpers';
 import { getExtraIDKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { messages } from '../messages';
 
-const { leave } = Stage;
 const addInfo = new Scene('add_info');
-const email = process.env.CN_EMAIL || 'user@email.com';
 
 addInfo.enter(async ctx => {
   const curToInfo = ctx.session.curToInfo;
@@ -21,8 +18,7 @@ addInfo.enter(async ctx => {
     saveToSession(ctx, 'addDataName', curToInfo.externalIdName);
     await pause(1000);
   } else {
-    ctx.scene.leave('add_info');
-    ctx.scene.enter('agree');
+    await ctx.scene.enter('agree');
   }
 });
 
@@ -32,22 +28,22 @@ addInfo.hears(
   async ctx => {
     const txt = ctx.message.text;
     if (config.kb.back === txt) {
-      ctx.scene.enter('est_exch');
+      await ctx.scene.enter('est_exch');
       return;
     }
     if (config.kb.next === txt) {
-      ctx.scene.enter('agree');
+      await ctx.scene.enter('agree');
       return;
     }
     if (config.kb.cancel === txt) {
       await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-      cancelTradeAction(ctx);
+      await cancelTradeAction(ctx);
       return;
     }
     if (config.kb.help === txt) {
       await ctx.reply(messages.support);
       await pause(500);
-      await ctx.reply(email);
+      await ctx.reply(process.env.CN_EMAIL);
       return;
     }
     if (txt.match(/[^A-Za-z0-9\s]+/gi)) {
