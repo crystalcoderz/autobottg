@@ -147,6 +147,12 @@ export const getIpAction = async req => {
   }
 
   const user = await UserModel.findOne({ id: req.query.id });
+
+  if(!user) {
+    await UserModel.create({ id: req.query.id }, { visits: user.visits });
+    return;
+  }
+
   if (user && user.visits) {
     user.visits.push({ userIp: ip, ipParsed: new Date().toJSON() });
     await user.save();
