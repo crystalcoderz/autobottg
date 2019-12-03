@@ -1,7 +1,6 @@
 //----------------- Keyboards ---------------------------------------------------------
 
 import Markup from 'telegraf/markup';
-import Extra from 'telegraf/extra';
 import { config } from './config';
 
 export const getMainKeyboard = ctx => {

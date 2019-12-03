@@ -9,24 +9,11 @@ let intervalStatus;
 
 export const pause = time => new Promise(resolve => setTimeout(resolve, time));
 
-export const handler = fn => {
-  return async function(ctx, next) {
-    try {
-      return await fn(ctx);
-    } catch (error) {
-      console.log(error);
-      await ctx.reply('Error: ' + error);
-      return next();
-    }
-  };
-};
-
 export const getCurrencyName = ctx => {
-  const selectedCurName = ctx.message.text
+  return ctx.message.text
     .replace('✅', '')
     .split('(')[0]
     .trim();
-  return selectedCurName;
 };
 
 export const saveToSession = (ctx, field, data) => {
