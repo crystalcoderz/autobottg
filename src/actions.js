@@ -132,6 +132,7 @@ export const cancelTradeAction = async ctx => {
   deleteFromSession(ctx, 'minValue');
   deleteFromSession(ctx, 'walletCode');
   deleteFromSession(ctx, 'response');
+  ctx.session = null;
   await ctx.scene.leave();
 };
 

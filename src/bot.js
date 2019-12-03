@@ -1,5 +1,6 @@
 import Telegraf from 'telegraf';
-import session from 'telegraf/session';
+// import session from 'telegraf/session';
+import RedisSession from 'telegraf-session-redis';
 import Stage from 'telegraf/stage';
 import start from './controllers/start';
 import currFrom from './controllers/currFrom';
@@ -29,7 +30,14 @@ const stage = new Stage([
   getAddress
 ]);
 
-bot.use(session());
+const session = new RedisSession({
+  store: {
+    host: process.env.DB_SESSION_HOST || '127.0.0.1',
+    port: process.env.DB_SESSION_PORT || 6379
+  }
+});
+
+bot.use(session);
 bot.use(stage.middleware());
 bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
 bot.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
