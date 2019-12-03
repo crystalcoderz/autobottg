@@ -4,12 +4,8 @@ import Stage from 'telegraf/stage';
 const { leave } = Stage;
 import { pause, startHandler } from '../helpers';
 import { messages } from '../messages';
-<<<<<<< HEAD
 import { getAllCurrencies } from '../api';
 import { getFromKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
-=======
-import { getFromKeyboard, getReplyKeyboard } from '../keyboards';
->>>>>>> dev
 import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
 
