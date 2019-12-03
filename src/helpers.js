@@ -46,8 +46,12 @@ export const prepareName = name => {
 
 export const convertCurrency = async (ctx, curName) => {
   let curAbbr;
+<<<<<<< HEAD
   const allCurrs = await ctx.session.currs || getAllCurrencies();
   // const allCurrs = await ctx.session.currs;
+=======
+  const allCurrs = ctx.session.currs || await getAllCurrencies();
+>>>>>>> don't remove user session
   const currAvailable = allCurrs.find(
     item =>
       prepareName(item.ticker) === prepareName(curName) ||
@@ -115,7 +119,6 @@ export const intervalRequire = async (ctx, payinData) => {
 
 export const breakTransaction = async ctx => {
   clearInterval(intervalStatus);
-  ctx.session = null;
   await ctx.scene.enter('curr_from');
 };
 
