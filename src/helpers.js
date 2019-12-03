@@ -1,6 +1,6 @@
 //------------------------------- HELPERS -------------------------------------------
 
-import { getPairs, getMinimum, getTransactionStatus, getExchAmount } from './api';
+import { getPairs, getMinimum, getTransactionStatus, getExchAmount, getAllCurrencies } from './api';
 import { getMainKeyboard } from './keyboards';
 import { messages } from './messages';
 import { config } from './config';
@@ -46,7 +46,7 @@ export const prepareName = name => {
 
 export const convertCurrency = async (ctx, curName) => {
   let curAbbr;
-  const allCurrs = await ctx.session.currs;
+  const allCurrs = await ctx.session.currs || getAllCurrencies();
   const currAvailable = allCurrs.find(
     item =>
       prepareName(item.ticker) === prepareName(curName) ||

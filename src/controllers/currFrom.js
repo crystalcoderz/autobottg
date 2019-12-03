@@ -4,14 +4,15 @@ import Stage from 'telegraf/stage';
 const { leave } = Stage;
 import { pause, startHandler } from '../helpers';
 import { messages } from '../messages';
-import { getFromKeyboard, getReplyKeyboard } from '../keyboards';
+import { getAllCurrencies } from '../api';
+import { getFromKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
 import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
 import { config } from '../config';
 
 const currFrom = new Scene('curr_from');
 
 currFrom.enter(async ctx => {
-  const currs = ctx.session.currs;
+  const currs = ctx.session.currs || getAllCurrencies();
   await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
 });
 

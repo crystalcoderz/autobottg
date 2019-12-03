@@ -19,7 +19,7 @@ start.enter(async ctx => {
   try {
     const currs = await getAllCurrencies();
     if (!currs || !currs.length) {
-      await ctx.reply();
+      await ctx.reply('Server error. Try later.');
       return;
     }
     saveToSession(ctx, 'currs', currs);
