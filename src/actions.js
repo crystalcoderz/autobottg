@@ -3,16 +3,23 @@
 import { messages } from './messages';
 import { pause } from './helpers';
 import UserModel from './models/User';
+import VisitModel from './models/Visit';
 import { getCurrencyName, saveToSession, convertCurrency, deleteFromSession } from './helpers';
 import { sendTransactionData, getCurrInfo } from './api';
 
 export const handleStartAction = async ctx => {
-  const user = ctx.message.from;
+  const { from } = ctx.message;
+  const user = from;
+  const { id: userId, username } = user;
+
   saveToSession(ctx, 'userId', user.id);
-  const userInDB = await UserModel.findOne({ id: user.id });
+
+  const userInDB = await UserModel.findOne({ userId: user.id });
+
   if (!userInDB) {
-    await UserModel.create({ id: user.id, username: user.username, visits: [], transactions: [] });
+    await UserModel.create({ userId, username });
   }
+
   await ctx.scene.enter('start');
 };
 
@@ -97,7 +104,7 @@ export const agreePressAction = async ctx => {
   const getIpFromDB = async () => {
     const userInDB = await UserModel.findOne({ id: uId });
     const visits = userInDB && userInDB.visits;
-    if(!userInDB.visits.length) return '';
+    if (!userInDB.visits.length) return '';
     return visits[visits.length - 1].userIp;
   };
 
@@ -137,24 +144,20 @@ export const cancelTradeAction = async ctx => {
 };
 
 export const getIpAction = async req => {
-  let ip;
+  let userIp;
   if (req.headers['x-forwarded-for']) {
-    ip = req.headers['x-forwarded-for'].split(',')[0];
+    userIp = req.headers['x-forwarded-for'].split(',')[0];
   } else if (req.connection && req.connection.remoteAddress) {
-    ip = req.connection.remoteAddress;
+    userIp = req.connection.remoteAddress;
   } else {
-    ip = req.ip;
+    userIp = req.ip;
   }
 
-  const user = await UserModel.findOne({ id: req.query.id });
+  const user = await UserModel.findOne({ userId: req.query.id }).populate('Visit');
+  const visit = await VisitModel.create({ userIp, ipParsed: new Date(), user: user.id });
 
-  if(!user) {
-    await UserModel.create({ id: req.query.id }, { visits: user.visits });
-    return;
-  }
+  user.visits.push(visit);
 
-  if (user && user.visits) {
-    user.visits.push({ userIp: ip, ipParsed: new Date().toJSON() });
-    await user.save();
-  }
+  await user.save();
+  await visit.save();
 };
