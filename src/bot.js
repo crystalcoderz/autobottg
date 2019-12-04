@@ -33,8 +33,8 @@ const stage = new Stage([
 
 const session = new RedisSession({
   store: {
-    host: process.env.DB_SESSION_HOST || '127.0.0.1',
-    port: process.env.DB_SESSION_PORT || 6379
+    host: process.env.DB_REDIS_HOST || '127.0.0.1',
+    port: process.env.DB_REDIS_PORT || 6379,
   }
 });
 
