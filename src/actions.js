@@ -87,7 +87,7 @@ export const typeWalletAction = async ctx => {
 };
 
 export const agreePressAction = async ctx => {
-  const uId = ctx.session.userId || ctx.message.from;
+  const uId = ctx.session.userId || ctx.message.from.id;
   const curFrom = ctx.session.curFrom;
   const curTo = ctx.session.curTo;
   const walletCode = ctx.session.walletCode;

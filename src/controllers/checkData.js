@@ -49,7 +49,7 @@ checkData.hears([/[A-Za-z0-9]/gi, config.kb.back, config.kb.cancel, config.kb.he
   if (config.kb.help === txt) {
     await ctx.reply(messages.support);
     await pause(500);
-    await ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(config.email);
     return;
   }
   await inputAdditionalDataAction(ctx);

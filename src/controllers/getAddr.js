@@ -32,7 +32,7 @@ getAddress.hears(config.kb.startNew, async ctx => await breakTransaction(ctx));
 getAddress.hears(config.kb.help, async ctx => {
   await ctx.reply(messages.support);
   await pause(500);
-  await ctx.reply(process.env.CN_EMAIL);
+  await ctx.reply(config.email);
   return;
 });
 

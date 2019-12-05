@@ -34,13 +34,31 @@ const backAgreeHandler = async ctx => {
 };
 
 checkAgree.command('start', ctx => startHandler(ctx));
-checkAgree.hears(config.kb.confirm, async ctx => await agreePressAction(ctx));
-checkAgree.hears(config.kb.back, backAgreeHandler);
-checkAgree.hears(config.kb.help, async ctx => {
-  await ctx.reply(messages.support);
-  await pause(500);
-  await ctx.reply(process.env.CN_EMAIL);
-  return;
+// checkAgree.hears(config.kb.confirm, async ctx => await agreePressAction(ctx));
+// checkAgree.hears(config.kb.back, backAgreeHandler);
+// checkAgree.hears(config.kb.help, async ctx => {
+//   await ctx.reply(messages.support);
+//   await pause(500);
+//   await ctx.reply(config.email);
+//   return;
+// });
+
+checkAgree.hears([config.kb.confirm, config.kb.back, config.kb.help], async ctx => {
+  const txt = ctx.message.text;
+  if (config.kb.confirm === txt) {
+    await agreePressAction(ctx)
+    return;
+  }
+  if (config.kb.back === txt) {
+    await backAgreeHandler(ctx);
+    return;
+  }
+  if (config.kb.help === txt) {
+    await ctx.reply(messages.support);
+    await pause(500);
+    await ctx.reply(config.email);
+    return;
+  }
 });
 
 export default checkAgree;
