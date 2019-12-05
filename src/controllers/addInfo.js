@@ -10,7 +10,7 @@ const addInfo = new Scene('add_info');
 addInfo.enter(async ctx => {
   const curToInfo = ctx.session.curToInfo;
 
-  if (curToInfo.isAnonymous || curToInfo.hasExternalId) {
+  if (curToInfo.hasExternalId) {
     await ctx.reply(
       `Enter the ${curToInfo.externalIdName}`,
       getExtraIDKeyboard(ctx)
