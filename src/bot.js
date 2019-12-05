@@ -52,6 +52,10 @@ bot.hears(/Read and Accept/, async ctx => await handleStartAction(ctx));
 
 bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
 
+bot.catch(err => {
+  process.stderr.write(`${err}`);
+});
+
 bot.startPolling();
 
 export default bot;
