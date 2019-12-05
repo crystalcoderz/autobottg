@@ -27,7 +27,7 @@ currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
   if (config.kb.help === txt) {
     await ctx.reply(messages.support);
     await pause(500);
-    await ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(config.email);
     return;
   }
   if (txt.match(/[^()A-Za-z\s]+/gi)) {

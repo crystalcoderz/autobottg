@@ -7,8 +7,6 @@ import { messages } from '../messages';
 
 const addInfo = new Scene('add_info');
 
-const email = process.env.CN_EMAIL || 'user@email.com';
-
 addInfo.enter(async ctx => {
   const curToInfo = ctx.session.curToInfo;
 
@@ -45,7 +43,7 @@ addInfo.hears(
     if (config.kb.help === txt) {
       await ctx.reply(messages.support);
       await pause(500);
-      await ctx.reply(email);
+      await ctx.reply(config.email);
       return;
     }
     if (txt.match(/[^A-Za-z0-9\s]+/gi)) {
