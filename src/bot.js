@@ -14,6 +14,7 @@ import { messages } from './messages';
 import { getMainKeyboard } from './keyboards';
 import { cancelTradeAction, handleStartAction } from './actions';
 import { config } from './config';
+import rateLimit from 'telegraf-ratelimit';
 
 const bot = new Telegraf(process.env.API_BOT_KEY);
 
@@ -36,6 +37,12 @@ const session = new RedisSession({
   }
 });
 
+const limitConfig = {
+  window: 1500,
+  limit: 1
+}
+
+bot.use(rateLimit(limitConfig));
 bot.use(session);
 bot.use(stage.middleware());
 bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
