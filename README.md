@@ -37,8 +37,9 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 1. git clone https://github.com/EvercodeLab/changenow-bot.git
 2. cd changenow-bot
 3. install [mongodb](https://docs.mongodb.com/v4.0/administration/install-on-linux/)
-4. npm install
-5. create _.env_ file and enter fields from .env.example
+4. Install RedisDB (https://redis.io/)
+5. npm install
+6. create _.env_ file and enter fields from .env.example
 6. if you need build and run app `npm run dev` only run `npm start`
 
 Tip: Use `dev` branch for testing environment!
