@@ -27,7 +27,7 @@ curTo.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async 
   if (config.kb.help === txt) {
     await ctx.reply(messages.support);
     await pause(500);
-    await ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(config.email);
     return;
   }
   if (txt.match(/^[\u{2705}]/gu)) {
