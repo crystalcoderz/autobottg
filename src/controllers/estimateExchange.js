@@ -1,7 +1,6 @@
 //estimateExchange  scene
 import Scene from 'telegraf/scenes/base';
 import { saveToSession, pause, getAmountTotal, startHandler } from '../helpers';
-import { getExchAmount } from '../api';
 import { typeWalletAction, cancelTradeAction } from '../actions';
 import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
@@ -17,32 +16,32 @@ estimateExchange.enter(async ctx => {
   const amountTotal = await getAmountTotal(amount, fromTo);
   saveToSession(ctx, 'amountTotal', amountTotal);
   await pause(1000);
-  ctx.replyWithHTML(
+  await ctx.replyWithHTML(
     `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nEnter the recipient <b>${curTo.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
   );
 });
 
-estimateExchange.command('start', ctx => startHandler(ctx));
+estimateExchange.command('start', async ctx => await startHandler(ctx));
 estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
-    ctx.scene.enter('amount');
+    await ctx.scene.enter('amount');
     return;
   }
   if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    cancelTradeAction(ctx);
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(config.email);
     return;
   }
   if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
-    ctx.reply(messages.validErr);
+    await ctx.reply(messages.validErr);
     return;
   }
   if (txt.match(/[()A-Za-z0-9\s]+/gi)) {

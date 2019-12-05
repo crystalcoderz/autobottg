@@ -19,5 +19,6 @@ export const config =
     confirm: '✔️ Confirm',
     help: 'ℹ️ Support Info',
   },
-  interval: 15000
+  interval: 15000,
+  email: process.env.CN_EMAIL || 'user@config.email.com'
 }

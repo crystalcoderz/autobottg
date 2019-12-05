@@ -1,14 +1,12 @@
 // Amount scene
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
 import { selectAmountAction, cancelTradeAction } from '../actions';
 import { getMinimumAmount, saveToSession, startHandler } from '../helpers';
-import { getAmountKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
+import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
 import { config } from '../config';
 import { pause } from '../helpers';
 import { messages } from '../messages';
 
-const { leave } = Stage;
 const amount = new Scene('amount');
 
 amount.enter(async (ctx) => {
@@ -19,29 +17,28 @@ amount.enter(async (ctx) => {
   const minValue = await getMinimumAmount(tradePair);
   saveToSession(ctx, 'minValue', minValue);
   const minValueMsg = minValue ? `Minimal amount - <b>${minValue}</b>` : '';
-  return ctx.replyWithHTML(
+  await ctx.replyWithHTML(
     `Enter the amount of <b>${selectedFrom.toUpperCase()}</b> you would like to exchange.\n${minValueMsg}`,
      getAmountKeyboard(ctx)
   );
-  await pause(500);
 });
 
-amount.command('start', ctx => startHandler(ctx));
+amount.command('start', async ctx => await startHandler(ctx));
 amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
   const txt = ctx.message.text;
   if (config.kb.back === txt) {
-    ctx.scene.enter('curr_to');
+    await ctx.scene.enter('curr_to');
     return;
   }
   if(config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    cancelTradeAction(ctx);
+    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
+    await cancelTradeAction(ctx);
     return;
   }
   if (config.kb.help === txt) {
-    ctx.reply(messages.support);
+    await ctx.reply(messages.support);
     await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
+    await ctx.reply(config.email);
     return;
   }
   await selectAmountAction(ctx);

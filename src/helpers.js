@@ -1,6 +1,6 @@
 //------------------------------- HELPERS -------------------------------------------
 
-import { getPairs, getMinimum, getTransactionStatus, getExchAmount } from './api';
+import { getPairs, getMinimum, getTransactionStatus, getExchAmount, getAllCurrencies } from './api';
 import { getMainKeyboard } from './keyboards';
 import { messages } from './messages';
 import { config } from './config';
@@ -9,24 +9,11 @@ let intervalStatus;
 
 export const pause = time => new Promise(resolve => setTimeout(resolve, time));
 
-export const handler = fn => {
-  return async function(ctx, next) {
-    try {
-      return await fn(ctx);
-    } catch (error) {
-      console.log(error);
-      await ctx.reply('Error: ' + error);
-      return next();
-    }
-  };
-};
-
 export const getCurrencyName = ctx => {
-  const selectedCurName = ctx.message.text
+  return ctx.message.text
     .replace('✅', '')
     .split('(')[0]
     .trim();
-  return selectedCurName;
 };
 
 export const saveToSession = (ctx, field, data) => {
@@ -46,7 +33,7 @@ export const prepareName = name => {
 
 export const convertCurrency = async (ctx, curName) => {
   let curAbbr;
-  const allCurrs = await ctx.session.currs;
+  const allCurrs = ctx.session.currs || await getAllCurrencies();
   const currAvailable = allCurrs.find(
     item =>
       prepareName(item.ticker) === prepareName(curName) ||
@@ -112,15 +99,15 @@ export const intervalRequire = async (ctx, payinData) => {
   }, config.interval);
 };
 
-export const breakTransaction = ctx => {
+export const breakTransaction = async ctx => {
   clearInterval(intervalStatus);
-  ctx.scene.enter('curr_from');
+  await ctx.scene.enter('curr_from');
 };
 
-export const startHandler = (ctx) => {
-  ctx.scene.leave();
-  ctx.reply(messages.startMsg, getMainKeyboard(ctx));
-}
+export const startHandler = async ctx => {
+  await ctx.scene.leave();
+  await ctx.reply(messages.startMsg, getMainKeyboard(ctx));
+};
 
 export const addTransactionToDB = async (trID, uId) => {
   const user = await UserModel.findOne({ id: uId });
@@ -128,4 +115,4 @@ export const addTransactionToDB = async (trID, uId) => {
     user.transactions.push({ transactionId: trID});
     await UserModel.updateOne({ id: uId }, { transactions: user.transactions });
   }
-}
+};
