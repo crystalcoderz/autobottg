@@ -68,7 +68,7 @@ function startDevMode(bot) {
 
 async function startProdMode(bot) {
   await bot.telegram.setWebhook(
-    `${process.env.APP_HOST}}/${process.env.API_BOT_KEY}/webhook`,
+    `${process.env.APP_HOST}}/webhook`,
     {
       source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
     }
