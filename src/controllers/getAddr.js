@@ -18,7 +18,7 @@ getAddress.enter(async ctx => {
   if (payinData) {
     await addTransactionToDB(payinData.id, uId);
     await ctx.replyWithHTML(
-      `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
+      `Selected pair <b>${curFrom.toUpperCase()}-${curTo.toUpperCase()}</b>. You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
       getBackKeyboard(ctx)
     );
   }

@@ -77,10 +77,10 @@ export const intervalRequire = async (ctx, payinData) => {
   const curTo = await ctx.session.curTo;
   const statusMap = {
     new: '',
-    waiting: 'We are waiting for your coins to be received. No pressure, though.',
-    confirming: 'We have received your deposit. Nice!',
+    waiting: 'We are waiting for your coins to be received. No pressure, though. Keep in mind - we will update the status when the deposit is received.',
+    confirming: 'We have received your deposit. Revving up the exchange machine right away!',
     exchanging: 'The exchange process has been initiated. Just a little bit left...',
-    finished: `Yay! The transaction is successfully finished. Your ${curTo} have been sent to your wallet.\nThank you for choosing ChangeNOW - hope to see you again soon!`,
+    finished: `Yay! The transaction is successfully finished.`,
     failed:
       'We weren’t able to start the transaction process. Please, try again later.',
     expired:
