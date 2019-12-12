@@ -39,7 +39,8 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 3. install [mongodb](https://docs.mongodb.com/v4.0/administration/install-on-linux/)
 4. npm install
 5. create _.env_ file and enter fields from .env.example
-6. if you need build and run app `npm run dev` only run `npm start`
+6. Install RedisDB and run with parameters from .env.example
+7. if you need build and run app `npm run dev` only run `npm start`
 
 Tip: Use `dev` branch for testing environment!
 
