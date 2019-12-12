@@ -15,6 +15,7 @@ import { getMainKeyboard } from './keyboards';
 import { cancelTradeAction, handleStartAction } from './actions';
 import { config } from './config';
 import rateLimit from 'telegraf-ratelimit';
+import rp from 'request-promise';
 
 const bot = new Telegraf(process.env.API_BOT_KEY);
 
@@ -56,6 +57,18 @@ bot.catch(err => {
   process.stderr.write(`${err}`);
 });
 
-bot.startPolling();
+if(process.env.NODE_ENV === 'production') {
+  rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
+    bot.startPolling()
+  );
+} else {
+  bot.telegram.setWebhook(
+    `${process.env.APP_HOST_PORT}/${process.env.API_BOT_KEY}/webhook`,
+    {
+      source: 'cert.pem'
+    }
+  );
+}
+
 
 export default bot;

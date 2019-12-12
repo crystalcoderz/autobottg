@@ -33,12 +33,7 @@ export const prepareName = name => {
 
 export const convertCurrency = async (ctx, curName) => {
   let curAbbr;
-<<<<<<< HEAD
-  const allCurrs = await ctx.session.currs || getAllCurrencies();
-  // const allCurrs = await ctx.session.currs;
-=======
   const allCurrs = ctx.session.currs || await getAllCurrencies();
->>>>>>> don't remove user session
   const currAvailable = allCurrs.find(
     item =>
       prepareName(item.ticker) === prepareName(curName) ||
