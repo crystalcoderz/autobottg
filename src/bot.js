@@ -57,15 +57,20 @@ bot.catch(err => {
   process.stderr.write(`${err}`);
 });
 
-if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'development') startDevMode(bot);
+if(process.env.NODE_ENV === 'production') startProdMode(bot);
+
+function startDevMode(bot) {
   rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
     bot.startPolling()
   );
-} else {
-  bot.telegram.setWebhook(
-    `${process.env.APP_HOST_PORT}/${process.env.API_BOT_KEY}/webhook`,
+}
+
+async function startProdMode(bot) {
+  await bot.telegram.setWebhook(
+    `${process.env.APP_HOST}}/${process.env.API_BOT_KEY}/webhook`,
     {
-      source: 'cert.pem'
+      source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
     }
   );
 }
