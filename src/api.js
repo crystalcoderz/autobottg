@@ -8,7 +8,6 @@ const _apiRequest = async options => {
     return resp;
   } catch (err) {
     console.log(err.error.error);
-    throw new Error(err.error.error);
   }
 };
 
