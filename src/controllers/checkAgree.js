@@ -21,8 +21,7 @@ checkAgree.enter(async ctx => {
   const addMsg = addData ? `Your ${addDataName} is <b>${addData}</b>.\n` : '';
 
   await ctx.replyWithHTML(
-    `
-    You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nYour recipient <b>${curTo.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
+    `Selected pair <b>${curFrom.toUpperCase()}-${curTo.toUpperCase()}</b>. You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nYour recipient <b>${curTo.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
     getAgreeKeyboard(ctx)
   );
 });

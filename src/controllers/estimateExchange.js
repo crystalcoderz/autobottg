@@ -17,7 +17,7 @@ estimateExchange.enter(async ctx => {
   saveToSession(ctx, 'amountTotal', amountTotal);
   await pause(1000);
   await ctx.replyWithHTML(
-    `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nEnter the recipient <b>${curTo.toUpperCase()}</b> wallet address.`,
+    `Selected pair <b>${curFrom.toUpperCase()}-${curTo.toUpperCase()}</b>. You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nEnter the recipient <b>${curTo.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
   );
 });
