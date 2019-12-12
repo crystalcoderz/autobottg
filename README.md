@@ -17,7 +17,7 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 
 ## Server setup
 
-1. Setup domain with SSL-certificate
+1. Setup domain with SSL-certificate to let webhooks work
 2. git clone https://github.com/EvercodeLab/changenow-bot.git
 3. cd changenow-bot
 4. Install RedisDB (https://redis.io/) and insert parameters to .env
