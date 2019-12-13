@@ -1,47 +1,54 @@
-// Amount scene
 import Scene from 'telegraf/scenes/base';
-import { selectAmountAction, cancelTradeAction } from '../actions';
-import { getMinimumAmount, saveToSession, startHandler } from '../helpers';
-import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
-import { config } from '../config';
-import { pause } from '../helpers';
+import { getMinimumAmount } from '../api';
+import { getAmountKeyboard } from '../keyboards';
 import { messages } from '../messages';
+import scenes from '../constants/scenes';
+import buttons from '../constants/buttons';
 
-const amount = new Scene('amount');
+const amount = new Scene(scenes.amount);
 
 amount.enter(async (ctx) => {
-  const selectedFrom = ctx.session.curFrom;
-  const selectedTo = ctx.session.curTo;
-  const tradePair = `${selectedFrom}_${selectedTo}`;
+  const { tradingData } = ctx.session;
+  const { currFrom, currTo } = tradingData;
+  const tradePair = `${currFrom.ticker}_${currTo.ticker}`;
+  const { minAmount } = await getMinimumAmount(tradePair);
 
-  const minValue = await getMinimumAmount(tradePair);
-  saveToSession(ctx, 'minValue', minValue);
-  const minValueMsg = minValue ? `Minimal amount - <b>${minValue}</b>` : '';
+  ctx.session.tradingData = { ...tradingData, minAmount };
+  const minAmountMsg = minAmount ? `Minimal amount - <b>${minAmount}</b>` : '';
+
   await ctx.replyWithHTML(
-    `Enter the amount of <b>${selectedFrom.toUpperCase()}</b> you would like to exchange.\n${minValueMsg}`,
-     getAmountKeyboard(ctx)
+    `Enter the amount of <b>${currFrom.ticker.toUpperCase()}</b> you would like to exchange.\n${minAmountMsg}`,
+    getAmountKeyboard(ctx)
   );
 });
 
-amount.command('start', async ctx => await startHandler(ctx));
-amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
-  const txt = ctx.message.text;
-  if (config.kb.back === txt) {
-    await ctx.scene.enter('curr_to');
+amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, buttons.back], async ctx => {
+  const { text } = ctx.message;
+  const { tradingData } = ctx.session;
+
+  if (text === buttons.back) {
+    ctx.session.tradingData = {
+      ...tradingData,
+      currTo: '',
+    };
+
+    delete ctx.session.tradingData.minAmount;
+
+    await ctx.scene.enter(scenes.currTo);
     return;
   }
-  if(config.kb.cancel === txt) {
-    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    await cancelTradeAction(ctx);
+
+  const formattingAmount = Number(text.replace(',', '.'));
+
+  if (!formattingAmount || text.match(/0x[\da-f]/i) || tradingData.minAmount > formattingAmount) {
+    await ctx.reply(messages.numErr);
     return;
   }
-  if (config.kb.help === txt) {
-    await ctx.reply(messages.support);
-    await pause(500);
-    await ctx.reply(config.email);
-    return;
-  }
-  await selectAmountAction(ctx);
+
+  ctx.session.tradingData = { ...tradingData, amount: formattingAmount };
+
+  await ctx.scene.enter(scenes.estExch);
+
 });
 
 export default amount;

@@ -1,77 +1,67 @@
-//----------------- Keyboards ---------------------------------------------------------
-
 import Markup from 'telegraf/markup';
-import { config } from './config';
+import buttons from './constants/buttons';
+import popularCurrs from './constants/popularCurrs';
 
-export const getMainKeyboard = ctx => {
-  return Markup.keyboard([config.kb.accept])
+export const getMainKeyboard = () => {
+  return Markup.keyboard([buttons.accept])
     .oneTime()
     .resize()
     .extra();
 };
 
-export const getReplyKeyboard = ctx => {
-  return Markup.keyboard([config.kb.start])
+export const getReplyKeyboard = () => {
+  return Markup.keyboard([buttons.start])
     .oneTime()
     .resize()
     .extra();
-}
+};
 
-export const getFromKeyboard = currs => {
-  const { btc, eth, bch, ltc, xmr, zec } = config.popularCurrs;
-  const fullKb = [[btc, eth], [bch, ltc], [xmr, zec], [config.kb.cancel], [config.kb.help]];
+export const getFromKeyboard = (choosedCurr) => {
+  const popularCurrsWithActive = { ...popularCurrs, [choosedCurr]:  `✅ ${popularCurrs[choosedCurr]}`};
+  const { btc, eth, bch, ltc, xmr, zec } = popularCurrsWithActive;
+  const fullKb = [[btc, eth], [bch, ltc], [xmr, zec], [buttons.cancel], [buttons.help]];
+
   return Markup.keyboard(fullKb)
     .resize()
     .extra();
 };
 
-export const getToKeyboard = ctx => {
-  const curFrom = ctx.session.curFrom;
-  const popularCurrs = {};
-  Object.keys(config.popularCurrs).forEach(tiker => {
-    tiker === curFrom
-      ? (popularCurrs[tiker] = `✅ ${config.popularCurrs[tiker]}`)
-      : (popularCurrs[tiker] = config.popularCurrs[tiker]);
-  });
-  const { btc, eth, bch, ltc, xmr, zec } = popularCurrs;
+export const getToKeyboard = (choosedCurr) => {
+  const popularCurrsWithActive = { ...popularCurrs, [choosedCurr]:  `✅ ${popularCurrs[choosedCurr]}`};
+  const { btc, eth, bch, ltc, xmr, zec } = popularCurrsWithActive;
   const fullKb = [
     [btc, eth],
     [bch, ltc],
     [xmr, zec],
-    [config.kb.back, config.kb.cancel],
-    [config.kb.help]
+    [buttons.back, buttons.cancel],
+    [buttons.help]
   ];
+
   return Markup.keyboard(fullKb)
     .resize()
     .extra();
 };
 
-export const getAmountKeyboard = ctx => {
-  return Markup.keyboard([[config.kb.back, config.kb.cancel], [config.kb.help]])
+export const getAmountKeyboard = () => {
+  return Markup.keyboard([[buttons.back, buttons.cancel], [buttons.help]])
     .resize()
     .extra();
 };
 
-export const getExtraIDKeyboard = ctx => {
-  return Markup.keyboard([[config.kb.back, config.kb.next], [config.kb.cancel], [config.kb.help]])
+export const getExtraIDKeyboard = () => {
+  return Markup.keyboard([[buttons.back, buttons.next], [buttons.cancel], [buttons.help]])
     .resize()
     .extra();
 };
 
-export const getAgreeKeyboard = ctx => {
-  return Markup.keyboard([[config.kb.confirm, config.kb.back], [config.kb.help]])
+export const getAgreeKeyboard = () => {
+  return Markup.keyboard([[buttons.confirm, buttons.back], [buttons.help]])
     .resize()
     .extra();
 };
 
-export const getBackKeyboard = ctx => {
-  return Markup.keyboard([[config.kb.startNew], [config.kb.help]])
-    .resize()
-    .extra();
-};
-
-export const getHelpKeyboard = ctx => {
-  return Markup.keyboard([[config.kb.cancel]])
+export const getBackKeyboard = () => {
+  return Markup.keyboard([[buttons.startNew], [buttons.help]])
     .resize()
     .extra();
 };

@@ -1,44 +1,55 @@
-// Currency From scene
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
-const { leave } = Stage;
-import { pause, startHandler } from '../helpers';
+import { isAvailableCurr, getCurrencyName } from '../helpers';
 import { messages } from '../messages';
-import { getAllCurrencies } from '../api';
-import { getFromKeyboard, getReplyKeyboard } from '../keyboards';
-import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
-import { config } from '../config';
+import { getAllCurrencies, getCurrInfo } from '../api';
+import { getFromKeyboard } from '../keyboards';
+import scenes from '../constants/scenes';
 
-const currFrom = new Scene('curr_from');
+const currFrom = new Scene(scenes.currFrom);
 
 currFrom.enter(async ctx => {
-  const currs = ctx.session.currs || await getAllCurrencies();
-  await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
+
+  if (!ctx.session.allCurrencies) {
+    ctx.session.allCurrencies = await getAllCurrencies();
+  }
+
+  ctx.session.tradingData = {};
+
+  const { tradingData } = ctx.session;
+  const choosedCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
+  await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(choosedCurr));
 });
 
-currFrom.command('start', async ctx => await startHandler(ctx));
-currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
-  const txt = ctx.message.text;
-  if (config.kb.cancel === txt) {
-    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    await cancelTradeAction(ctx);
-    return;
-  }
-  if (config.kb.help === txt) {
-    await ctx.reply(messages.support);
-    await pause(500);
-    await ctx.reply(config.email);
-    return;
-  }
-  if (txt.match(/[^()A-Za-z\s]+/gi)) {
-    await ctx.reply(messages.validErr);
-    return;
-  }
-  if (txt.match(/[()A-Za-z\s]+/gi)) {
-    await selectFromCurrencyAction(ctx);
-  }
-});
+currFrom.hears(/(.*)/gi, async (ctx) => {
+  const { text } = ctx.message;
+  const { allCurrencies, tradingData } = ctx.session;
 
-currFrom.command('start', leave());
+  if (text && text.trim().length) {
+
+    if (text.match(/^[\u{2705}]/gu)) {
+      await ctx.scene.enter(scenes.currTo);
+      return;
+    }
+
+    if (text.match(/[^()A-Za-z\s]+/gi)) {
+      await ctx.reply(messages.validErr);
+      return;
+    }
+
+    const currIndex = isAvailableCurr(getCurrencyName(text), allCurrencies);
+
+    if (currIndex === -1) {
+      await ctx.reply(messages.notFound);
+      return;
+    }
+
+    await ctx.replyWithHTML(`Selected currency - <b>${allCurrencies[currIndex].ticker.toUpperCase()}</b>.`);
+
+    ctx.session.tradingData = { ...tradingData, currFrom: await getCurrInfo(allCurrencies[currIndex].ticker) };
+
+    await ctx.scene.enter(scenes.currTo);
+  }
+
+});
 
 export default currFrom;
