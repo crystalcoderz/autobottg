@@ -1,11 +1,8 @@
-//------------------------------- API -------------------------------------------
 import rp from 'request-promise';
-import { config } from './config';
 
 const _apiRequest = async options => {
   try {
-    const resp = await rp(options);
-    return resp;
+    return await rp(options);
   } catch (err) {
     console.log(err.error.error);
   }
@@ -19,8 +16,8 @@ export const getAllCurrencies = async () => {
     },
     json: true
   };
-  const currs = await _apiRequest(options);
-  return currs;
+
+  return await _apiRequest(options);
 };
 
 export const getPairs = async () => {
@@ -31,11 +28,11 @@ export const getPairs = async () => {
     },
     json: true
   };
-  const currs = await _apiRequest(options);
-  return currs;
+
+  return await _apiRequest(options);
 };
 
-export const getMinimum = async pair => {
+export const getMinimumAmount = async pair => {
   const options = {
     uri: `${process.env.CN_API_URL}/min-amount/${pair}?api_key=${process.env.CN_API_KEY}`,
     headers: {
@@ -43,8 +40,8 @@ export const getMinimum = async pair => {
     },
     json: true
   };
-  const amount = await _apiRequest(options);
-  return amount;
+
+  return await _apiRequest(options);
 };
 
 export const getCurrInfo = async cur => {
@@ -55,8 +52,8 @@ export const getCurrInfo = async cur => {
     },
     json: true
   };
-  const curr = await _apiRequest(options);
-  return curr;
+
+  return await _apiRequest(options);
 };
 
 export const getExchAmount = async (amount, fromTo) => {
@@ -67,8 +64,8 @@ export const getExchAmount = async (amount, fromTo) => {
     },
     json: true
   };
-  const summ = await _apiRequest(options);
-  return summ;
+
+  return await _apiRequest(options);
 };
 
 export const sendTransactionData = async data => {
@@ -81,8 +78,8 @@ export const sendTransactionData = async data => {
     },
     json: true
   };
-  const curr = await _apiRequest(options);
-  return curr;
+
+  return await _apiRequest(options);
 };
 
 export const getTransactionStatus = async id => {
@@ -90,6 +87,6 @@ export const getTransactionStatus = async id => {
     uri: `${process.env.CN_API_URL}/transactions/${id}/${process.env.CN_API_KEY}`,
     json: true
   };
-  const status = await _apiRequest(options);
-  return status;
+
+  return await _apiRequest(options);
 };
