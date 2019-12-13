@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-  userId: Number,
-  username: String,
+  userId: { type: Number, required: true },
+  username: { type: String, required: true },
   visits: [{ type: Schema.Types.ObjectId, ref: 'Visit' }],
   transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }]
 });
