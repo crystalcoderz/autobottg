@@ -20,9 +20,6 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "telegraf": "^3.33.0",
-    "telegraf-inline-menu": "^3.6.3",
-    "telegraf-logger": "^3.0.0",
-    "telegraf-ratelimit": "^2.0.0",
     "telegraf-session-redis": "^5.1.0"
   },
   "devDependencies": {
