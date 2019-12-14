@@ -8,7 +8,6 @@ const TransactionSchema = new Schema({
   payinAddress: { type: String, required: true },
   payoutAddress: { type: String, required: true },
   payoutExtraId: { type: String, required: false },
-  payoutHash: { type: String, required: true },
   fromCurrency: { type: String, required: true },
   toCurrency: { type: String, required: true },
   amount: { type: Schema.Types.Decimal128, required: true },
