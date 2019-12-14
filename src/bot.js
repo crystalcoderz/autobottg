@@ -37,12 +37,12 @@ const session = new RedisSession({
 stage.hears([buttons.help, buttons.cancel], async ctx => {
   const { text } = ctx.message;
 
-  if (!ctx.session) {
+  if (!ctx.session && text !== buttons.help) {
     await ctx.reply(messages.startMsg, getReplyKeyboard());
     return;
   }
 
-  if (ctx.session && !ctx.session.userId) {
+  if (ctx.session && !ctx.session.userId && text !== buttons.help) {
     stage.session = null;
     await ctx.reply(messages.startMsg, getReplyKeyboard());
     return;
