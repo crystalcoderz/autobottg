@@ -3,11 +3,13 @@ import 'dotenv/config';
 import { connectDatabase } from './connectDB';
 import routes from './routes';
 import StatusWorker from './services/StatusWorker';
-import { initBot } from './bot';
+import { bot, initBot } from './bot';
 
 const app = express();
 
 app.use('/', routes);
+
+app.use(bot.webhookCallback('/webhook'));
 
 app.listen(process.env.APP_PORT, async () => {
   console.log(`Server listening on ${process.env.APP_PORT}`);
