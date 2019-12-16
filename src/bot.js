@@ -31,8 +31,7 @@ const session = new RedisSession({
   store: {
     host: process.env.DB_REDIS_HOST || '127.0.0.1',
     port: process.env.DB_REDIS_PORT || 6379,
-  },
-  ttl: 36000
+  }
 });
 
 stage.hears([buttons.help, buttons.cancel], async ctx => {
