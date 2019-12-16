@@ -62,8 +62,6 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
       );
 
       await ctx.reply(`${res.payinAddress}`);
-      // TODO run worker
-      ctx.session = null;
 
       return;
     }
