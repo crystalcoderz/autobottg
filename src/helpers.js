@@ -30,8 +30,13 @@ export const validatePair = async pair => {
 
 export const addTransactionToDB = async (trn, telegramUserId) => {
   const user = await UserModel.findOne({ userId: telegramUserId });
+
   const { id: transactionId, ...fields } = trn;
-  await TransactionModel.create({ ...fields, transactionId, owner: user.id });
+  const newTrn = await TransactionModel.create({ ...fields, transactionId, owner: user.id });
+
+  user.transactions.push(newTrn);
+
+  await user.save();
 };
 
 export const getIpAction = async req => {
