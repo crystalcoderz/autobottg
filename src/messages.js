@@ -17,5 +17,13 @@ export const messages = {
   cancel: 'Your exchange is canceled. Would you like to start a new exchange?',
   support:
     'If you have any questions about your exchange, please contact our support team via email.',
-  sameCurErr: 'You’ve already chosen this currency. Please chose another one.'
+  sameCurErr: 'You’ve already chosen this currency. Please chose another one.',
+  waiting: 'We are waiting for your coins to be received. No pressure, though. Keep in mind - we will update the status when the deposit is received.',
+  confirming: 'We have received your deposit. Revving up the exchange machine right away!',
+  exchanging: 'The exchange process has been initiated. Just a little bit left...',
+  finished: `Yay! The transaction is successfully finished.`,
+  failed:
+    'We weren’t able to start the transaction process. Please, try again later.',
+  expired:
+    'We didn’t get your deposit. :(\nWould you like to start a new exchange?'
 };

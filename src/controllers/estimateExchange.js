@@ -14,12 +14,12 @@ estimateExchange.enter(async ctx => {
   const { ticker: currToTicker } = currTo;
 
   const fromTo = `${currFromTicker}_${currToTicker}`;
-  const amountTotal = await getExchAmount(amount, fromTo);
+  const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
-  ctx.session.tradingData = { ...tradingData, amountTotal };
+  ctx.session.tradingData = { ...tradingData, amountTotal: estimatedAmount };
 
   await ctx.replyWithHTML(
-    `You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
+    `You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
   );
 });

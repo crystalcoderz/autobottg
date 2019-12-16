@@ -4,7 +4,9 @@ const _apiRequest = async options => {
   try {
     return await rp(options);
   } catch (err) {
-    console.log(err);
+    if (err.error) {
+      console.log(err.error);
+    }
   }
 };
 
