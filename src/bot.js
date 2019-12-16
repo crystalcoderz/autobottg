@@ -97,7 +97,7 @@ export async function initBot() {
     );
   } else {
     await bot.telegram.setWebhook(
-      `${process.env.APP_HOST}}/${process.env.API_BOT_KEY}/webhook`,
+      `${process.env.APP_HOST}/${process.env.API_BOT_KEY}/webhook`,
       {
         source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
       }
