@@ -16,7 +16,7 @@ import buttons from './constants/buttons';
 import UserModel from './models/User';
 
 export const bot = new Telegraf(process.env.API_BOT_KEY);
-
+console.log(bot);
 const stage = new Stage([
   start,
   currFrom,
@@ -60,7 +60,7 @@ stage.hears([buttons.help, buttons.cancel], async ctx => {
     await ctx.scene.enter(scenes.currFrom);
   }
 });
-
+console.log(session);
 bot.use(session);
 
 bot.use(stage.middleware());
@@ -90,19 +90,24 @@ bot.hears(/Read and Accept/, async ctx => {
   await ctx.scene.enter(scenes.start);
 });
 
-export async function initBot() {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('development mode')
-    rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
-      bot.startPolling()
-    );
-  } else {
-    await bot.telegram.setWebhook(
-      console.log('production mode')
-      `${process.env.APP_HOST}/${process.env.API_BOT_KEY}/webhook`,
-      {
-        source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
-      }
-    );
-  }
-}
+rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
+  bot.startPolling()
+);
+
+// export async function initBot() {
+//   if (process.env.NODE_ENV === 'development') {
+//     console.log('development mode')
+//     rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
+//       bot.startPolling()
+//     );
+//   } else {
+//     await bot.telegram.setWebhook(
+//       console.log(`${process.env.APP_HOST}/${process.env.API_BOT_KEY}/webhook`);
+//       console.log(`/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem`);
+//       `${process.env.APP_HOST}/${process.env.API_BOT_KEY}/webhook`,
+//       {
+//         source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
+//       }
+//     );
+//   }
+// }
