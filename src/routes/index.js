@@ -1,5 +1,5 @@
 import express from 'express';
-import bot from './../bot';
+import { bot } from './../bot';
 import { getIpAction } from '../helpers';
 import { messages } from '../messages';
 import path from "path";

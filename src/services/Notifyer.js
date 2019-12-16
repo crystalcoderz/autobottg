@@ -1,4 +1,4 @@
-import bot from '../bot';
+import { bot } from '../bot';
 import statusTrn from '../constants/statusTransactions';
 import { messages } from '../messages';
 

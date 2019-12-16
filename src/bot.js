@@ -1,4 +1,5 @@
 import Telegraf from 'telegraf';
+import rp from 'request-promise';
 import RedisSession from 'telegraf-session-redis';
 import Stage from 'telegraf/stage';
 import start from './controllers/start';
@@ -14,7 +15,7 @@ import scenes from './constants/scenes';
 import buttons from './constants/buttons';
 import UserModel from './models/User';
 
-const bot = new Telegraf(process.env.API_BOT_KEY);
+export const bot = new Telegraf(process.env.API_BOT_KEY);
 
 const stage = new Stage([
   start,
@@ -66,7 +67,7 @@ bot.use(session);
 bot.use(stage.middleware());
 
 bot.start(async ctx => {
-  await ctx.reply(messages.startMsg, getMainKeyboard())
+  await ctx.reply(messages.startMsg, getMainKeyboard());
 });
 
 bot.hears(/Start exchange/, async ctx => await ctx.scene.enter(scenes.currFrom));
@@ -90,6 +91,17 @@ bot.hears(/Read and Accept/, async ctx => {
   await ctx.scene.enter(scenes.start);
 });
 
-bot.startPolling();
-
-export default bot;
+export async function initBot() {
+  if (process.env.NODE_ENV === 'development') {
+    rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
+      bot.startPolling()
+    );
+  } else {
+    await bot.telegram.setWebhook(
+      `${process.env.APP_HOST}}/${process.env.API_BOT_KEY}/webhook`,
+      {
+        source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
+      }
+    );
+  }
+}
