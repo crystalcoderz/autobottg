@@ -92,11 +92,13 @@ bot.hears(/Read and Accept/, async ctx => {
 
 export async function initBot() {
   if (process.env.NODE_ENV === 'development') {
+    console.log('development mode')
     rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
       bot.startPolling()
     );
   } else {
     await bot.telegram.setWebhook(
+      console.log('production mode')
       `${process.env.APP_HOST}/${process.env.API_BOT_KEY}/webhook`,
       {
         source: '/etc/letsencrypt/live/cn-bot.evercodelab.com/cert.pem'
