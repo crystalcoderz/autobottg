@@ -90,10 +90,6 @@ bot.hears(/Read and Accept/, async ctx => {
   await ctx.scene.enter(scenes.start);
 });
 
-rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
-  bot.startPolling()
-);
-
 export async function initBot() {
   if (process.env.NODE_ENV === 'development') {
     rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
