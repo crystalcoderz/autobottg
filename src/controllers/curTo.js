@@ -40,6 +40,7 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
 
     if (currIndex === -1) {
       await ctx.reply(messages.notFound);
+      await ctx.scene.reenter();
       return;
     }
 
@@ -60,6 +61,7 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
     }
 
     await ctx.reply(messages.invalidPair);
+    await ctx.scene.reenter();
 
   }
 

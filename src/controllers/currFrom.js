@@ -40,6 +40,7 @@ currFrom.hears(/(.*)/gi, async (ctx) => {
 
     if (currIndex === -1) {
       await ctx.reply(messages.notFound);
+      await ctx.scene.reenter();
       return;
     }
 
