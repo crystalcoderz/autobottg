@@ -40,7 +40,12 @@ amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, buttons.back], async ctx => {
 
   const formattingAmount = Number(text.replace(',', '.'));
 
-  if (!formattingAmount || text.match(/0x[\da-f]/i) || tradingData.minAmount > formattingAmount) {
+  if (tradingData.minAmount > formattingAmount) {
+    await ctx.reply(`Oops! Wrong amount.`);
+    return;
+  }
+
+  if (!formattingAmount || text.match(/0x[\da-f]/i)) {
     await ctx.reply(messages.numErr);
     return;
   }
