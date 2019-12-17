@@ -53,7 +53,7 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
 
     const res = await sendTransactionData(data);
 
-    if (res.payinAddress) {
+    if (res && res.payinAddress) {
       await addTransactionToDB(res, userId);
 
       await ctx.replyWithHTML(
