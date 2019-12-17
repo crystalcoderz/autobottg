@@ -11,7 +11,7 @@ start.enter(async ctx => {
     disable_web_page_preview: true,
   };
 
-  await ctx.reply(`Please follow this <a href="${process.env.APP_HOST_PORT}/user-ip/${userId}">link</a> to accept our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
+  await ctx.reply(`Please follow this <a href="${process.env.APP_HOST_PORT}/user-ip/${userId}">link</a> to read our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
 });
 
 export default start;

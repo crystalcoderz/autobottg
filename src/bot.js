@@ -78,7 +78,7 @@ bot.hears(/Start exchange/, async ctx => await ctx.scene.enter(scenes.currFrom))
 
 bot.hears(/Start new exchange/, async ctx => await ctx.scene.enter(scenes.currFrom));
 
-bot.hears(/Read and Accept/, async ctx => {
+bot.hears(/Read/, async ctx => {
   const { from } = ctx.message;
   const user = from;
   const { id: userId, username } = user;

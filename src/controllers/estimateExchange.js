@@ -17,7 +17,7 @@ estimateExchange.enter(async ctx => {
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
   await ctx.replyWithHTML(
-    `You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
+    `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
   );
 });
