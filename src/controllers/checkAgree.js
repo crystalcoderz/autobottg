@@ -1,7 +1,7 @@
 import Scene from 'telegraf/scenes/base';
 import { getAgreeKeyboard, getBackKeyboard } from '../keyboards';
 import { getIpFromDB, addTransactionToDB } from '../helpers';
-import { sendTransactionData } from '../api';
+import { getExchAmount, sendTransactionData } from '../api';
 import buttons from '../constants/buttons';
 import scenes from '../constants/scenes';
 
@@ -9,13 +9,16 @@ const checkAgree = new Scene(scenes.agree);
 
 checkAgree.enter(async ctx => {
   const { tradingData } = ctx.session;
-  const { currFrom, currTo, walletCode, addData, addDataName, amount, amountTotal } = tradingData;
+  const { currFrom, currTo, walletCode, addData, addDataName, amount } = tradingData;
   const { ticker: currFromTicker } = currFrom;
   const { ticker: currToTicker } = currTo;
   const addMsg = addData && addDataName ? `Your ${addDataName} is <b>${addData}</b>.\n` : '';
 
+  const fromTo = `${currFromTicker}_${currToTicker}`;
+  const { estimatedAmount } = await getExchAmount(amount, fromTo);
+
   await ctx.replyWithHTML(
-    `You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
+    `You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
     getAgreeKeyboard()
   );
 });
@@ -38,7 +41,7 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
 
   if (text === buttons.confirm) {
     const { userId, tradingData } = ctx.session;
-    const { currFrom, currTo, walletCode, amount, extraId = '', amountTotal } = tradingData;
+    const { currFrom, currTo, walletCode, amount, extraId = '' } = tradingData;
     const ip = await getIpFromDB(userId);
 
     const data = {
@@ -57,7 +60,7 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
       await addTransactionToDB(res, userId);
 
       await ctx.replyWithHTML(
-        `You’re sending <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${currTo.ticker.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
+        `You’re sending <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; you’ll get ~<b>${res.amount} ${currTo.ticker.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
         getBackKeyboard()
       );
 
