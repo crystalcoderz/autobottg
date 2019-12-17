@@ -2,6 +2,7 @@ import { getPairs } from './api';
 import UserModel from './models/User';
 import TransactionModel from './models/Transaction';
 import VisitModel from './models/Visit';
+import statuses from './constants/statusTransactions';
 
 export const getIpFromDB = async (userId) => {
   const { visits } = await UserModel.findOne({ userId }).populate('visits');
@@ -32,7 +33,7 @@ export const addTransactionToDB = async (trn, telegramUserId) => {
   const user = await UserModel.findOne({ userId: telegramUserId });
 
   const { id: transactionId, ...fields } = trn;
-  const newTrn = await TransactionModel.create({ ...fields, transactionId, owner: user.id });
+  const newTrn = await TransactionModel.create({ ...fields, transactionId, owner: user.id, status: statuses.new });
 
   user.transactions.push(newTrn);
 

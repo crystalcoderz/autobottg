@@ -19,7 +19,7 @@ class StatusWorker {
   };
 
   async _getTransactions() {
-    this.transactions = await TransactionModel.find({ status: { $in: [statusTrn.waiting, statusTrn.confirming, statusTrn.exchanging] } }).populate('owner', 'userId');
+    this.transactions = await TransactionModel.find({ status: { $in: [statusTrn.new, statusTrn.waiting, statusTrn.confirming, statusTrn.exchanging] } }).populate('owner', 'userId');
   };
 
   async _changeTrnStatus({ id, status }) {

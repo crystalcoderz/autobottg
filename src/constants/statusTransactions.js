@@ -4,7 +4,8 @@ const statusStransactions = {
   exchanging: 'exchanging',
   finished: 'finished',
   failed: 'failed',
-  expired: 'expired'
+  expired: 'expired',
+  new: 'new'
 };
 
 export default statusStransactions;
