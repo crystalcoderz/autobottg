@@ -1,6 +1,6 @@
 const buttons = {
   start: 'Start exchange',
-  accept: 'Read and Accept',
+  accept: 'Read',
   startNew: 'Start new exchange',
   terms: 'Terms of Use and Privacy Policy',
   cancel: '❌ Cancel exchange',
