@@ -1,5 +1,5 @@
 import Scene from 'telegraf/scenes/base';
-import { isAvailableCurr, getCurrencyName } from '../helpers';
+import { isAvailableCurr, getCurrencyName, pause } from '../helpers';
 import { messages } from '../messages';
 import { getAllCurrencies, getCurrInfo } from '../api';
 import { getFromKeyboard } from '../keyboards';
@@ -40,6 +40,7 @@ currFrom.hears(/(.*)/gi, async (ctx) => {
 
     if (currIndex === -1) {
       await ctx.reply(messages.notFound);
+      await pause(500);
       await ctx.scene.reenter();
       return;
     }
