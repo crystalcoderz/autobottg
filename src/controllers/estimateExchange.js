@@ -16,8 +16,6 @@ estimateExchange.enter(async ctx => {
   const fromTo = `${currFromTicker}_${currToTicker}`;
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
-  ctx.session.tradingData = { ...tradingData, amountTotal: estimatedAmount };
-
   await ctx.replyWithHTML(
     `You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
@@ -30,7 +28,6 @@ estimateExchange.hears([/(.*)/gi, buttons.back], async ctx => {
 
   if (text === buttons.back) {
     delete ctx.session.tradingData.amount;
-    delete ctx.session.tradingData.amountTotal;
     await ctx.scene.enter(scenes.amount);
     return;
   }
