@@ -9,16 +9,16 @@ const checkAgree = new Scene(scenes.agree);
 
 checkAgree.enter(async ctx => {
   const { tradingData } = ctx.session;
-  const { currFrom, currTo, walletCode, addData, addDataName, amount } = tradingData;
+  const { currFrom, currTo, walletCode, extraId, externalIdName, amount } = tradingData;
   const { ticker: currFromTicker } = currFrom;
   const { ticker: currToTicker } = currTo;
-  const addMsg = addData && addDataName ? `Your ${addDataName} is <b>${addData}</b>.\n` : '';
+  const extraIdMsg = extraId && externalIdName ? `Your ${externalIdName} is <b>${extraId}</b>.\n` : '';
 
   const fromTo = `${currFromTicker}_${currToTicker}`;
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
   await ctx.replyWithHTML(
-    `You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
+    `You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${extraIdMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
     getAgreeKeyboard()
   );
 });
