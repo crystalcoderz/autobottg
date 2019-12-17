@@ -1,6 +1,6 @@
 import Scene from 'telegraf/scenes/base';
 import { getAgreeKeyboard, getBackKeyboard } from '../keyboards';
-import { getIpFromDB, addTransactionToDB } from '../helpers';
+import { getIpFromDB, addTransactionToDB, pause } from '../helpers';
 import { getExchAmount, sendTransactionData } from '../api';
 import buttons from '../constants/buttons';
 import scenes from '../constants/scenes';
@@ -63,6 +63,8 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
         `You’re sending <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; you’ll get ~<b>${res.amount} ${currTo.ticker.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
         getBackKeyboard()
       );
+
+      await pause(500);
 
       await ctx.reply(`${res.payinAddress}`);
 
