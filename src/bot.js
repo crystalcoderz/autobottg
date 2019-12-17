@@ -61,6 +61,11 @@ stage.hears([buttons.help, buttons.cancel], async ctx => {
   }
 });
 
+stage.command('start', async (ctx, next) => {
+  await ctx.scene.leave();
+  return next();
+});
+
 bot.use(session);
 
 bot.use(stage.middleware());
