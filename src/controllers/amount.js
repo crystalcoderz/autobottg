@@ -4,6 +4,7 @@ import { getAmountKeyboard } from '../keyboards';
 import { messages } from '../messages';
 import scenes from '../constants/scenes';
 import buttons from '../constants/buttons';
+import { pause } from '../helpers';
 
 const amount = new Scene(scenes.amount);
 
@@ -42,6 +43,11 @@ amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, buttons.back], async ctx => {
 
   if (tradingData.minAmount > formattingAmount) {
     await ctx.reply(`Oops! Wrong amount.`);
+
+    await pause(500);
+
+    await ctx.scene.reenter();
+
     return;
   }
 

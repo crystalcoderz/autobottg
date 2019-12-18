@@ -10,7 +10,7 @@ import addInfo from './controllers/addInfo';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
 import { messages } from './messages';
-import { getMainKeyboard, getReplyKeyboard } from './keyboards';
+import { getBackKeyboard, getMainKeyboard, getReplyKeyboard } from './keyboards';
 import scenes from './constants/scenes';
 import buttons from './constants/buttons';
 import UserModel from './models/User';
@@ -57,7 +57,9 @@ stage.hears([buttons.help, buttons.cancel], async ctx => {
 
     ctx.session.tradingData = {};
 
-    await ctx.scene.enter(scenes.currFrom);
+    await ctx.scene.leave();
+
+    await ctx.reply(messages.cancel, getBackKeyboard());
   }
 });
 
