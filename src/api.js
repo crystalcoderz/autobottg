@@ -1,12 +1,11 @@
 import rp from 'request-promise';
+import { captureException } from '@sentry/node';
 
 const _apiRequest = async options => {
   try {
     return await rp(options);
   } catch (err) {
-    if (err.error) {
-      console.log(err.error);
-    }
+    captureException(err);
   }
 };
 

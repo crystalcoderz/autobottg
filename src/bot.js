@@ -14,6 +14,7 @@ import { getBackKeyboard, getMainKeyboard, getReplyKeyboard } from './keyboards'
 import scenes from './constants/scenes';
 import buttons from './constants/buttons';
 import UserModel from './models/User';
+import { captureMessage, captureException } from '@sentry/node';
 
 export const bot = new Telegraf(process.env.API_BOT_KEY);
 
@@ -85,13 +86,19 @@ bot.hears(/Read/, async ctx => {
   const user = from;
   const { id: userId, username } = user;
 
+  captureMessage(`username: ${username}`);
+
   ctx.session.userId = userId;
   ctx.session.tradingData = {};
 
-  const userInDB = await UserModel.findOne({ userId: user.id });
+  try {
+    const userInDB = await UserModel.findOne({ userId: user.id });
 
-  if (!userInDB) {
-    await UserModel.create({ userId, username });
+    if (!userInDB) {
+      await UserModel.create({ userId, username });
+    }
+  } catch (e) {
+    captureException(e);
   }
 
   await ctx.scene.enter(scenes.start);
