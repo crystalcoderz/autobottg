@@ -3,6 +3,7 @@ import UserModel from './models/User';
 import TransactionModel from './models/Transaction';
 import VisitModel from './models/Visit';
 import statuses from './constants/statusTransactions';
+import { captureException } from '@sentry/node';
 
 export const getIpFromDB = async (userId) => {
   const { visits } = await UserModel.findOne({ userId }).populate('visits');
@@ -50,11 +51,15 @@ export const getIpAction = async req => {
     userIp = req.ip;
   }
 
-  const user = await UserModel.findOne({ userId: req.params.id }).populate('Visit');
-  const visit = await VisitModel.create({ userIp, ipParsed: new Date(), user: user.id });
+  try {
+    const user = await UserModel.findOne({ userId: req.params.id }).populate('Visit');
+    const visit = await VisitModel.create({ userIp, ipParsed: new Date(), user: user.id });
 
-  user.visits.push(visit);
+    user.visits.push(visit);
 
-  await user.save();
-  await visit.save();
+    await user.save();
+    await visit.save();
+  } catch (e) {
+    captureException(e);
+  }
 };
