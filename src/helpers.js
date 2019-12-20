@@ -19,6 +19,11 @@ export const createAnswerByUpdateSubType = (type) => {
   }
 };
 
+export const getMessageIfCurrencyNotFound = (selectedCurr) => {
+  const initialMsg = messages.currNotFound[getRandomNumber(0, messages.currNotFound.length - 1)];
+  return initialMsg.replace('%s', selectedCurr)
+};
+
 export const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
