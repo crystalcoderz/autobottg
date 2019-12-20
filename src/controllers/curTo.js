@@ -62,8 +62,7 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
     }
 
     await ctx.reply(messages.invalidPair);
-    await pause(500);
-    await ctx.scene.reenter();
+    await ctx.scene.enter(scenes.currFrom);
 
   }
 
