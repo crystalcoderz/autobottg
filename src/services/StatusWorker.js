@@ -42,7 +42,6 @@ class StatusWorker {
 
     await Promise.all(promises);
 
-    console.log('re-run worker');
     setTimeout(async () => await this.run(), this.interval);
   };
 
