@@ -7,7 +7,6 @@ export const messages = {
   selectFromMsg: 'Choose one of the popular currencies offered below or enter the currency you would like to <b>send</b> in the “BTC” or “Bitcoin” format.',
   selectToMsg: 'Choose one of the popular currencies offered below or enter the currency you would like to <b>get</b> in the “BTC” or “Bitcoin” format.',
   leaveMsg: 'Transaction cancelled.',
-  notFound: 'Currency not found.',
   validErr: 'Only Latin characters are supported. Sorry! ',
   numErr: 'Only numbers and dot/comma are allowed. Sorry!',
   invalidPair: 'This pair is temporarily unavailable for exchanges.',
@@ -31,4 +30,18 @@ export const messages = {
     'I guess robot take over is postponed for now, because we haven’t even learned to read pictures yet! Gotta tell that to the HQ. Could you please write your request out?',
     'I’m sure that’s a pretty picture that you’ve got there! But, unfortunately, I can’t understand them. Could you please write your request out?',
   ],
+  currNotFound: [
+    'Oops! We’ve looked everywhere, but %s is not available right now. Or it doesn’t exist at all. Try again?',
+    'Hmm. %s doesn’t look like a coin we have available right now. Sorry about that. Try again?',
+    '%s? It doesn’t look like we have that. We’re sorry! Try a different coin?',
+    'Are you sure that you spelled %s right? Thing is, we don’t think we have that, sorry. Try one more time?',
+    '%s sounds like a cool word, but not one of the available coins. We’re sorry! Try another coin?',
+    'We hope that %s is not a slur, because it doesn’t sound like one of our 200+ supported cryptos! Try again?',
+    '%s who? We don’t think we have that for you! Are you sure you spelled that right? Try once more?',
+    '%s? Mariah would say that she doesn’t know her, and neither do we, sorry! Try again?',
+    '%s doesn’t sound like one of our 200+ available cryptos! Try another coin?',
+    '%s? Sounds like something an Area 51 resident might say. Or you might have misspelled a crypto, do try again, we’d love to help you!',
+    'Sorry, we strive for greatness, but we haven’t added every single crypto yet! %s is not on the list right now, try a different coin?',
+    '%s? Is that human language? Sorry, it doesn’t sound like one of our 200+ available cryptos. Try again?',
+  ]
 };

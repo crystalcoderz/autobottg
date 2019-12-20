@@ -1,7 +1,7 @@
 import Scene from 'telegraf/scenes/base';
 import { messages } from '../messages';
 import { getToKeyboard } from '../keyboards';
-import { getCurrencyName, isAvailableCurr, pause, validatePair } from '../helpers';
+import { getCurrencyName, getMessageIfCurrencyNotFound, isAvailableCurr, pause, validatePair } from '../helpers';
 import buttons from '../constants/buttons';
 import scenes from '../constants/scenes';
 import { getCurrInfo } from '../api';
@@ -36,10 +36,11 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
       return;
     }
 
+    const currencyName = getCurrencyName(text);
     const currIndex = isAvailableCurr(getCurrencyName(text), allCurrencies);
 
     if (currIndex === -1) {
-      await ctx.reply(messages.notFound);
+      await ctx.reply(getMessageIfCurrencyNotFound(currencyName));
       await pause(500);
       await ctx.scene.reenter();
       return;
