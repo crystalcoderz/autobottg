@@ -4,6 +4,25 @@ import TransactionModel from './models/Transaction';
 import VisitModel from './models/Visit';
 import statuses from './constants/statusTransactions';
 import { captureException } from '@sentry/node';
+import updateSubTypes from './constants/updateSubTypes';
+import { messages } from './messages';
+
+// TODO implement answers for another types
+export const createAnswerByUpdateSubType = (type) => {
+  switch (type) {
+    case updateSubTypes.photo:
+      return messages.answersByPhoto[getRandomNumber(0, messages.answersByPhoto.length - 1)];
+    case updateSubTypes[type]:
+      return `It's ${updateSubTypes[type]}`;
+    default:
+      return null;
+  }
+};
+
+export const getRandomNumber = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 
 export const getIpFromDB = async (userId) => {
   const { visits } = await UserModel.findOne({ userId }).populate('visits');

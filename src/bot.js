@@ -15,6 +15,9 @@ import scenes from './constants/scenes';
 import buttons from './constants/buttons';
 import UserModel from './models/User';
 import { captureMessage, captureException } from '@sentry/node';
+import { createAnswerByUpdateSubType } from './helpers';
+import updateTypes from './constants/updateTypes';
+import subTypes from './constants/updateSubTypes';
 
 export const bot = new Telegraf(process.env.API_BOT_KEY);
 
@@ -77,11 +80,7 @@ bot.start(async ctx => {
   await ctx.reply(messages.startMsg, getMainKeyboard());
 });
 
-bot.hears(/Start exchange/, async ctx => await ctx.scene.enter(scenes.currFrom));
-
-bot.hears(/Start new exchange/, async ctx => await ctx.scene.enter(scenes.currFrom));
-
-bot.hears(/Read/, async ctx => {
+bot.hears(messages.read, async ctx => {
   const { from } = ctx.message;
   const user = from;
   const { id: userId, username } = user;
@@ -102,6 +101,32 @@ bot.hears(/Read/, async ctx => {
   }
 
   await ctx.scene.enter(scenes.start);
+});
+
+bot.on(updateTypes.message, async (ctx, next) => {
+  const { updateSubTypes, message } = ctx;
+
+  const promises = updateSubTypes.map(async type => {
+    if (type === subTypes.text) {
+
+      if (message.text === messages.startNewExchange || message.text === messages.startExchange) {
+        await ctx.scene.enter(scenes.currFrom);
+        return;
+      }
+
+    }
+
+    const textMessage = createAnswerByUpdateSubType(type);
+
+    if (textMessage) {
+      await ctx.reply(textMessage);
+    }
+
+  });
+
+  await Promise.all(promises);
+
+  return next();
 });
 
 export async function initBot() {
