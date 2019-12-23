@@ -104,7 +104,7 @@ bot.hears(messages.read, async ctx => {
 });
 
 bot.on(updateTypes.message, async (ctx, next) => {
-  const { updateSubTypes, message } = ctx;
+  const { updateSubTypes, message, scene } = ctx;
 
   const promises = updateSubTypes.map(async type => {
     if (type === subTypes.text) {
@@ -114,12 +114,21 @@ bot.on(updateTypes.message, async (ctx, next) => {
         return;
       }
 
+      if (scene.current && scene.current.id === scenes.agree && ![buttons.back, buttons.confirm, buttons.help].includes(message.text)) {
+        await ctx.reply(messages.pressButton);
+        return;
+      }
+
     }
 
     const textMessage = createAnswerByUpdateSubType(type);
 
     if (textMessage) {
       await ctx.reply(textMessage);
+    }
+
+    if (scene.current && scene.current.id === scenes.agree && ![buttons.back, buttons.confirm, buttons.help].includes(message.text)) {
+      await ctx.reply(messages.pressButton);
     }
 
   });

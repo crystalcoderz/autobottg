@@ -43,5 +43,6 @@ export const messages = {
     '%s? Sounds like something an Area 51 resident might say. Or you might have misspelled a crypto, do try again, we’d love to help you!',
     'Sorry, we strive for greatness, but we haven’t added every single crypto yet! %s is not on the list right now, try a different coin?',
     '%s? Is that human language? Sorry, it doesn’t sound like one of our 200+ available cryptos. Try again?',
-  ]
+  ],
+  pressButton: 'To continue, please tap the button below.'
 };
