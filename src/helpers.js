@@ -21,7 +21,7 @@ export const createAnswerByUpdateSubType = (type) => {
 
 export const getMessageIfCurrencyNotFound = (selectedCurr) => {
   const initialMsg = messages.currNotFound[getRandomNumber(0, messages.currNotFound.length - 1)];
-  return initialMsg.replace('%s', selectedCurr)
+  return initialMsg.replace('%s', selectedCurr);
 };
 
 export const getRandomNumber = (min, max) => {
@@ -54,11 +54,18 @@ export const validatePair = async pair => {
   return availablePairs.includes(pair);
 };
 
-export const addTransactionToDB = async (trn, telegramUserId) => {
+export const addTransactionToDB = async (trn, telegramUserId, transactionExplorerMask) => {
   const user = await UserModel.findOne({ userId: telegramUserId });
 
   const { id: transactionId, ...fields } = trn;
-  const newTrn = await TransactionModel.create({ ...fields, transactionId, owner: user.id, status: statuses.new });
+
+  const newTrn = await TransactionModel.create({
+    ...fields,
+    transactionId,
+    owner: user.id,
+    status: statuses.new,
+    transactionExplorerMask
+  });
 
   user.transactions.push(newTrn);
 
