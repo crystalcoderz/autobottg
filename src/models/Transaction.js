@@ -12,6 +12,7 @@ const TransactionSchema = new Schema({
   toCurrency: { type: String, required: true },
   amount: { type: Schema.Types.Decimal128, required: true },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  transactionExplorerMask: { type: String, required: true },
   status: { type: String, enum: Object.keys(statusStransactions) }
 });
 

@@ -57,7 +57,8 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
     const res = await sendTransactionData(data);
 
     if (res && res.payinAddress) {
-      await addTransactionToDB(res, userId);
+      const { transactionExplorerMask } = currTo;
+      await addTransactionToDB(res, userId, transactionExplorerMask);
 
       await ctx.replyWithHTML(
         `You’re sending <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; you’ll get ~<b>${res.amount} ${currTo.ticker.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
