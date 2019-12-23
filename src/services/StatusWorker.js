@@ -35,7 +35,12 @@ class StatusWorker {
       const updatedTrn = await getTransactionStatus(t.transactionId);
 
       if (updatedTrn && this._transactionWasChanged(t, updatedTrn)) {
-        await Notifyer.addRecepient(t.owner.userId).addPayload(updatedTrn).sendNotify();
+
+        await Notifyer.addRecepient(t.owner.userId).addPayload({
+          ...updatedTrn,
+          linkMask: t.transactionExplorerMask
+        }).sendNotify();
+
         await this._changeTrnStatus(updatedTrn);
       }
     });

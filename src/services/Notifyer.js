@@ -1,6 +1,7 @@
 import { bot } from '../bot';
 import statusTrn from '../constants/statusTransactions';
 import { messages } from '../messages';
+import { pause } from '../helpers';
 
 const messsageOptions = {
   parse_mode: 'HTML',
@@ -28,8 +29,8 @@ class Notifyer {
 
     if (this.payload.status === statusTrn.finished) {
       this.messages = [
-        this.payload.payoutHash,
-        `Yay! The transaction is successfully finished. Your <b>${this.payload.toCurrency.toUpperCase()}</b> have been sent to your wallet.\nThank you for choosing ChangeNOW - hope to see you again soon!`
+        `Yay! The transaction is successfully finished. Your <b>${this.payload.toCurrency.toUpperCase()}</b> have been sent to your wallet.\nThank you for choosing ChangeNOW - hope to see you again soon!`,
+        `<a href="${this.payload.linkMask.replace('$$', this.payload.payinHash)}">Block explorer</a>`
       ];
       return;
     }
@@ -51,6 +52,7 @@ class Notifyer {
     this._createMessagesByStatus();
 
     const promises = this.messages.map(async message => {
+      await pause(500);
       await bot.telegram.sendMessage(this.recepientId, message, messsageOptions);
     });
 
