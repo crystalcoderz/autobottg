@@ -30,9 +30,15 @@ class Notifyer {
     }
 
     if (this.payload.status === statusTrn.finished) {
+      const { amountReceive, expectedReceiveAmount, payinHash, linkMask, toCurrency } = this.payload;
+
+      const messageByAmount = amountReceive <= expectedReceiveAmount ?
+        `Your <b>${toCurrency.toUpperCase()}</b> have been sent to your wallet.`
+        : `Congrats! You’ve earned  ${(amountReceive - expectedReceiveAmount).toFixed(8)} <b>${toCurrency.toUpperCase()}</b> more than was expected! Your ${amountReceive} <b>${toCurrency.toUpperCase()}</b> have been sent to your wallet.`;
+
       this.messages = [
-        `Yay! The transaction is successfully finished. Your <b>${this.payload.toCurrency.toUpperCase()}</b> have been sent to your wallet.\nThank you for choosing ChangeNOW - hope to see you again soon!`,
-        `<a href="${this.payload.linkMask.replace('$$', this.payload.payinHash)}">Block explorer</a>`
+        `Yay! The transaction is successfully finished. ${messageByAmount}\nThank you for choosing ChangeNOW - hope to see you again soon!`,
+        `<a href="${linkMask.replace('$$', payinHash)}">${payinHash}</a>`
       ];
       return;
     }
