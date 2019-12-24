@@ -18,7 +18,7 @@ export const messages = {
   exchanging: 'The exchange process has been initiated. Just a little bit left...',
   finished: `Yay! The transaction is successfully finished.`,
   failed: 'We weren’t able to start the transaction process. Please, try again later.',
-  expired: 'We didn’t get your deposit. :(\nWould you like to start a new exchange?',
+  expire: 'We didn’t get your deposit. :(\nWould you like to start a new exchange?',
   read: 'Read',
   startExchange: 'Start exchange',
   startNewExchange: 'Start new exchange',
