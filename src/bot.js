@@ -114,11 +114,8 @@ bot.on(updateTypes.message, async (ctx, next) => {
         return;
       }
 
-      if (scene.current && scene.current.id === scenes.agree && ![buttons.back, buttons.confirm, buttons.help].includes(message.text)) {
-        await ctx.reply(messages.pressButton);
-        return;
-      }
-
+      await ctx.reply(messages.pressButton);
+      return;
     }
 
     const textMessage = createAnswerByUpdateSubType(type);
