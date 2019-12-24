@@ -18,7 +18,7 @@ checkAgree.enter(async ctx => {
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
   await ctx.replyWithHTML(
-    `You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${extraIdMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
+    `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${extraIdMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
     getAgreeKeyboard()
   );
 });
