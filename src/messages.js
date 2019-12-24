@@ -23,12 +23,12 @@ export const messages = {
   startExchange: 'Start exchange',
   startNewExchange: 'Start new exchange',
   answersByPhoto: [
-    'Hey! I do try to understand you as no one else could, but pictures are out of my reach for now, could you please write your request out?',
-    'I’m sorry, we don’t speak pictures yet :( Could you please write your request out?',
-    'Hey! I try to be a smart bot, but I haven’t learned to read pictures yet, could you please write your request out?',
-    'Is that… is that a picture? I’m sorry, pictures scare me a little bit, I can’t even read them! Could you please write your request out?',
-    'I guess robot take over is postponed for now, because we haven’t even learned to read pictures yet! Gotta tell that to the HQ. Could you please write your request out?',
-    'I’m sure that’s a pretty picture that you’ve got there! But, unfortunately, I can’t understand them. Could you please write your request out?',
+    'Hey! I do try to understand you as no one else could, but pictures are out of my reach for now, could you please try again?',
+    'I’m sorry, we don’t speak pictures yet :( Could you please try again?',
+    'Hey! I try to be a smart bot, but I haven’t learned to read pictures yet, could you please try again?',
+    'Is that… is that a picture? I’m sorry, pictures scare me a little bit, I can’t even read them! Could you please try again?',
+    'I guess robot take over is postponed for now, because we haven’t even learned to read pictures yet! Gotta tell that to the HQ. Could you please try again?',
+    'I’m sure that’s a pretty picture that you’ve got there! But, unfortunately, I can’t understand them. Could you please try again?',
   ],
   currNotFound: [
     'Oops! We’ve looked everywhere, but %s is not available right now. Or it doesn’t exist at all. Try again?',

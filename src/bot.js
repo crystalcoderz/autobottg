@@ -14,8 +14,8 @@ import { getBackKeyboard, getMainKeyboard, getReplyKeyboard } from './keyboards'
 import scenes from './constants/scenes';
 import buttons from './constants/buttons';
 import UserModel from './models/User';
-import { captureMessage, captureException } from '@sentry/node';
-import { createAnswerByUpdateSubType } from './helpers';
+import { captureException } from '@sentry/node';
+import { createAnswerByUpdateSubType, pause } from './helpers';
 import updateTypes from './constants/updateTypes';
 import subTypes from './constants/updateSubTypes';
 
@@ -85,8 +85,6 @@ bot.hears(messages.read, async ctx => {
   const user = from;
   const { id: userId, username } = user;
 
-  captureMessage(`username: ${username}`);
-
   ctx.session.userId = userId;
   ctx.session.tradingData = {};
 
@@ -122,6 +120,7 @@ bot.on(updateTypes.message, async (ctx, next) => {
 
     if (textMessage) {
       await ctx.reply(textMessage);
+      await pause(500);
     }
 
     if (scene.current && scene.current.id === scenes.agree && ![buttons.back, buttons.confirm, buttons.help].includes(message.text)) {
