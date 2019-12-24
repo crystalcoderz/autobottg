@@ -13,7 +13,7 @@ const TransactionSchema = new Schema({
   amount: { type: Schema.Types.Decimal128, required: true },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
   transactionExplorerMask: { type: String, required: true },
-  status: { type: String, enum: Object.keys(statusStransactions) }
+  status: { type: String, enum: Object.keys(statusStransactions), default: statusStransactions.new }
 });
 
 export default mongoose.model('Transaction', TransactionSchema);

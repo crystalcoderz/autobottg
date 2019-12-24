@@ -22,6 +22,8 @@ class Notifyer {
   }
 
   _createMessagesByStatus() {
+    if (this.payload.status === statusTrn.sending) return;
+
     if (this.payload.status === statusTrn.waiting) {
       this.messages = [`Transaction ID - <b>${this.payload.id}</b>.`, messages[this.payload.status]];
       return;
