@@ -4,6 +4,7 @@ import { messages } from '../messages';
 import { getAllCurrencies, getCurrInfo } from '../api';
 import { getFromKeyboard } from '../keyboards';
 import scenes from '../constants/scenes';
+import Transaction from '../models/Transaction';
 
 const currFrom = new Scene(scenes.currFrom);
 
@@ -19,7 +20,21 @@ currFrom.enter(async ctx => {
 
   ctx.session.tradingData = {};
 
-  const { tradingData } = ctx.session;
+  const { tradingData, userId } = ctx.session;
+
+  const userTransactions = await Transaction.find({ telegramUserId: userId });
+
+  if (userTransactions) {
+    const promises = userTransactions.map(async trn => {
+
+      trn.disableNotify = true;
+
+      await trn.save();
+    });
+
+    await Promise.all(promises);
+  }
+
   const choosedCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
   await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(choosedCurr));
 });

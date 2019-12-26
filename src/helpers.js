@@ -61,6 +61,7 @@ export const addTransactionToDB = async (trn, telegramUserId, transactionExplore
   const newTrn = await TransactionModel.create({
     ...fields,
     transactionId,
+    telegramUserId,
     owner: user.id,
     status: statuses.new,
     transactionExplorerMask
