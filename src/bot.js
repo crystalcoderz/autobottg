@@ -10,12 +10,12 @@ import addInfo from './controllers/addInfo';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
 import read from './controllers/read';
+import startNewExchange from './controllers/startNewExchange';
 import { messages } from './messages';
 import scenes from './constants/scenes';
 import buttons from './constants/buttons';
 import { createAnswerByUpdateSubType, pause } from './helpers';
 import updateTypes from './constants/updateTypes';
-import { getBackKeyboard } from './keyboards';
 
 export const bot = new Telegraf(process.env.API_BOT_KEY);
 
@@ -28,6 +28,7 @@ export const stage = new Stage([
   estimateExchange,
   checkAgree,
   read,
+  startNewExchange
 ]);
 
 const session = new RedisSession({
@@ -51,7 +52,9 @@ stage.hears([buttons.help, buttons.cancel], async ctx => {
 
     ctx.session.tradingData = {};
 
-    await ctx.reply(messages.cancel, getBackKeyboard());
+    await ctx.scene.leave();
+
+    await ctx.scene.enter(scenes.startNewExchange);
   }
 });
 
