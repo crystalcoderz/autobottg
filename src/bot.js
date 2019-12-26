@@ -9,19 +9,17 @@ import amount from './controllers/amount';
 import addInfo from './controllers/addInfo';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
+import read from './controllers/read';
 import { messages } from './messages';
-import { getBackKeyboard, getMainKeyboard, getReplyKeyboard } from './keyboards';
 import scenes from './constants/scenes';
 import buttons from './constants/buttons';
-import UserModel from './models/User';
-import { captureException } from '@sentry/node';
 import { createAnswerByUpdateSubType, pause } from './helpers';
 import updateTypes from './constants/updateTypes';
-import subTypes from './constants/updateSubTypes';
+import { getBackKeyboard } from './keyboards';
 
 export const bot = new Telegraf(process.env.API_BOT_KEY);
 
-const stage = new Stage([
+export const stage = new Stage([
   start,
   currFrom,
   curTo,
@@ -29,6 +27,7 @@ const stage = new Stage([
   addInfo,
   estimateExchange,
   checkAgree,
+  read,
 ]);
 
 const session = new RedisSession({
@@ -38,19 +37,10 @@ const session = new RedisSession({
   }
 });
 
+bot.context.listenPressButton = false;
+
 stage.hears([buttons.help, buttons.cancel], async ctx => {
   const { text } = ctx.message;
-
-  if (!ctx.session && text !== buttons.help) {
-    await ctx.reply(messages.startMsg, getReplyKeyboard());
-    return;
-  }
-
-  if (ctx.session && !ctx.session.userId && text !== buttons.help) {
-    stage.session = null;
-    await ctx.reply(messages.startMsg, getReplyKeyboard());
-    return;
-  }
 
   if (text === buttons.help) {
     await ctx.reply(`${messages.support}\n${process.env.CN_EMAIL}`);
@@ -60,8 +50,6 @@ stage.hears([buttons.help, buttons.cancel], async ctx => {
   if (text === buttons.cancel) {
 
     ctx.session.tradingData = {};
-
-    await ctx.scene.leave();
 
     await ctx.reply(messages.cancel, getBackKeyboard());
   }
@@ -77,44 +65,35 @@ bot.use(session);
 bot.use(stage.middleware());
 
 bot.start(async ctx => {
-  await ctx.reply(messages.startMsg, getMainKeyboard());
-});
-
-bot.hears(messages.read, async ctx => {
-  const { from } = ctx.message;
-  const user = from;
-  const { id: userId, username } = user;
-
-  ctx.session.userId = userId;
-  ctx.session.tradingData = {};
-
-  try {
-    const userInDB = await UserModel.findOne({ userId: user.id });
-
-    if (!userInDB) {
-      await UserModel.create({ userId, username });
-    }
-  } catch (e) {
-    captureException(e);
+  if (ctx.session) {
+    ctx.session = null;
   }
 
-  await ctx.scene.enter(scenes.start);
+  await ctx.scene.enter(scenes.read);
 });
 
 bot.on(updateTypes.message, async (ctx, next) => {
-  const { updateSubTypes, message, scene } = ctx;
+  const { session, updateSubTypes, message, scene } = ctx;
+
+  if ((!session || !session.userId) && !scene.current) {
+
+    await ctx.reply(messages.replyForCrash);
+
+    await ctx.scene.leave();
+
+    ctx.session = null;
+
+    await ctx.scene.enter(scenes.read);
+
+    return;
+  }
+
+  if (message.text === messages.startNewExchange || message.text === messages.startExchange) {
+    await ctx.scene.enter(scenes.currFrom);
+    return;
+  }
 
   const promises = updateSubTypes.map(async type => {
-    if (type === subTypes.text) {
-
-      if (message.text === messages.startNewExchange || message.text === messages.startExchange) {
-        await ctx.scene.enter(scenes.currFrom);
-        return;
-      }
-
-      await ctx.reply(messages.pressButton);
-      return;
-    }
 
     const textMessage = createAnswerByUpdateSubType(type);
 
@@ -123,13 +102,33 @@ bot.on(updateTypes.message, async (ctx, next) => {
       await pause(500);
     }
 
-    if (scene.current && scene.current.id === scenes.agree && ![buttons.back, buttons.confirm, buttons.help].includes(message.text)) {
-      await ctx.reply(messages.pressButton);
-    }
-
   });
 
   await Promise.all(promises);
+
+  if (scene.current) {
+
+    if (scene.current.id === scenes.read) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+    if (scene.current.id === scenes.startNewExchange) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+    if (scene.current.id === scenes.agree) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+    if (scene.current.id === scenes.start && ctx.listenPressButton) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+  }
 
   return next();
 });

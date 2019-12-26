@@ -13,7 +13,9 @@ const TransactionSchema = new Schema({
   amount: { type: Schema.Types.Decimal128, required: true },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
   transactionExplorerMask: { type: String, required: true },
-  status: { type: String, enum: Object.keys(statusStransactions), default: statusStransactions.new }
+  status: { type: String, enum: Object.keys(statusStransactions), default: statusStransactions.new },
+  telegramUserId: { type: Number, required: true },
+  disableNotify: { type: Boolean, default: false }
 });
 
 export default mongoose.model('Transaction', TransactionSchema);

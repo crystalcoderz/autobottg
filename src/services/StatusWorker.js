@@ -19,7 +19,10 @@ class StatusWorker {
   };
 
   async _getTransactions() {
-    this.transactions = await TransactionModel.find({ status: { $in: [statusTrn.new, statusTrn.waiting, statusTrn.confirming, statusTrn.exchanging, statusTrn.sending] } }).populate('owner', 'userId');
+    this.transactions = await TransactionModel.find({
+      status: { $in: [statusTrn.new, statusTrn.waiting, statusTrn.confirming, statusTrn.exchanging, statusTrn.sending] },
+      disableNotify: false
+    });
   };
 
   async _changeTrnStatus({ id, status }) {
@@ -36,7 +39,7 @@ class StatusWorker {
 
       if (updatedTrn && this._transactionWasChanged(t, updatedTrn)) {
 
-        await Notifyer.addRecepient(t.owner.userId).addPayload({
+        await Notifyer.addRecepient(t.telegramUserId).addPayload({
           ...updatedTrn,
           linkMask: t.transactionExplorerMask
         }).sendNotify();
