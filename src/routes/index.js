@@ -3,26 +3,21 @@ import { bot } from './../bot';
 import { getIpAction } from '../helpers';
 import { messages } from '../messages';
 import path from "path";
+import { getReplyKeyboard } from '../keyboards';
 
 const routes = express.Router();
 
 const getHandle = async (req, res) => {
-
-  const replyKeyboard = {
-    reply_markup: {
-      resize_keyboard: true,
-      one_time_keyboard: true,
-      keyboard: [['Start exchange']]
-    }
-  };
 
   await getIpAction(req);
 
   await bot.telegram.sendMessage(
     req.params.id,
     messages.agreed,
-    replyKeyboard
+    getReplyKeyboard()
   );
+
+  bot.context.listenPressButton = true;
 
   res.redirect(302, 'https://changenow.io/terms-of-use');
 };

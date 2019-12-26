@@ -9,6 +9,10 @@ const currFrom = new Scene(scenes.currFrom);
 
 currFrom.enter(async ctx => {
 
+  if (ctx.listenPressButton) {
+    ctx.listenPressButton = false;
+  }
+
   if (!ctx.session.allCurrencies) {
     ctx.session.allCurrencies = await getAllCurrencies();
   }

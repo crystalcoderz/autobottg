@@ -1,6 +1,7 @@
 //------------------------------- messages -------------------------------------------
 
 export const messages = {
+  replyForCrash: 'Oops, something went wrong. But don’t worry, we’ve already taken it under control.',
   startMsg: 'One minor thing before we start: all our customers are required to read and accept our Terms of Use and Privacy Policy prior to making any exchanges. Tap the button below to read and accept them.',
   welcomeMsg: '@ChangeNOW_officialbot is a Telegram-bot that allows exchanging cryptocurrency securely and anonymously. All cryptocurrencies on the tip of your fingers.\n\nWe don’t ask for ID verification or registration. Just smooth crypto exchange. Enjoy!',
   agreed: 'By continuing the exchange, you agree to our Terms of Use and Privacy Policy. If you do not agree, kindly stop and delete the bot.',
@@ -44,5 +45,9 @@ export const messages = {
     'Sorry, we strive for greatness, but we haven’t added every single crypto yet! %s is not on the list right now, try a different coin?',
     '%s? Is that human language? Sorry, it doesn’t sound like one of our 200+ available cryptos. Try again?',
   ],
-  pressButton: 'To continue, please tap the button below.'
+  pressButton: 'To continue, please tap the button below.',
+  randomText: [
+    "Oh, I'm sure that's a lovely message but I am merely a bot. Try again, please.",
+    "Lovely, but not something I'm aware of. Try again?"
+  ]
 };

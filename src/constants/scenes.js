@@ -7,6 +7,7 @@ const scenes = {
   agree: 'agree',
   estExch: 'estExch',
   addInfo: 'addInfo',
+  read: 'read'
 };
 
 export default scenes;

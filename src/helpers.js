@@ -7,13 +7,12 @@ import { captureException } from '@sentry/node';
 import updateSubTypes from './constants/updateSubTypes';
 import { messages } from './messages';
 
-// TODO implement answers for another types
 export const createAnswerByUpdateSubType = (type) => {
   switch (type) {
     case updateSubTypes.photo:
       return messages.answersByPhoto[getRandomNumber(0, messages.answersByPhoto.length - 1)];
     case updateSubTypes[type]:
-      return `It's ${updateSubTypes[type]}`;
+      return messages.randomText[getRandomNumber(0, messages.randomText.length - 1)];
     default:
       return null;
   }
