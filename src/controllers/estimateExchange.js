@@ -9,12 +9,20 @@ const estimateExchange = new Scene(scenes.estExch);
 
 estimateExchange.enter(async ctx => {
   const { tradingData } = ctx.session;
-  const { amount, currFrom, currTo } = tradingData;
+  const { amount, currFrom, currTo, externalIdName, extraId } = tradingData;
   const { ticker: currFromTicker } = currFrom;
   const { ticker: currToTicker } = currTo;
 
   const fromTo = `${currFromTicker}_${currToTicker}`;
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
+
+  if (externalIdName) {
+    delete ctx.session.tradingData.externalIdName;
+  }
+
+  if (extraId) {
+    delete ctx.session.tradingData.extraId;
+  }
 
   await ctx.replyWithHTML(
     `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
