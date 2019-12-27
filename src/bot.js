@@ -86,6 +86,8 @@ bot.on(updateTypes.message, async (ctx, next) => {
 
     ctx.session = null;
 
+    await pause(500);
+
     await ctx.scene.enter(scenes.read);
 
     return;
