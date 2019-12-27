@@ -69,6 +69,10 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
 
       await ctx.reply(`${res.payinAddress}`);
 
+      if (res.payinExtraId) {
+        await ctx.replyWithHTML(`${res.payinExtraIdName} - <b>${res.payinExtraId}</b>`);
+      }
+
       return;
     }
 
