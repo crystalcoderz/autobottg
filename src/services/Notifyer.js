@@ -22,7 +22,10 @@ class Notifyer {
   }
 
   _createMessagesByStatus() {
-    if (this.payload.status === statusTrn.sending) return;
+    if (this.payload.status === statusTrn.sending) {
+      this.messages = [];
+      return;
+    }
 
     if (this.payload.status === statusTrn.waiting) {
       this.messages = [`Transaction ID - <b>${this.payload.id}</b>.`, messages[this.payload.status]];
@@ -59,12 +62,16 @@ class Notifyer {
   async sendNotify() {
     this._createMessagesByStatus();
 
-    const promises = this.messages.map(async message => {
-      await bot.telegram.sendMessage(this.recepientId, message, messsageOptions);
-      await pause(500);
-    });
+    if (this.messages.length) {
 
-    await Promise.all(promises);
+      const promises = this.messages.map(async message => {
+        await bot.telegram.sendMessage(this.recepientId, message, messsageOptions);
+        await pause(500);
+      });
+
+      await Promise.all(promises);
+
+    }
   };
 
 }
