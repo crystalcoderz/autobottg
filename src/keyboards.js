@@ -65,3 +65,7 @@ export const getBackKeyboard = () => {
     .resize()
     .extra();
 };
+
+export const getEmptyKeyboard = () => {
+  return Markup.removeKeyboard().extra();
+};

@@ -126,6 +126,11 @@ bot.on(updateTypes.message, async (ctx, next) => {
       return;
     }
 
+    if (scene.current.id === scenes.start && !ctx.listenPressButton) {
+      await ctx.scene.reenter();
+      return;
+    }
+
     if (scene.current.id === scenes.start && ctx.listenPressButton) {
       await ctx.reply(messages.pressButton);
       return;
