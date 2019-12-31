@@ -86,6 +86,9 @@ export const sendTransactionData = async data => {
 export const getTransactionStatus = async id => {
   const options = {
     uri: `${process.env.CN_API_URL}/transactions/${id}/${process.env.CN_API_KEY}`,
+    headers: {
+      'Content-Type': 'application/json'
+    },
     json: true
   };
 

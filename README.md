@@ -43,6 +43,3 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 7. if you need build and run app `npm run dev` only run `npm start`
 
 Tip: Use `dev` branch for testing environment!
-
-
-
