@@ -4,29 +4,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/index.js",
-    "start": "node --exec babel-node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d dist",
+    "dev": "npm run build && nodemon dist/index.js",
+    "serve": "node dist/index.js",
+    "prepare": "npm run build",
+    "start": "node index"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-logger": "0.0.3",
-    "http-proxy-middleware": "^0.20.0",
-    "mongoose": "^5.7.8",
-    "morgan": "^1.9.1",
-    "nodemon": "^1.19.4",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
-    "serve-static": "^1.14.1",
-    "telegraf": "^3.33.0",
-    "telegraf-inline-menu": "^3.6.3"
+    "@sentry/node": "^5.10.2",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "mongoose": "5.7.8",
+    "nodemon": "1.19.4",
+    "request": "2.88.0",
+    "request-promise": "4.2.4",
+    "telegraf": "3.33.0",
+    "telegraf-session-redis": "5.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/node": "^7.6.3",
-    "@babel/preset-env": "^7.6.3"
+    "@babel/cli": "7.7.4",
+    "@babel/core": "7.6.4",
+    "@babel/plugin-transform-runtime": "7.7.4",
+    "@babel/polyfill": "7.7.0",
+    "@babel/preset-env": "7.6.3",
+    "@babel/register": "7.7.4",
+    "@babel/runtime": "7.7.4"
   }
 }

@@ -1,46 +1,77 @@
-// Currency From scene
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
-const { enter, leave } = Stage;
-import { handler, deleteFromSession, pause, startHandler } from '../helpers';
+import { isAvailableCurr, getCurrencyName, pause, getMessageIfCurrencyNotFound } from '../helpers';
 import { messages } from '../messages';
-import { getFromKeyboard, getMainKeyboard, getReplyKeyboard } from '../keyboards';
-import { selectFromCurrencyAction, cancelTradeAction } from '../actions';
-import { config } from '../config';
+import { getAllCurrencies, getCurrInfo } from '../api';
+import { getFromKeyboard } from '../keyboards';
+import scenes from '../constants/scenes';
+import Transaction from '../models/Transaction';
 
-import Markup from 'telegraf/markup';
-import Extra from 'telegraf/extra';
+const currFrom = new Scene(scenes.currFrom);
 
-const currFrom = new Scene('curr_from');
+currFrom.enter(async ctx => {
 
-currFrom.enter(ctx => {
-  const currs = ctx.session.currs;
-  ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(currs));
+  if (ctx.session.listenPressButton) {
+    ctx.session.listenPressButton = false;
+  }
+
+  if (!ctx.session.allCurrencies) {
+    ctx.session.allCurrencies = await getAllCurrencies();
+  }
+
+  ctx.session.tradingData = {};
+
+  const { tradingData, userId } = ctx.session;
+
+  const userTransactions = await Transaction.find({ telegramUserId: userId });
+
+  if (userTransactions) {
+    const promises = userTransactions.map(async trn => {
+
+      trn.disableNotify = true;
+
+      await trn.save();
+    });
+
+    await Promise.all(promises);
+  }
+
+  const choosedCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
+  await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(choosedCurr));
 });
 
-currFrom.command('start', ctx => startHandler(ctx));
-currFrom.hears([/(.*)/gi, config.kb.cancel, config.kb.help], async ctx => {
-  const txt = ctx.message.text;
-  if (config.kb.cancel === txt) {
-    ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    cancelTradeAction(ctx);
-    return;
-  }
-  if (config.kb.help === txt) {
-    ctx.reply(messages.support);
-    await pause(500);
-    ctx.reply(process.env.CN_EMAIL);
-    return;
-  }
-  if (txt.match(/[^()A-Za-z\s]+/gi)) {
-    ctx.reply(messages.validErr);
-    return;
-  }
-  if (txt.match(/[()A-Za-z\s]+/gi)) {
-    await selectFromCurrencyAction(ctx);
-  }
-});
+currFrom.hears(/(.*)/gi, async (ctx) => {
+  const { text } = ctx.message;
+  const { allCurrencies, tradingData } = ctx.session;
 
-currFrom.command('start', leave());
+  if (text && text.trim().length) {
+
+    if (text.match(/^[\u{2705}]/gu)) {
+      await ctx.scene.enter(scenes.currTo);
+      return;
+    }
+
+    if (text.match(/[^()A-Za-z\s]+/gi)) {
+      await ctx.reply(messages.validErr);
+      return;
+    }
+
+    const currencyName = getCurrencyName(text);
+    const currIndex = isAvailableCurr(currencyName, allCurrencies);
+
+    if (currIndex === -1) {
+      await ctx.reply(getMessageIfCurrencyNotFound(currencyName));
+      await pause(500);
+      await ctx.scene.reenter();
+      return;
+    }
+
+    await ctx.replyWithHTML(`Selected currency - <b>${allCurrencies[currIndex].ticker.toUpperCase()}</b>.`);
+
+    ctx.session.tradingData = { ...tradingData, currFrom: await getCurrInfo(allCurrencies[currIndex].ticker) };
+
+    await ctx.scene.enter(scenes.currTo);
+  }
+
+});
 
 export default currFrom;

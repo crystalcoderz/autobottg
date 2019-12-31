@@ -1,61 +1,50 @@
 import Scene from 'telegraf/scenes/base';
-import Stage from 'telegraf/stage';
-import { inputAdditionalDataAction, cancelTradeAction } from '../actions';
-import { saveToSession, pause, startHandler } from '../helpers';
-import { getExtraIDKeyboard, getReplyKeyboard } from '../keyboards';
-import { config } from '../config';
+import { getExtraIDKeyboard } from '../keyboards';
 import { messages } from '../messages';
+import buttons from '../constants/buttons';
+import scenes from '../constants/scenes';
 
-const { leave } = Stage;
-const addInfo = new Scene('add_info');
+const addInfo = new Scene(scenes.addInfo);
 
 addInfo.enter(async ctx => {
-  const curToInfo = ctx.session.curToInfo;
+  const { tradingData } = ctx.session;
+  const { currTo } = tradingData;
+  const { hasExternalId, externalIdName } = currTo;
 
-  if (curToInfo.isAnonymous || curToInfo.hasExternalId) {
-    ctx.reply(
-      `Enter the ${curToInfo.externalIdName}`,
-      getExtraIDKeyboard(ctx)
+  if (hasExternalId) {
+    await ctx.reply(
+      `Enter the ${externalIdName}`,
+      getExtraIDKeyboard()
     );
-    saveToSession(ctx, 'addDataName', curToInfo.externalIdName);
-    await pause(1000);
+    ctx.session.tradingData = { ...tradingData, externalIdName };
   } else {
-    ctx.scene.leave('add_info');
-    ctx.scene.enter('agree');
+    await ctx.scene.enter(scenes.agree);
   }
 });
 
-addInfo.command('start', ctx => startHandler(ctx));
-addInfo.hears(
-  [/(.*)/gi, config.kb.back, config.kb.next, config.kb.cancel, config.kb.help],
-  async ctx => {
-    const txt = ctx.message.text;
-    if (config.kb.back === txt) {
-      ctx.scene.enter('est_exch');
+addInfo.hears([/(.*)/gi, buttons.back, buttons.next], async ctx => {
+    const { text } = ctx.message;
+    const { tradingData } = ctx.session;
+
+    if (text === buttons.back) {
+      await ctx.scene.enter(scenes.estExch);
       return;
     }
-    if (config.kb.next === txt) {
-      ctx.scene.enter('agree');
+
+    if (text === buttons.next) {
+      await ctx.scene.enter(scenes.agree);
       return;
     }
-    if (config.kb.cancel === txt) {
-      ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-      cancelTradeAction(ctx);
+
+    if (text.match(/[^A-Za-z0-9\s]+/gi)) {
+      await ctx.reply(messages.validErr);
       return;
     }
-    if (config.kb.help === txt) {
-      ctx.reply(messages.support);
-      await pause(500);
-      ctx.reply(process.env.CN_EMAIL);
-      return;
-    }
-    if (txt.match(/[^A-Za-z0-9\s]+/gi)) {
-      ctx.reply(messages.validErr);
-      return;
-    }
-    if (txt.match(/[A-Za-z0-9\s]+/gi)) {
-      await inputAdditionalDataAction(ctx);
-    }
+
+    ctx.session.tradingData = { ...tradingData, extraId: text };
+
+    await ctx.scene.enter(scenes.agree);
+
   }
 );
 
