@@ -10,8 +10,8 @@ const currFrom = new Scene(scenes.currFrom);
 
 currFrom.enter(async ctx => {
 
-  if (ctx.listenPressButton) {
-    ctx.listenPressButton = false;
+  if (ctx.session.listenPressButton) {
+    ctx.session.listenPressButton = false;
   }
 
   if (!ctx.session.allCurrencies) {

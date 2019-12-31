@@ -31,14 +31,12 @@ export const stage = new Stage([
   startNewExchange
 ]);
 
-const session = new RedisSession({
+export const session = new RedisSession({
   store: {
     host: process.env.DB_REDIS_HOST || '127.0.0.1',
     port: process.env.DB_REDIS_PORT || 6379,
   }
 });
-
-bot.context.listenPressButton = false;
 
 stage.hears([buttons.help, buttons.cancel], async ctx => {
   const { text } = ctx.message;
@@ -128,12 +126,12 @@ bot.on(updateTypes.message, async (ctx, next) => {
       return;
     }
 
-    if (scene.current.id === scenes.start && !ctx.listenPressButton) {
-      await ctx.scene.reenter();
+    if (scene.current.id === scenes.start && !session.listenPressButton) {
+      await scene.reenter();
       return;
     }
 
-    if (scene.current.id === scenes.start && ctx.listenPressButton) {
+    if (scene.current.id === scenes.start && session.listenPressButton) {
       await ctx.reply(messages.pressButton);
       return;
     }

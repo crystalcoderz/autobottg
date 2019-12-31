@@ -1,5 +1,5 @@
 import express from 'express';
-import { bot } from './../bot';
+import { bot, session } from './../bot';
 import { getIpAction } from '../helpers';
 import { messages } from '../messages';
 import path from "path";
@@ -17,7 +17,11 @@ const getHandle = async (req, res) => {
     getReplyKeyboard()
   );
 
-  bot.context.listenPressButton = true;
+  const sessionKey = `${req.params.id}:${req.params.id}`;
+
+  const currSession = await session.getSession(sessionKey);
+
+  await session.saveSession(sessionKey, { ...currSession, listenPressButton: true });
 
   res.redirect(302, 'https://changenow.io/terms-of-use');
 };
