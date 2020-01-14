@@ -10,8 +10,8 @@ const curTo = new Scene(scenes.currTo);
 
 curTo.enter(async ctx => {
   const { tradingData } = ctx.session;
-  const choosedCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
-  await ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(choosedCurr));
+  const chosenCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
+  await ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(chosenCurr));
 });
 
 curTo.hears([/(.*)/gi, buttons.back], async ctx => {

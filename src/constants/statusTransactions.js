@@ -1,4 +1,4 @@
-const statusStransactions = {
+const statusTransactions = {
   new: 'new',
   waiting: 'waiting',
   confirming: 'confirming',
@@ -11,4 +11,4 @@ const statusStransactions = {
   expire: 'expire',
 };
 
-export default statusStransactions;
+export default statusTransactions;

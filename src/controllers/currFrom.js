@@ -35,8 +35,8 @@ currFrom.enter(async ctx => {
     await Promise.all(promises);
   }
 
-  const choosedCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
-  await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(choosedCurr));
+  const chosenCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
+  await ctx.replyWithHTML(messages.selectFromMsg, getFromKeyboard(chosenCurr));
 });
 
 currFrom.hears(/(.*)/gi, async (ctx) => {

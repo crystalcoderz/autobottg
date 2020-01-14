@@ -3,7 +3,6 @@ import UserModel from './models/User';
 import TransactionModel from './models/Transaction';
 import VisitModel from './models/Visit';
 import statuses from './constants/statusTransactions';
-import { captureException } from '@sentry/node';
 import updateSubTypes from './constants/updateSubTypes';
 import { messages } from './messages';
 
@@ -91,6 +90,6 @@ export const getIpAction = async req => {
     await user.save();
     await visit.save();
   } catch (e) {
-    captureException(e);
+    console.log(e);
   }
 };
