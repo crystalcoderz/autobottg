@@ -16,8 +16,8 @@ export const getReplyKeyboard = () => {
     .extra();
 };
 
-export const getFromKeyboard = (choosedCurr) => {
-  const popularCurrsWithActive = { ...popularCurrs, [choosedCurr]:  `✅ ${popularCurrs[choosedCurr]}`};
+export const getFromKeyboard = (chosenCurr) => {
+  const popularCurrsWithActive = { ...popularCurrs, [chosenCurr]:  `✅ ${popularCurrs[chosenCurr]}`};
   const { btc, eth, bch, ltc, xmr, zec } = popularCurrsWithActive;
   const fullKb = [[btc, eth], [bch, ltc], [xmr, zec], [buttons.cancel], [buttons.help]];
 
@@ -26,8 +26,8 @@ export const getFromKeyboard = (choosedCurr) => {
     .extra();
 };
 
-export const getToKeyboard = (choosedCurr) => {
-  const popularCurrsWithActive = { ...popularCurrs, [choosedCurr]:  `✅ ${popularCurrs[choosedCurr]}`};
+export const getToKeyboard = (chosenCurr) => {
+  const popularCurrsWithActive = { ...popularCurrs, [chosenCurr]:  `✅ ${popularCurrs[chosenCurr]}`};
   const { btc, eth, bch, ltc, xmr, zec } = popularCurrsWithActive;
   const fullKb = [
     [btc, eth],

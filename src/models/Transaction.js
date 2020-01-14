@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import statusStransactions from '../constants/statusTransactions';
+import statusTransactions from '../constants/statusTransactions';
 
 const { Schema } = mongoose;
 
@@ -13,7 +13,7 @@ const TransactionSchema = new Schema({
   amount: { type: Schema.Types.Decimal128, required: true },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
   transactionExplorerMask: { type: String, required: true },
-  status: { type: String, enum: Object.keys(statusStransactions), default: statusStransactions.new },
+  status: { type: String, enum: Object.keys(statusTransactions), default: statusTransactions.new },
   telegramUserId: { type: Number, required: true },
   disableNotify: { type: Boolean, default: false }
 });

@@ -1,5 +1,5 @@
 import Scene from 'telegraf/scenes/base';
-import { getMinimumAmount } from '../api';
+import { getMinimumDepositAmount } from '../api';
 import { getAmountKeyboard } from '../keyboards';
 import { messages } from '../messages';
 import scenes from '../constants/scenes';
@@ -12,7 +12,7 @@ amount.enter(async (ctx) => {
   const { tradingData } = ctx.session;
   const { currFrom, currTo } = tradingData;
   const tradePair = `${currFrom.ticker}_${currTo.ticker}`;
-  const { minAmount } = await getMinimumAmount(tradePair);
+  const { minAmount } = await getMinimumDepositAmount(tradePair);
 
   ctx.session.tradingData = { ...tradingData, minAmount };
   const minAmountMsg = minAmount ? `Minimal amount - <b>${minAmount}</b>` : '';

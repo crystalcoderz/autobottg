@@ -3,7 +3,6 @@ import scenes from '../constants/scenes';
 import { messages } from '../messages';
 import { getMainKeyboard } from '../keyboards';
 import UserModel from '../models/User';
-import { captureException } from '@sentry/minimal';
 
 const read = new Scene(scenes.read);
 
@@ -30,7 +29,7 @@ read.hears([/(.*)/gi, messages.read], async ctx => {
       await UserModel.create({ userId, username });
     }
   } catch (e) {
-    captureException(e);
+    console.log(e);
   }
 
   ctx.session.userId = userId;

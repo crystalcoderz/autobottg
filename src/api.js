@@ -1,11 +1,10 @@
 import rp from 'request-promise';
-import { captureException } from '@sentry/node';
 
 const _apiRequest = async options => {
   try {
     return await rp(options);
   } catch (err) {
-    captureException(err);
+    console.log(err);
   }
 };
 
@@ -33,7 +32,7 @@ export const getPairs = async () => {
   return await _apiRequest(options);
 };
 
-export const getMinimumAmount = async pair => {
+export const getMinimumDepositAmount = async pair => {
   const options = {
     uri: `${process.env.CN_API_URL}/min-amount/${pair}?api_key=${process.env.CN_API_KEY}`,
     headers: {
