@@ -5,7 +5,7 @@ const _apiRequest = async options => {
     return await rp(options);
   } catch (err) {
     console.error(
-    `Network Error:
+    `Request Error:
       message: ${err.error.error}
       method: ${err.response.req.method}
       path: ${err.response.req.path}
