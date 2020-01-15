@@ -4,13 +4,19 @@ const _apiRequest = async options => {
   try {
     return await rp(options);
   } catch (err) {
-    console.error(`Error: ${err.error.error}`);
+    console.error(
+    `Network Error:
+      message: ${err.error.error}
+      method: ${err.response.req.method}
+      path: ${err.response.req.path}
+      date: ${err.response.headers.date}
+    `);
   }
 };
 
 export const getAllCurrencies = async () => {
   const options = {
-    uri: `${process.env.CN_API_URL}/currencies?active=true?api_key=${process.env.CN_API_KEY}`,
+    uri: `${process.env.CN_API_URL}/curre?active=true?api_key=${process.env.CN_API_KEY}`,
     headers: {
         'Content-Type': 'application/json'
     },
