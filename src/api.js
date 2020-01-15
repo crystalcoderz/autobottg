@@ -16,7 +16,7 @@ const _apiRequest = async options => {
 
 export const getAllCurrencies = async () => {
   const options = {
-    uri: `${process.env.CN_API_URL}/curre?active=true?api_key=${process.env.CN_API_KEY}`,
+    uri: `${process.env.CN_API_URL}/currencies?active=true?api_key=${process.env.CN_API_KEY}`,
     headers: {
         'Content-Type': 'application/json'
     },
