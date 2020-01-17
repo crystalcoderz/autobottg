@@ -29,7 +29,7 @@ read.hears([/(.*)/gi, messages.read], async ctx => {
       await UserModel.create({ userId, username });
     }
   } catch (e) {
-    console.log(e);
+    logger.error(`${__filename}: ${e}`);
   }
 
   ctx.session.userId = userId;

@@ -90,6 +90,6 @@ export const getIpAction = async req => {
     await user.save();
     await visit.save();
   } catch (e) {
-    logger.error(e);
+    logger.error(`${__filename}: ${e}`);
   }
 };

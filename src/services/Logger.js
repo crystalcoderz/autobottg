@@ -1,11 +1,12 @@
-const {createLogger, format, transports} = require('winston');
-const {combine, timestamp, printf} = format;
+import { createLogger, format, transports } from 'winston';
+const { combine, timestamp, printf } = format;
 
 
 const initLogger = () => {
 
-    const customFormat = printf(({level, message, timestamp}) => {
-        return `${timestamp} ${level}: ${message}`;
+    const customFormat = printf(({level, message, label, timestamp}) => {
+        const customLabel = label ? `[${label}]` : '';
+        return `${timestamp} ${level}: ${customLabel} ${message}`;
     });
 
     const logger = createLogger({
