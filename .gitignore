@@ -2,3 +2,5 @@ node_modules
 dist
 .env
 .idea
+error.log
+info.log
