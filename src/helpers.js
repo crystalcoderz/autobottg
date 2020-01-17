@@ -90,6 +90,6 @@ export const getIpAction = async req => {
     await user.save();
     await visit.save();
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   }
 };

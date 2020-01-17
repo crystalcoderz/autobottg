@@ -2,9 +2,10 @@ import rp from 'request-promise';
 
 const _apiRequest = async options => {
   try {
-    return await rp(options);
+    const res = await rp(options);
+    logger.info(res)
   } catch (err) {
-    console.log(err);
+    logger.error(err);
   }
 };
 

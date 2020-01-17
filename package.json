@@ -20,7 +20,8 @@
     "request": "2.88.0",
     "request-promise": "4.2.4",
     "telegraf": "3.33.0",
-    "telegraf-session-redis": "5.1.0"
+    "telegraf-session-redis": "5.1.0",
+    "winston": "3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "7.7.4",
