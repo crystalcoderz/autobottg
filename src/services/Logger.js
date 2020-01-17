@@ -12,14 +12,6 @@ const initLogger = () => {
     const logger = createLogger({
         level: 'info',
         format: combine(timestamp(), customFormat, format.colorize()),
-        transports: [
-            new transports.File({filename: 'error.log', level: 'error'}),
-            new transports.File({filename: 'info.log'})
-        ],
-        exceptionHandlers: [
-            new transports.File({filename: 'error.log', level: 'error'}),
-        ],
-        exitOnError: false,
     });
 
     if (process.env.NODE_ENV !== 'production') {
