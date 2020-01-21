@@ -10,7 +10,7 @@ const app = express();
 
 app.use('/', routes);
 
-app.use(bot.webhookCallback('/webhook'));
+app.use(bot.webhookCallback(`/${process.env.API_BOT_KEY}`));
 
 app.listen(process.env.APP_PORT, async () => {
   logger.info(`Server listening on ${process.env.APP_HOST}${process.env.APP_PORT}`);
