@@ -1,34 +1,19 @@
-// Start scene
 import Scene from 'telegraf/scenes/base';
-import { getAllCurrencies } from '../api';
-import { saveToSession } from '../helpers';
+import scenes from '../constants/scenes';
+import { getEmptyKeyboard } from '../keyboards';
 
-const start = new Scene('start');
+const start = new Scene(scenes.start);
 
 start.enter(async ctx => {
-  const hash = +new Date();
-  const uid = ctx.session.userId;
+  const { userId } = ctx.session;
 
   const opts = {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
+    ...getEmptyKeyboard(),
   };
 
-  await ctx.reply(`Please follow this <a href="${process.env.APP_HOST_PORT}/terms-of-use/${hash}?id=${uid}">link</a> to accept our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
-
-  try {
-    const currs = await getAllCurrencies();
-    if (!currs || !currs.length) {
-      await ctx.reply('Server error. Try later.');
-      return;
-    }
-    saveToSession(ctx, 'currs', currs);
-  } catch (error) {
-    await ctx.reply('Server error. Try later.');
-    return;
-  }
+  await ctx.replyWithHTML(`Please follow this <a href="${process.env.APP_HOST_PORT}/user-ip/${userId}">link</a> to read our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
 });
-
-start.hears(/Start exchange/, async ctx => await ctx.scene.enter('curr_from'));
 
 export default start;

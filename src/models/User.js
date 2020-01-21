@@ -1,11 +1,12 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-export const UserSchema = new mongoose.Schema({
-  id: Number,
-  username: String,
-  visits: Array,
-  transactions: Array
+const { Schema } = mongoose;
+
+const UserSchema = new Schema({
+  userId: { type: Number, required: true },
+  username: { type: String },
+  visits: [{ type: Schema.Types.ObjectId, ref: 'Visit' }],
+  transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }]
 });
 
-const UserModel = mongoose.model('User', UserSchema);
-export default UserModel;
+export default mongoose.model('User', UserSchema);

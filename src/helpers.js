@@ -1,118 +1,95 @@
-//------------------------------- HELPERS -------------------------------------------
-
-import { getPairs, getMinimum, getTransactionStatus, getExchAmount, getAllCurrencies } from './api';
-import { getMainKeyboard } from './keyboards';
-import { messages } from './messages';
-import { config } from './config';
+import { getPairs } from './api';
 import UserModel from './models/User';
-let intervalStatus;
+import TransactionModel from './models/Transaction';
+import VisitModel from './models/Visit';
+import statuses from './constants/statusTransactions';
+import updateSubTypes from './constants/updateSubTypes';
+import { messages } from './messages';
 
-export const pause = time => new Promise(resolve => setTimeout(resolve, time));
-
-export const getCurrencyName = ctx => {
-  return ctx.message.text
-    .replace('✅', '')
-    .split('(')[0]
-    .trim();
-};
-
-export const saveToSession = (ctx, field, data) => {
-  ctx.session[field] = data;
-};
-
-export const deleteFromSession = (ctx, field) => {
-  const hasField = ctx.session[field];
-  hasField && delete ctx.session[field];
-};
-
-export const prepareName = name => {
-  if (typeof name === 'string') {
-    return name.trim().toLowerCase();
+export const createAnswerByUpdateSubType = (type) => {
+  switch (type) {
+    case updateSubTypes.photo:
+      return messages.answersByPhoto[getRandomNumber(0, messages.answersByPhoto.length - 1)];
+    case updateSubTypes[type]:
+      return messages.randomText[getRandomNumber(0, messages.randomText.length - 1)];
+    default:
+      return null;
   }
 };
 
-export const convertCurrency = async (ctx, curName) => {
-  let curAbbr;
-  const allCurrs = ctx.session.currs || await getAllCurrencies();
-  const currAvailable = allCurrs.find(
-    item =>
-      prepareName(item.ticker) === prepareName(curName) ||
-      prepareName(item.name) === prepareName(curName)
-  );
-  return (curAbbr = currAvailable ? currAvailable.ticker : null);
+export const getMessageIfCurrencyNotFound = (selectedCurr) => {
+  const initialMsg = messages.currNotFound[getRandomNumber(0, messages.currNotFound.length - 1)];
+  return initialMsg.replace('%s', selectedCurr);
+};
+
+export const getRandomNumber = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+
+export const getIpFromDB = async (userId) => {
+  const { visits } = await UserModel.findOne({ userId }).populate('visits');
+  return visits[visits.length - 1].userIp;
+};
+
+export const isAvailableCurr = (name, allCurr) => {
+  return allCurr.findIndex(c => {
+    return c.ticker.toLowerCase() === name.toLowerCase() ||
+      c.name.toLowerCase() === name.toLowerCase();
+  });
+};
+
+export const pause = time => new Promise(resolve => setTimeout(resolve, time));
+
+export const getCurrencyName = text => {
+  const textFromBtn = text.match(/(?<=\().+?(?=\))/gi);
+  return textFromBtn ? textFromBtn[0].trim() : text.trim();
 };
 
 export const validatePair = async pair => {
   const availablePairs = await getPairs();
-  const hasPair = availablePairs.includes(pair);
-  return hasPair;
+
+  return availablePairs.includes(pair);
 };
 
-export const getAmountTotal = async (amount, fromTo) => {
-  const amountReq = await getExchAmount(amount, fromTo);
-  const amountTotal = amountReq.estimatedAmount;
-  return amountTotal;
+export const addTransactionToDB = async (trn, telegramUserId, transactionExplorerMask) => {
+  const user = await UserModel.findOne({ userId: telegramUserId });
+
+  const { id: transactionId, ...fields } = trn;
+
+  const newTrn = await TransactionModel.create({
+    ...fields,
+    transactionId,
+    telegramUserId,
+    owner: user.id,
+    status: statuses.new,
+    transactionExplorerMask
+  });
+
+  user.transactions.push(newTrn);
+
+  await user.save();
 };
 
-export const getMinimumAmount = async pair => {
-  const getMin = await getMinimum(pair);
-  return getMin.minAmount;
-};
-
-const processStatus = async (ctx, status, payinData) => {
-  if (status === 'waiting') {
-    ctx.replyWithHTML(`Transaction ID - <b>${payinData.id}</b>`);
-    return;
+export const getIpAction = async req => {
+  let userIp;
+  if (req.headers['x-forwarded-for']) {
+    userIp = req.headers['x-forwarded-for'].split(',')[0];
+  } else if (req.connection && req.connection.remoteAddress) {
+    userIp = req.connection.remoteAddress;
+  } else {
+    userIp = req.ip;
   }
-  if (status === 'finished') {
-    const newStatus = await getTransactionStatus(payinData.id);
-    ctx.replyWithHTML(' The transaction hash is');
-    await pause(500);
-    ctx.reply(`${newStatus.payoutHash}`);
-    return;
-  }
-};
 
-export const intervalRequire = async (ctx, payinData) => {
-  const curTo = await ctx.session.curTo;
-  const statusMap = {
-    new: '',
-    waiting: 'We are waiting for your coins to be received. No pressure, though.',
-    confirming: 'We have received your deposit. Nice!',
-    exchanging: 'The exchange process has been initiated. Just a little bit left...',
-    finished: `Yay! The transaction is successfully finished. Your ${curTo} have been sent to your wallet.\nThank you for choosing ChangeNOW - hope to see you again soon!`,
-    failed:
-      'We weren’t able to start the transaction process. Please, try again later.',
-    expired:
-      'We didn’t get your deposit. :(\nWould you like to start a new exchange?'
-  };
+  try {
+    const user = await UserModel.findOne({ userId: req.params.id }).populate('Visit');
+    const visit = await VisitModel.create({ userIp, ipParsed: new Date(), user: user.id });
 
-  let status = '';
-  intervalStatus = setInterval(async () => {
-    const getStatus = await getTransactionStatus(payinData.id);
-    if (status !== getStatus.status) {
-      ctx.reply(statusMap[getStatus.status]);
-      status = getStatus.status;
-      await pause(1000);
-      await processStatus(ctx, status, payinData);
-    }
-  }, config.interval);
-};
+    user.visits.push(visit);
 
-export const breakTransaction = async ctx => {
-  clearInterval(intervalStatus);
-  await ctx.scene.enter('curr_from');
-};
-
-export const startHandler = async ctx => {
-  await ctx.scene.leave();
-  await ctx.reply(messages.startMsg, getMainKeyboard(ctx));
-};
-
-export const addTransactionToDB = async (trID, uId) => {
-  const user = await UserModel.findOne({ id: uId });
-  if (user && user.transactions) {
-    user.transactions.push({ transactionId: trID});
-    await UserModel.updateOne({ id: uId }, { transactions: user.transactions });
+    await user.save();
+    await visit.save();
+  } catch (e) {
+    logger.error(`${__filename}: ${e}`);
   }
 };

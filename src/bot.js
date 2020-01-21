@@ -1,4 +1,5 @@
 import Telegraf from 'telegraf';
+import rp from 'request-promise';
 import RedisSession from 'telegraf-session-redis';
 import Stage from 'telegraf/stage';
 import start from './controllers/start';
@@ -6,56 +7,151 @@ import currFrom from './controllers/currFrom';
 import curTo from './controllers/curTo';
 import amount from './controllers/amount';
 import addInfo from './controllers/addInfo';
-import checkData from './controllers/checkData';
 import estimateExchange from './controllers/estimateExchange';
 import checkAgree from './controllers/checkAgree';
-import getAddress from './controllers/getAddr';
+import read from './controllers/read';
+import startNewExchange from './controllers/startNewExchange';
 import { messages } from './messages';
-import { getMainKeyboard } from './keyboards';
-import { cancelTradeAction, handleStartAction } from './actions';
-import { config } from './config';
-import rateLimit from 'telegraf-ratelimit';
+import scenes from './constants/scenes';
+import buttons from './constants/buttons';
+import { createAnswerByUpdateSubType, pause } from './helpers';
+import updateTypes from './constants/updateTypes';
 
-const bot = new Telegraf(process.env.API_BOT_KEY);
+export const bot = new Telegraf(process.env.API_BOT_KEY);
 
-const stage = new Stage([
+export const stage = new Stage([
   start,
   currFrom,
   curTo,
   amount,
   addInfo,
-  checkData,
   estimateExchange,
   checkAgree,
-  getAddress
+  read,
+  startNewExchange
 ]);
 
-const session = new RedisSession({
+export const session = new RedisSession({
   store: {
-    host: process.env.DB_SESSION_HOST || '127.0.0.1',
-    port: process.env.DB_SESSION_PORT || 6379
+    host: process.env.DB_REDIS_HOST || '127.0.0.1',
+    port: process.env.DB_REDIS_PORT || 6379,
   }
 });
 
-const limitConfig = {
-  window: 1500,
-  limit: 1
-}
+stage.hears([buttons.help, buttons.cancel], async ctx => {
+  const { text } = ctx.message;
 
-bot.use(rateLimit(limitConfig));
-bot.use(session);
-bot.use(stage.middleware());
-bot.start(ctx => ctx.reply(messages.startMsg, getMainKeyboard(ctx)));
-bot.hears(/Start exchange/, ctx => ctx.scene.enter('curr_from'));
-bot.hears(/Start new exchange/, ctx => ctx.scene.enter('curr_from'));
-bot.hears(/Read and Accept/, async ctx => await handleStartAction(ctx));
+  if (text === buttons.help) {
+    await ctx.reply(`${messages.support}\n${process.env.CN_EMAIL}`);
+    return;
+  }
 
-bot.hears(config.kb.cancel, ctx => cancelTradeAction(ctx));
+  if (text === buttons.cancel) {
 
-bot.catch(err => {
-  process.stderr.write(`${err}`);
+    ctx.session.tradingData = {};
+
+    await ctx.scene.leave();
+
+    await ctx.scene.enter(scenes.startNewExchange);
+  }
 });
 
-bot.startPolling();
+stage.command('start', async (ctx, next) => {
+  await ctx.scene.leave();
+  return next();
+});
 
-export default bot;
+bot.use(session);
+
+bot.use(stage.middleware());
+
+bot.start(async ctx => {
+  if (ctx.session) {
+    ctx.session = null;
+  }
+
+  await ctx.scene.enter(scenes.read);
+});
+
+bot.on(updateTypes.message, async (ctx, next) => {
+  const { session, updateSubTypes, message, scene } = ctx;
+
+  if ((!session || !session.userId) && !scene.current) {
+
+    await ctx.reply(messages.replyForCrash);
+
+    await ctx.scene.leave();
+
+    ctx.session = null;
+
+    await pause(500);
+
+    await ctx.scene.enter(scenes.read);
+
+    return;
+  }
+
+  if (message.text === messages.startNewExchange || message.text === messages.startExchange) {
+    await ctx.scene.enter(scenes.currFrom);
+    return;
+  }
+
+  const promises = updateSubTypes.map(async type => {
+
+    const textMessage = createAnswerByUpdateSubType(type);
+
+    if (textMessage) {
+      await ctx.reply(textMessage);
+      await pause(500);
+    }
+
+  });
+
+  await Promise.all(promises);
+
+  if (scene.current) {
+
+    if (scene.current.id === scenes.read) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+    if (scene.current.id === scenes.startNewExchange) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+    if (scene.current.id === scenes.agree) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+    if (scene.current.id === scenes.start && !session.listenPressButton) {
+      await scene.reenter();
+      return;
+    }
+
+    if (scene.current.id === scenes.start && session.listenPressButton) {
+      await ctx.reply(messages.pressButton);
+      return;
+    }
+
+  }
+
+  return next();
+});
+
+export async function initBot() {
+  if (process.env.NODE_ENV === 'development') {
+    rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
+      bot.startPolling()
+    );
+  } else {
+    await bot.telegram.setWebhook(
+      `${process.env.APP_HOST}/${process.env.API_BOT_KEY}`,
+      {
+        source: process.env.SSL_CERTIFICATE_PATH
+      }
+    );
+  }
+}

@@ -1,52 +1,54 @@
-//estimateExchange  scene
 import Scene from 'telegraf/scenes/base';
-import { saveToSession, pause, getAmountTotal, startHandler } from '../helpers';
-import { typeWalletAction, cancelTradeAction } from '../actions';
-import { getAmountKeyboard, getReplyKeyboard } from '../keyboards';
-import { config } from '../config';
+import { getAmountKeyboard } from '../keyboards';
 import { messages } from '../messages';
+import scenes from '../constants/scenes';
+import buttons from '../constants/buttons';
+import { getExchAmount } from '../api';
 
-const estimateExchange = new Scene('est_exch');
+const estimateExchange = new Scene(scenes.estExch);
 
 estimateExchange.enter(async ctx => {
-  const amount = ctx.session.amount;
-  const curFrom = ctx.session.curFrom;
-  const curTo = ctx.session.curTo;
-  const fromTo = `${curFrom}_${curTo}`;
-  const amountTotal = await getAmountTotal(amount, fromTo);
-  saveToSession(ctx, 'amountTotal', amountTotal);
-  await pause(1000);
+  const { tradingData } = ctx.session;
+  const { amount, currFrom, currTo, externalIdName, extraId } = tradingData;
+  const { ticker: currFromTicker } = currFrom;
+  const { ticker: currToTicker } = currTo;
+
+  const fromTo = `${currFromTicker}_${currToTicker}`;
+  const { estimatedAmount } = await getExchAmount(amount, fromTo);
+
+  if (externalIdName) {
+    delete ctx.session.tradingData.externalIdName;
+  }
+
+  if (extraId) {
+    delete ctx.session.tradingData.extraId;
+  }
+
   await ctx.replyWithHTML(
-    `You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nEnter the recipient <b>${curTo.toUpperCase()}</b> wallet address.`,
+    `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
     getAmountKeyboard(ctx)
   );
 });
 
-estimateExchange.command('start', async ctx => await startHandler(ctx));
-estimateExchange.hears([/(.*)/gi, config.kb.back, config.kb.cancel, config.kb.help], async ctx => {
-  const txt = ctx.message.text;
-  if (config.kb.back === txt) {
-    await ctx.scene.enter('amount');
+estimateExchange.hears([/(.*)/gi, buttons.back], async ctx => {
+  const { text } = ctx.message;
+  const { tradingData } = ctx.session;
+
+  if (text === buttons.back) {
+    delete ctx.session.tradingData.amount;
+    await ctx.scene.enter(scenes.amount);
     return;
   }
-  if (config.kb.cancel === txt) {
-    await ctx.reply(messages.cancel, getReplyKeyboard(ctx));
-    await cancelTradeAction(ctx);
-    return;
-  }
-  if (config.kb.help === txt) {
-    await ctx.reply(messages.support);
-    await pause(500);
-    await ctx.reply(config.email);
-    return;
-  }
-  if (txt.match(/[^()A-Za-z0-9\s]+/gi)) {
+
+  if (text.match(/[^()A-Za-z0-9\s]+/gi)) {
     await ctx.reply(messages.validErr);
     return;
   }
-  if (txt.match(/[()A-Za-z0-9\s]+/gi)) {
-    await typeWalletAction(ctx);
-  }
+
+  ctx.session.tradingData = { ...tradingData, walletCode: text };
+
+  await ctx.scene.enter(scenes.addInfo);
+
 });
 
 export default estimateExchange;

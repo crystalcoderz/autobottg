@@ -1,63 +1,83 @@
-//checkAgree scene
 import Scene from 'telegraf/scenes/base';
-import { agreePressAction } from '../actions';
-import { getAgreeKeyboard } from '../keyboards';
-import { config } from '../config';
-import { pause, getAmountTotal, startHandler, deleteFromSession } from '../helpers';
-import { messages } from '../messages';
+import { getAgreeKeyboard, getBackKeyboard } from '../keyboards';
+import { getIpFromDB, addTransactionToDB, pause } from '../helpers';
+import { getExchAmount, sendTransactionData } from '../api';
+import buttons from '../constants/buttons';
+import scenes from '../constants/scenes';
 
-const checkAgree = new Scene('agree');
+const checkAgree = new Scene(scenes.agree);
 
 checkAgree.enter(async ctx => {
-  const amount = ctx.session.amount;
-  const curFrom = ctx.session.curFrom;
-  const curTo = ctx.session.curTo;
-  const walletCode = ctx.session.walletCode;
-  const addData = ctx.session.addData;
-  const addDataName = ctx.session.addDataName;
-  const fromTo = `${curFrom}_${curTo}`;
-  const amountTotal = await getAmountTotal(amount, fromTo);
+  const { tradingData } = ctx.session;
+  const { currFrom, currTo, walletCode, extraId, externalIdName, amount } = tradingData;
+  const { ticker: currFromTicker } = currFrom;
+  const { ticker: currToTicker } = currTo;
+  const extraIdMsg = extraId && externalIdName ? `Your ${externalIdName} is <b>${extraId}</b>.\n` : '';
 
-  const addMsg = addData ? `Your ${addDataName} is <b>${addData}</b>.\n` : '';
+  const fromTo = `${currFromTicker}_${currToTicker}`;
+  const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
   await ctx.replyWithHTML(
-    `
-    You’re sending <b>${amount} ${curFrom.toUpperCase()}</b>; you’ll get ~<b>${amountTotal} ${curTo.toUpperCase()}</b>.\nYour recipient <b>${curTo.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${addMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
-    getAgreeKeyboard(ctx)
+    `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${extraIdMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
+    getAgreeKeyboard()
   );
 });
 
-const backAgreeHandler = async ctx => {
-  deleteFromSession(ctx, 'addData');
-  deleteFromSession(ctx, 'addDataName');
-  await ctx.scene.enter('est_exch');
-};
+checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
+  const { text } = ctx.message;
 
-checkAgree.command('start', ctx => startHandler(ctx));
-// checkAgree.hears(config.kb.confirm, async ctx => await agreePressAction(ctx));
-// checkAgree.hears(config.kb.back, backAgreeHandler);
-// checkAgree.hears(config.kb.help, async ctx => {
-//   await ctx.reply(messages.support);
-//   await pause(500);
-//   await ctx.reply(config.email);
-//   return;
-// });
+  if (text === buttons.back) {
+    if (ctx.session.tradingData.extraId) {
+      delete ctx.session.tradingData.extraId;
+    }
 
-checkAgree.hears([config.kb.confirm, config.kb.back, config.kb.help], async ctx => {
-  const txt = ctx.message.text;
-  if (config.kb.confirm === txt) {
-    await agreePressAction(ctx)
+    if (ctx.session.tradingData.externalIdName) {
+      delete ctx.session.tradingData.externalIdName;
+    }
+
+    await ctx.scene.enter(scenes.estExch);
     return;
   }
-  if (config.kb.back === txt) {
-    await backAgreeHandler(ctx);
-    return;
-  }
-  if (config.kb.help === txt) {
-    await ctx.reply(messages.support);
-    await pause(500);
-    await ctx.reply(config.email);
-    return;
+
+  if (text === buttons.confirm) {
+    const { userId, tradingData } = ctx.session;
+    const { currFrom, currTo, walletCode, amount, extraId = '' } = tradingData;
+    const ip = await getIpFromDB(userId);
+
+    const data = {
+      userId,
+      amount,
+      extraId,
+      ip,
+      from: currFrom.ticker,
+      to: currTo.ticker,
+      address: walletCode,
+    };
+
+    const res = await sendTransactionData(data);
+
+    if (res && res.payinAddress) {
+      const { transactionExplorerMask } = currTo;
+      await addTransactionToDB(res, userId, transactionExplorerMask);
+
+      await ctx.replyWithHTML(
+        `You’re sending <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; you’ll get ~<b>${res.amount} ${currTo.ticker.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
+        getBackKeyboard()
+      );
+
+      await pause(500);
+
+      await ctx.reply(`${res.payinAddress}`);
+
+      if (res.payinExtraId) {
+        await ctx.replyWithHTML(`${res.payinExtraIdName} - <b>${res.payinExtraId}</b>`);
+      }
+
+      return;
+    }
+
+    await ctx.reply(`Sorry, the address you’ve entered is invalid.`);
+    await ctx.scene.enter(scenes.estExch);
   }
 });
 
