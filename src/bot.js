@@ -148,7 +148,7 @@ export async function initBot() {
     );
   } else {
     await bot.telegram.setWebhook(
-      `${process.env.APP_HOST}/webhook`,
+      `${process.env.APP_HOST}/${process.env.API_BOT_KEY}`,
       {
         source: process.env.SSL_CERTIFICATE_PATH
       }
