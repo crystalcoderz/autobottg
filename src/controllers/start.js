@@ -13,7 +13,7 @@ start.enter(async ctx => {
     ...getEmptyKeyboard(),
   };
 
-  await ctx.replyWithHTML(`Please follow this <a href="${process.env.APP_HOST_PORT}/user-ip/${userId}">link</a> to read our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
+  await ctx.replyWithHTML(`Please follow this <a href="${process.env.APP_EXTERNAL_HOST}/user-ip/${userId}">link</a> to read our Terms of Use and Privacy Policy. Then, return to the bot to proceed.`, opts);
 });
 
 export default start;

@@ -13,7 +13,7 @@ app.use('/', routes);
 app.use(bot.webhookCallback(`/${process.env.API_BOT_KEY}`));
 
 app.listen(process.env.APP_PORT, async () => {
-  logger.info(`Server listening on ${process.env.APP_HOST}${process.env.APP_PORT}`);
+  logger.info(`Server listening on ${process.env.APP_EXTERNAL_HOST}`);
   await initBot();
   await connectDatabase(process.env.DB_HOST, process.env.DB_PORT, process.env.DB_NAME);
   await StatusWorker.run();
