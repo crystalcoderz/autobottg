@@ -1,7 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 const { combine, timestamp, printf } = format;
 
-
 const initLogger = () => {
 
     const customFormat = printf(({level, message, label, timestamp}) => {
@@ -10,16 +9,15 @@ const initLogger = () => {
     });
 
     const logger = createLogger({
-        level: 'info',
         format: combine(timestamp(), customFormat, format.colorize()),
+        transports: [
+            new transports.Console({format: combine(timestamp(), customFormat)})
+        ],
+        exceptionHandlers: [
+            new transports.Console({level: 'error', format: combine(timestamp(), customFormat)})
+        ],
+        exitOnError: false,
     });
-
-    if (process.env.NODE_ENV !== 'production') {
-        logger.add(new transports.Console({
-            format: combine(timestamp(), customFormat),
-        }));
-    }
-
 
     global.logger = logger;
 };
