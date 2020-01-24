@@ -146,13 +146,15 @@ export async function initBot() {
     rp(`https://api.telegram.org/bot${process.env.API_BOT_KEY}/deleteWebhook`).then(() =>
       bot.startPolling()
     );
-  } else if (process.env.NODE_ENV === 'staging') {
-    await bot.telegram.setWebhook(`${process.env.APP_EXTERNAL_HOST}/${process.env.API_BOT_KEY}`,
+  } else if(process.env.APP_USE_CERTIFICATE == 'true'){
+    await bot.telegram.setWebhook(
+      `${process.env.APP_EXTERNAL_HOST}/${process.env.API_BOT_KEY}`,
       {
         source: process.env.SSL_CERTIFICATE_PATH
       }
     );
-  } else {
-    await bot.telegram.setWebhook(`${process.env.APP_EXTERNAL_HOST}/${process.env.API_BOT_KEY}`);
+  } else if(process.env.APP_USE_CERTIFICATE == 'false'){
+    await bot.telegram.setWebhook(
+      `${process.env.APP_EXTERNAL_HOST}/${process.env.API_BOT_KEY}`);
   }
 }
