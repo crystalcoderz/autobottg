@@ -27,11 +27,6 @@ class Notifyer {
       return;
     }
 
-    if (this.payload.status === statusTrn.waiting) {
-      this.messages = [`Transaction ID - <b>${this.payload.id}</b>.`, messages[this.payload.status]];
-      return;
-    }
-
     if (this.payload.status === statusTrn.finished) {
       const { amountReceive, expectedReceiveAmount, payoutHash, linkMask, toCurrency } = this.payload;
 

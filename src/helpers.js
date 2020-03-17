@@ -62,7 +62,7 @@ export const addTransactionToDB = async (trn, telegramUserId, transactionExplore
     transactionId,
     telegramUserId,
     owner: user.id,
-    status: statuses.new,
+    status: statuses.waiting,
     transactionExplorerMask
   });
 
