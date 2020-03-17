@@ -4,6 +4,7 @@ import { getIpFromDB, addTransactionToDB, pause } from '../helpers';
 import { getExchAmount, sendTransactionData } from '../api';
 import buttons from '../constants/buttons';
 import scenes from '../constants/scenes';
+import { messages } from '../messages';
 
 const checkAgree = new Scene(scenes.agree);
 
@@ -67,11 +68,15 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
 
       await pause(500);
 
-      await ctx.reply(`${res.payinAddress}`);
-
+      await ctx.reply(`${res.payinAddress}`);    
       if (res.payinExtraId) {
         await ctx.replyWithHTML(`${res.payinExtraIdName} - <b>${res.payinExtraId}</b>`);
       }
+
+      await pause(1000);
+
+      await ctx.replyWithHTML(`Transaction ID - <b>${res.id}</b>.`);
+      await ctx.reply(messages.waiting);
 
       return;
     }
