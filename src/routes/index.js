@@ -23,7 +23,7 @@ const getHandle = async (req, res) => {
 
   await session.saveSession(sessionKey, { ...currSession, listenPressButton: true });
 
-  res.redirect(302, 'https://changenow.io/terms-of-use');
+  res.redirect(302, process.env.REDIRECT_URL);
 };
 
 routes.get('/user-ip/:id', getHandle);

@@ -1,6 +1,8 @@
 
 # Changenow Bot
 
+[Flow description](./FLOW.md)
+
 ## Description
 
 @ChangeNOW_officialbot helps you to exchange cryptocurrency securely and anonymously. No ID, no registration. Just crypto exchange
@@ -10,6 +12,44 @@
 - node `11.2.0`
 - redis `5.0.3`
 - mongodb `4.0.4`
+
+## Description of .env config parameters:
+
+`NODE_ENV` - mode in which production or development application is launched
+
+`CN_API_URL` - URL for API ChahgeNOW usage, by default: https://changenow.io/api/v1  
+
+`CN_API_KEY` - API key provided by ChangeNOW
+
+`REDIRECT_URL` - URL to redirect the user to the exchange Terms of Use and Privacy Policy page
+
+`CN_EMAIL` - E-mail displayed in support message
+
+`API_BOT_KEY` - Bot's key (token) in Telegram
+
+`APP_PORT` - Port on which express application is launched
+
+`APP_HOST` - Host on which express application is launched 
+
+`APP_EXTERNAL_HOST` - Your domain for external URLs and webhook link  
+
+`APP_USE_CERTIFICATE` - Sets up the application to use SSL certificate, accepts value `true/false`
+
+`DB_HOST` - Host on which MongoDB database is running  
+
+`DB_PORT` - Port on which MongoDB database is running  
+
+`DB_NAME` - Database name, by default: changenow_bot
+
+`DB_USERNAME` - Database username
+ 
+`DB_PASS` - Database user password 
+
+`DB_REDIS_HOST` - Host on which Redis is running
+
+`DB_REDIS_PORT` - Port on which Redis is running
+
+`SSL_CERTIFICATE_PATH` - Path to cert.pem on server, e.g. /etc/letsencrypt/live/yourdomain/cert.pem
 
 ## How to start
 
