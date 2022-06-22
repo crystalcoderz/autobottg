@@ -6,7 +6,7 @@ const buttons = {
   cancel: '❌ Cancel exchange',
   next: '▶️ Next',
   back: '◀️ Back',
-  confirm: '✔️ Confirm',
+  confirm: '✅ Confirm',
   help: 'ℹ️ Support Info',
 };
 

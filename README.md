@@ -58,7 +58,9 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 ## Server setup
 
 1. Setup domain with SSL-certificate to let webhooks work
-2. git clone https://github.com/EvercodeLab/changenow-bot.git
+2. git clone https://gitlab.com/changenow/frontend/changenow-telegram-bot
+   or 
+   git clone git@gitlab.com:changenow-s-library-catalogue/white-label-telegram-bot.git
 3. cd changenow-bot
 4. Install RedisDB (https://redis.io/) and insert parameters to .env
 5. npm install
@@ -74,7 +76,7 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and
 
 ## Development setup
 
-1. git clone https://github.com/EvercodeLab/changenow-bot.git
+1. git clone https://gitlab.com/changenow/frontend/changenow-telegram-bot
 2. cd changenow-bot
 3. install [mongodb](https://docs.mongodb.com/v4.0/administration/install-on-linux/)
 4. npm install

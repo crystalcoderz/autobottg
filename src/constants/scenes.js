@@ -8,7 +8,7 @@ const scenes = {
   estExch: 'estExch',
   addInfo: 'addInfo',
   read: 'read',
-  startNewExchange: 'startNewExchange'
+  startNewExchange: 'startNewExchange'// it is welcome screen
 };
 
 export default scenes;

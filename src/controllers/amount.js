@@ -1,10 +1,12 @@
 import Scene from 'telegraf/scenes/base';
 import { getMinimumDepositAmount } from '../api';
-import { getAmountKeyboard } from '../keyboards';
+import { keyboards } from '../keyboards';
 import { messages } from '../messages';
 import scenes from '../constants/scenes';
 import buttons from '../constants/buttons';
 import { pause } from '../helpers';
+import { safeReply, safeReplyWithHTML } from '../helpers';
+import { app } from '../app';
 
 const amount = new Scene(scenes.amount);
 
@@ -17,13 +19,15 @@ amount.enter(async (ctx) => {
   ctx.session.tradingData = { ...tradingData, minAmount };
   const minAmountMsg = minAmount ? `Minimal amount - <b>${minAmount}</b>` : '';
 
-  await ctx.replyWithHTML(
+  await app.analytics.trackEnterAmount(ctx);
+  await safeReplyWithHTML(ctx,
     `Enter the amount of <b>${currFrom.ticker.toUpperCase()}</b> you would like to exchange.\n${minAmountMsg}`,
-    getAmountKeyboard(ctx)
+    keyboards.getAmountKeyboard(ctx)
   );
 });
 
 amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, buttons.back], async ctx => {
+  if (await app.msgInterceptor.interceptedByMsgAge(ctx)) { return; }
   const { text } = ctx.message;
   const { tradingData } = ctx.session;
 
@@ -42,7 +46,7 @@ amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, buttons.back], async ctx => {
   const formattingAmount = Number(text.replace(',', '.'));
 
   if (tradingData.minAmount > formattingAmount) {
-    await ctx.reply(`Oops! Wrong amount.`);
+    await safeReply(ctx, `Oops! Wrong amount.`);
 
     await pause(500);
 
@@ -52,7 +56,7 @@ amount.hears([/[.,0-9a-zA-Zа-яА-Я]+/gi, buttons.back], async ctx => {
   }
 
   if (!formattingAmount || text.match(/0x[\da-f]/i)) {
-    await ctx.reply(messages.numErr);
+    await safeReply(ctx, messages.numErr);
     return;
   }
 
