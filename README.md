@@ -53,7 +53,7 @@
 
 ## How to start
 
-To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot_) and press /start!
+To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot) and press /start!
 
 ## Server setup
 
