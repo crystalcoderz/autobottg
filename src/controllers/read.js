@@ -1,22 +1,20 @@
 import Scene from 'telegraf/scenes/base';
 import scenes from '../constants/scenes';
 import { messages } from '../messages';
-import { getMainKeyboard } from '../keyboards';
+import { keyboards } from '../keyboards';
 import UserModel from '../models/User';
-
+import { safeReply, safeReplyWithHTML } from '../helpers';
+import { app } from '../app';
 const read = new Scene(scenes.read);
 
 read.enter(async ctx => {
-  await ctx.reply(messages.startMsg, getMainKeyboard());
+  await safeReply(ctx, messages.startMsg, keyboards.getMainKeyboard());
 });
 
 read.hears([/(.*)/gi, messages.read], async ctx => {
-  const { message } = ctx;
+  if (await app.msgInterceptor.interceptedByMsgAge(ctx)) { return; }
 
-  if (message.text !== messages.read) {
-    await ctx.reply(messages.pressButton);
-    return;
-  }
+  const { message } = ctx;
 
   const { from } = message;
   const user = from;
@@ -33,6 +31,7 @@ read.hears([/(.*)/gi, messages.read], async ctx => {
   }
 
   ctx.session.userId = userId;
+  await app.analytics.trackRead(ctx);
 
   await ctx.scene.enter(scenes.start);
 
