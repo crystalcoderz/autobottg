@@ -1,9 +1,11 @@
 import Scene from 'telegraf/scenes/base';
-import { getAmountKeyboard } from '../keyboards';
+import { keyboards } from '../keyboards';
 import { messages } from '../messages';
 import scenes from '../constants/scenes';
 import buttons from '../constants/buttons';
 import { getExchAmount } from '../api';
+import { safeReply, safeReplyWithHTML } from '../helpers';
+import { app } from '../app';
 
 const estimateExchange = new Scene(scenes.estExch);
 
@@ -16,6 +18,14 @@ estimateExchange.enter(async ctx => {
   const fromTo = `${currFromTicker}_${currToTicker}`;
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
 
+  if (typeof estimatedAmount !== 'number') {
+    await safeReplyWithHTML(ctx, messages.sorryWeCatchedSomeError);
+    delete ctx.session.tradingData.amount;
+    await ctx.scene.enter(scenes.amount);
+    return
+  }
+  await app.analytics.trackEstimate(ctx);
+
   if (externalIdName) {
     delete ctx.session.tradingData.externalIdName;
   }
@@ -24,13 +34,14 @@ estimateExchange.enter(async ctx => {
     delete ctx.session.tradingData.extraId;
   }
 
-  await ctx.replyWithHTML(
+  await safeReplyWithHTML(ctx,
     `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You’re sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nEnter the recipient <b>${currToTicker.toUpperCase()}</b> wallet address.`,
-    getAmountKeyboard(ctx)
+    keyboards.getAmountKeyboard(ctx)
   );
 });
 
 estimateExchange.hears([/(.*)/gi, buttons.back], async ctx => {
+  if (await app.msgInterceptor.interceptedByMsgAge(ctx)) { return; }
   const { text } = ctx.message;
   const { tradingData } = ctx.session;
 
@@ -41,7 +52,7 @@ estimateExchange.hears([/(.*)/gi, buttons.back], async ctx => {
   }
 
   if (text.match(/[^()A-Za-z0-9\s]+/gi)) {
-    await ctx.reply(messages.validErr);
+    await safeReply(ctx, messages.validErr);
     return;
   }
 

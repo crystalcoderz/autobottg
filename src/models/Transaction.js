@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { system } from 'nodemon/lib/config';
 import statusTransactions from '../constants/statusTransactions';
 
 const { Schema } = mongoose;
@@ -15,7 +16,8 @@ const TransactionSchema = new Schema({
   transactionExplorerMask: { type: String, required: true },
   status: { type: String, enum: Object.keys(statusTransactions), default: statusTransactions.new },
   telegramUserId: { type: Number, required: true },
-  disableNotify: { type: Boolean, default: false }
+  notifyEnabled: { type: Boolean, default: true },
+  createdTimestamp: { type: Number, required: true, default: Date.now() },
 });
 
 export default mongoose.model('Transaction', TransactionSchema);

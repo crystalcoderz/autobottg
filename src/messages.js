@@ -3,7 +3,7 @@
 export const messages = {
   replyForCrash: 'Oops, something went wrong. But don’t worry, we’ve already taken it under control.',
   startMsg: 'One minor thing before we start: all our customers are required to read and accept our Terms of Use and Privacy Policy prior to making any exchanges. Tap the button below to read and accept them.',
-  welcomeMsg: '@ChangeNOW_officialbot is a Telegram-bot that allows exchanging cryptocurrency securely and anonymously. All cryptocurrencies on the tip of your fingers.\n\nWe don’t ask for ID verification or registration. Just smooth crypto exchange. Enjoy!',
+  welcomeMsg: 'Our bot is a Telegram-bot that allows exchanging cryptocurrency securely and anonymously. All cryptocurrencies on the tip of your fingers.\n\nWe don’t ask for ID verification or registration. Just smooth crypto exchange. Enjoy!',
   agreed: 'By continuing the exchange, you agree to our Terms of Use and Privacy Policy. If you do not agree, kindly stop and delete the bot.',
   selectFromMsg: 'Choose one of the popular currencies offered below or enter the currency you would like to <b>send</b> in the “BTC” or “Bitcoin” format.',
   selectToMsg: 'Choose one of the popular currencies offered below or enter the currency you would like to <b>get</b> in the “BTC” or “Bitcoin” format.',
@@ -49,5 +49,9 @@ export const messages = {
   randomText: [
     "Oh, I'm sure that's a lovely message but I am merely a bot. Try again, please.",
     "Lovely, but not something I'm aware of. Try again?"
-  ]
+  ],
+  multipleResultsFound: ' Multiple results found: ',
+  cantFindThisCurrency:'cant find this currency:',
+  didYouMean:' Did you mean: ',
+  sorryWeCatchedSomeError:'sorry we catched some error'
 };

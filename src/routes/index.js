@@ -3,7 +3,7 @@ import { bot, session } from './../bot';
 import { getIpAction } from '../helpers';
 import { messages } from '../messages';
 import path from "path";
-import { getReplyKeyboard } from '../keyboards';
+import { keyboards } from '../keyboards';
 
 const routes = express.Router();
 
@@ -14,7 +14,7 @@ const getHandle = async (req, res) => {
   await bot.telegram.sendMessage(
     req.params.id,
     messages.agreed,
-    getReplyKeyboard()
+    keyboards.getReplyKeyboard()
   );
 
   const sessionKey = `${req.params.id}:${req.params.id}`;
@@ -26,13 +26,14 @@ const getHandle = async (req, res) => {
   res.redirect(302, process.env.REDIRECT_URL);
 };
 
-routes.get('/user-ip/:id', getHandle);
+const getTestHandle = async (req, res) => {
+  res.send(200, "it works");
+};
 
+routes.get('/user-ip/:id', getHandle);
+routes.get('/test/', getTestHandle);
 routes.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/../../public/404.html'));
 });
 
 export default routes;
-
-
-

@@ -1,54 +1,79 @@
 import Scene from 'telegraf/scenes/base';
 import { messages } from '../messages';
-import { getToKeyboard } from '../keyboards';
+import { keyboards } from '../keyboards';
 import { getCurrencyName, getMessageIfCurrencyNotFound, isAvailableCurr, pause, validatePair } from '../helpers';
 import buttons from '../constants/buttons';
 import scenes from '../constants/scenes';
-import { getCurrInfo } from '../api';
+import { getCurrInfo, content_api } from '../api';
+import { safeReply, safeReplyWithHTML } from '../helpers';
+import { app } from '../app';
 
 const curTo = new Scene(scenes.currTo);
 
 curTo.enter(async ctx => {
+  await app.analytics.trackCurTo(ctx);
   const { tradingData } = ctx.session;
+  if (!ctx.session.allCurrencies) {
+    ctx.session.allCurrencies = await getAllCurrencies();
+  }
   const chosenCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
-  await ctx.replyWithHTML(messages.selectToMsg, getToKeyboard(chosenCurr));
+  await safeReplyWithHTML(ctx, messages.selectToMsg, keyboards.getToKeyboard(chosenCurr));
 });
 
 curTo.hears([/(.*)/gi, buttons.back], async ctx => {
+  if (await app.msgInterceptor.interceptedByMsgAge(ctx)) { return; }
   const { text } = ctx.message;
+  if (text === buttons.back) {
+    ctx.session.tradingData.currTo = '';
+    await ctx.scene.enter(scenes.currFrom);
+    return;
+  }
+  if (!ctx.session.allCurrencies) {
+    ctx.session.allCurrencies = await getAllCurrencies();
+  }
   const { allCurrencies, tradingData } = ctx.session;
 
   if (text && text.trim().length) {
-
-    if (text === buttons.back) {
-      ctx.session.tradingData.currTo = '';
-      await ctx.scene.enter(scenes.currFrom);
-      return;
+    var currencyName = null
+    if (text.startsWith('/')) {
+      currencyName = text.slice(-text.length + 1);
+    } else {
+      if (text.match(/^[\u{2705}]/gu)) {
+        await ctx.scene.enter(scenes.currTo);
+        return;
+      }
+      if (text.match(/[^()A-Za-z0-9\s]+/gi)) {
+        await safeReply(ctx, messages.validErr);
+        return;
+      }
+      currencyName = getCurrencyName(text);
+      const currList = await content_api.proposeAwailableCurrs(currencyName);
+      if (currList.length == 0) {
+        let message = getMessageIfCurrencyNotFound(currencyName);
+        await safeReply(ctx, message)
+        await pause(500);
+        let alternatives = await app.content_api.getFuzzyCurrAlternatives(text);
+        let alternativesText = alternatives
+        if (alternatives.length > 0) {
+          await safeReply(ctx, messages.didYouMean + alternativesText);
+        }
+        return;
+      } else if (currList.length > 1) {
+        await safeReply(ctx, messages.multipleResultsFound + currList);
+        return;
+      }
     }
 
-    if (text.match(/^[\u{2705}]/gu)) {
-      await ctx.reply(messages.sameCurErr);
-      return;
-    }
-
-    if (text.match(/[^()A-Za-z\s]+/gi)) {
-      await ctx.reply(messages.validErr);
-      return;
-    }
-
-    const currencyName = getCurrencyName(text);
-    const currIndex = isAvailableCurr(getCurrencyName(text), allCurrencies);
-
+    const currIndex = isAvailableCurr(currencyName, allCurrencies);
     if (currIndex === -1) {
-      await ctx.reply(getMessageIfCurrencyNotFound(currencyName));
+      console.log(messages.cantFindThisCurrency + currencyName);
       await pause(500);
       await ctx.scene.reenter();
       return;
     }
 
     const currTo = await getCurrInfo(allCurrencies[currIndex].ticker);
-
-    await ctx.replyWithHTML(`Selected currency - <b>${currTo.ticker.toUpperCase()}</b>.`);
+    await safeReplyWithHTML(ctx, `Selected currency - <b>${currTo.ticker.toUpperCase()}</b>.`);
 
     const { currFrom } = tradingData;
     const pair = `${currFrom.ticker}_${currTo.ticker}`;
@@ -62,7 +87,7 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
       return;
     }
 
-    await ctx.reply(messages.invalidPair);
+    await safeReply(ctx, messages.invalidPair);
     await ctx.scene.enter(scenes.currFrom);
 
   }
