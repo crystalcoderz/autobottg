@@ -1,0 +1,129 @@
+---
+language: Choose your language
+en: English
+ru: Русский
+selectedLang: "Selected language: ${text}"
+replyForCrash:
+  Oops, something went wrong. But don’t worry, we’ve already taken it
+  under control.
+startMsg:
+  "One minor thing before we start: all our customers are required to read
+  and accept our Terms of Use and Privacy Policy prior to making any exchanges. Tap
+  the button below to read and accept them."
+Read: Read
+Start: Start new exchange
+Support: ℹ️ Support Info
+Cancel: ❌ Cancel exchange
+Back: ◀️ Back
+Confirm: ✅ Confirm
+Next: ▶️ Next
+didMean: "Did you mean: "
+multiply: "Multiple results found: "
+selected: Selected currency
+minimal: Minimal amount
+enterAmountOf1: Enter the amount of
+enterAmountOf2: you would like to exchange.
+wrongAmount: Oops! Wrong amount.
+welcomeMsg: |-
+  Our bot is a Telegram-bot that allows exchanging cryptocurrency securely and anonymously. All cryptocurrencies on the tip of your fingers.
+
+  We don’t ask for ID verification or registration. Just smooth crypto exchange. Enjoy!
+
+readPolicy: Please follow this
+readPolicyLink: link
+readPolicy2: " to read our Terms of Use and Privacy Policy. Then, return to the bot to proceed."
+
+pleaseRead: "Please read:\n"
+termsOfUse: Terms of Use
+privacyPolicy: Privacy Policy
+pleaseDelete: "\nIf you do not agree to the terms, kindly stop and delete the bot."
+selectFromMsg:
+  Choose one of the popular currencies offered below or enter the currency
+  you would like to <b>send</b> in the “BTC” or “Bitcoin” format.
+selectToMsg:
+  Choose one of the popular currencies offered below or enter the currency
+  you would like to <b>get</b> in the “BTC” or “Bitcoin” format.
+leaveMsg: Transaction cancelled.
+validErr: Only Latin coin symbols are supported. Sorry
+numErr: Only numbers and dot/comma are allowed. Sorry!
+invalidPair: This pair is temporarily unavailable for exchanges.
+cancel: Your exchange is canceled. Would you like to start a new exchange?
+support:
+  If you have any questions about your exchange, please contact our support
+  team via email
+sameCurErr: You’ve already chosen this currency. Please chose another one.
+waiting:
+  We are waiting for your coins to be received. No pressure, though. Keep in
+  mind - we will update the status when the deposit is received.
+confirming: We have received your deposit. Revving up the exchange machine right away!
+exchanging: The exchange process has been initiated. Just a little bit left...
+finished: Yay! The transaction is successfully finished.
+failed: We weren’t able to start the transaction process. Please, try again later.
+expire: |-
+  We didn’t get your deposit. :(
+  Would you like to start a new exchange?
+read: Read
+status: "Status is:"
+startExchange: Start exchange
+StartNewExchange: Start new exchange
+answersByPhoto1: Hey! I do try to understand you as no one else could, but pictures are out of my reach for now, could you please try again?
+answersByPhoto2: I am ready to help you understand the world's cryptocurrencies, but, unfortunately, I cannot view pictures. Could you try again?
+answersByPhoto3: "I’m sorry, we don’t speak pictures yet \n:( Could you please try again?"
+answersByPhoto4: Hey! I try to be a smart bot, but I haven’t learned to read pictures yet, could you please try again?
+answersByPhoto5: Is that… is that a picture? I’m sorry, pictures scare me a little bit, I can’t even read them! Could you please try again?
+answersByPhoto6: I guess robot take over is postponed for now, because we haven’t even learned to read pictures yet! Gotta tell that to the HQ. Could you please try again?
+answersByPhoto7: I’m sure that’s a pretty picture that you’ve got there! But, unfortunately, I can’t understand them. Could you please try again?
+currNotFound1: "Oops! We’ve looked everywhere, but ${text} is not available right now. Or it doesn’t exist at all. Try again?"
+currNotFound2: "Hmm. ${text} doesn’t look like a coin we have available right now. Sorry about that. Try again?"
+currNotFound3: "${text}? It doesn’t look like we have that. We’re sorry! Try a different coin?"
+currNotFound4: "Are you sure that you spelled ${text} right? Thing is, we don’t think we have that, sorry. Try one more time?"
+currNotFound5: "${text} sounds like a cool word, but not one of the available coins. We’re sorry! Try another coin?"
+currNotFound6: "We hope that ${text} is not a slur, because it doesn’t sound like one of our 200+ supported cryptos! Try again?"
+currNotFound7: "${text} who? We don’t think we have that for you! Are you sure you spelled thatight? Try once more?"
+currNotFound8: "${text}? Mariah would say that she doesn’t know her, and neither do we, sorry! Try again?"
+currNotFound9: "${text} doesn’t sound like one of our 200+ available cryptos! Try another coin?"
+currNotFound10: "${text}? Sounds like something an Area 51 resident might say. Or you might have misspelled a crypto, do try again, we’d love to help you!"
+currNotFound11: "Sorry, we strive for greatness, but we haven’t added every single crypto yet! ${text} is not on the list right now, try a different coin?"
+currNotFound12: "${text}? Is that human language? Sorry, it doesn’t sound like one of our 200+ available cryptos. Try again?"
+pressButton: To continue, please tap the button below.
+randomText1: Oh, I'm sure that's a lovely message but I am merely a bot. Try again, please.
+randomText2: Lovely, but not something I'm aware of. Try again?
+estimate1: Selected pair
+estimate2: You’re sending
+estimate3: you’ll get
+estimate4: Enter the recipient
+estimate5: wallet address.
+extra1: Your
+extra2: is
+agree1: Your recipient
+agree2: wallet address is
+agree3: Please make sure all the information you’ve entered is correct. Then tap the Confirm button below.
+addInfo: Enter the
+deposit: "\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address."
+txId: Transaction ID
+txClick: Click to ping your transaction
+addrInvalid: Sorry, the address you’ve entered is invalid.
+multipleResultsFound: "Multiple results found: "
+cantFindThisCurrency: "cant find this currency:"
+didYouMean: "Did you mean: "
+sorryWeCatchedSomeError: Sorry we catched some error
+tnew: "new"
+twaiting: "waiting"
+tconfirming: "confirming"
+texchanging: "exchanging"
+tsending: "sending"
+tfinished: "finished"
+tfailed: "failed"
+trefunded: "refunded"
+tverifying: "verifying"
+texpire: "expire"
+
+serviceSend1: Your
+serviceSend2: have been sent to your wallet.
+
+serviceReceive1: Congrats! You’ve earned
+serviceReceive2: more than was expected!
+
+serviceSuccess1: Yay! The transaction is successfully finished.
+serviceSuccess2: Thank you for choosing
+serviceSuccess3: "- hope to see you again soon!"

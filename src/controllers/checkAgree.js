@@ -1,44 +1,68 @@
-import Scene from 'telegraf/scenes/base';
-import { keyboards } from '../keyboards';
-import { getIpFromDB, addTransactionToDB, pause } from '../helpers';
-import { getExchAmount, sendTransactionData } from '../api';
-import buttons from '../constants/buttons';
-import scenes from '../constants/scenes';
-import { messages } from '../messages';
-import { safeReply, safeReplyWithHTML } from '../helpers';
-import { app } from '../app';
+import Scene from "telegraf/scenes/base";
+import { keyboards } from "../keyboards";
+import { getIpFromDB, addTransactionToDB, pause } from "../helpers";
+import { getExchAmount, sendTransactionData } from "../api";
+import buttons from "../constants/buttons";
+import scenes from "../constants/scenes";
+import { safeReply, safeReplyWithHTML } from "../helpers";
+import { app } from "../app";
+import UserModel from "../models/User";
 
+let lan = "en";
 
 const checkAgree = new Scene(scenes.agree);
 
-checkAgree.enter(async ctx => {
+checkAgree.enter(async (ctx) => {
+  await app.analytics.trackCheckAgree(ctx);
+  const user = await UserModel.findOne({ userId: ctx.from.id });
+  lan = ctx.scene.state.lang || user.lang || "en";
+  ctx.i18n.locale(lan);
   const { tradingData } = ctx.session;
-  const { currFrom, currTo, walletCode, extraId, externalIdName, amount } = tradingData;
+  const { currFrom, currTo, walletCode, extraId, externalIdName, amount } =
+    tradingData;
   const { ticker: currFromTicker } = currFrom;
   const { ticker: currToTicker } = currTo;
-  const extraIdMsg = extraId && externalIdName ? `Your ${externalIdName} is \n<b>${extraId}</b>.\n` : '';
+  const extraIdMsg =
+    extraId && externalIdName
+      ? `${ctx.i18n.t("extra1")} ${externalIdName} ${ctx.i18n.t(
+          "extra2"
+        )} \n<b>${extraId}</b>.\n`
+      : "";
 
-  await app.analytics.trackCheckAgree(ctx);
   const fromTo = `${currFromTicker}_${currToTicker}`;
   const { estimatedAmount } = await getExchAmount(amount, fromTo);
-  if (typeof estimatedAmount !== 'number') {
+  if (typeof estimatedAmount !== "number") {
     await safeReplyWithHTML(ctx, "sorry we catched some error");
     delete ctx.session.tradingData.amount;
     await ctx.scene.enter(scenes.amount);
-    return
+    return;
   }
 
-  await safeReplyWithHTML(ctx,
-    `Selected pair <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. You're sending <b>${amount} ${currFromTicker.toUpperCase()}</b>; you’ll get ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\nYour recipient <b>${currToTicker.toUpperCase()}</b> wallet address is <b>${walletCode}</b>\n${extraIdMsg}\nPlease make sure all the information you’ve entered is correct. Then tap the Confirm button below.`,
-    keyboards.getAgreeKeyboard()
+  await safeReplyWithHTML(
+    ctx,
+    `${ctx.i18n.t(
+      "estimate1"
+    )} <b>${currFromTicker.toUpperCase()}-${currToTicker.toUpperCase()}</b>. ${ctx.i18n.t(
+      "estimate2"
+    )} <b>${amount} ${currFromTicker.toUpperCase()}</b>; ${ctx.i18n.t(
+      "estimate3"
+    )} ~<b>${estimatedAmount} ${currToTicker.toUpperCase()}</b>.\n${ctx.i18n.t(
+      "agree1"
+    )} <b>${currToTicker.toUpperCase()}</b> ${ctx.i18n.t(
+      "agree2"
+    )} <b>${walletCode}</b>\n${extraIdMsg}\n${ctx.i18n.t("agree3")} `,
+    keyboards.getAgreeKeyboard(ctx.i18n)
   );
 });
 
-checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
-  if (await app.msgInterceptor.interceptedByMsgAge(ctx)) { return; }
+checkAgree.on("text", async (ctx) => {
+  const user = await UserModel.findOne({ userId: ctx.from.id });
+  lan = ctx.scene.state.lang || user.lang || "en";
+  ctx.i18n.locale(lan);
+
   const { text } = ctx.message;
 
-  if (text === buttons.back) {
+  if (text === ctx.i18n.t(buttons.back)) {
     if (ctx.session.tradingData.extraId) {
       delete ctx.session.tradingData.extraId;
     }
@@ -51,9 +75,14 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
     return;
   }
 
-  if (text === buttons.confirm) {
+  if (text === ctx.i18n.t(buttons.help)) {
+    await safeReply(ctx, `${ctx.i18n.t("support")}\n${process.env.CN_EMAIL}`);
+    return;
+  }
+
+  if (text === ctx.i18n.t(buttons.confirm)) {
     const { userId, tradingData } = ctx.session;
-    const { currFrom, currTo, walletCode, amount, extraId = '' } = tradingData;
+    const { currFrom, currTo, walletCode, amount, extraId = "" } = tradingData;
     const ip = await getIpFromDB(userId);
 
     const data = {
@@ -72,9 +101,16 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
       const { transactionExplorerMask } = currTo;
       await addTransactionToDB(res, userId, transactionExplorerMask);
 
-      await safeReplyWithHTML(ctx,
-        `You’re sending <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; you’ll get ~<b>${res.amount} ${currTo.ticker.toUpperCase()}</b>.\nHere is the deposit address for your exchange.\nIn order to start the exchange, use your wallet to send your deposit to this address.`,
-        keyboards.getBackKeyboard()
+      await safeReplyWithHTML(
+        ctx,
+        `${ctx.i18n.t(
+          "estimate2"
+        )} <b>${amount} ${currFrom.ticker.toUpperCase()}</b>; ${ctx.i18n.t(
+          "estimate3"
+        )} ~<b>${res.amount} ${currTo.ticker.toUpperCase()}</b>.${ctx.i18n.t(
+          "deposit"
+        )}`,
+        keyboards.getBackKeyboard(ctx.i18n)
       );
 
       await pause(500);
@@ -87,14 +123,18 @@ checkAgree.hears([buttons.confirm, buttons.back], async ctx => {
 
       await pause(1000);
       await app.analytics.trackTranCreate(ctx);
-      await safeReplyWithHTML(ctx, `Transaction ID - <b>${res.id}</b>.`);
-      await safeReplyWithHTML(ctx, `click to ping your transaction:\n/status_${res.id}`);
-      await safeReply(ctx, messages.waiting);
+      await safeReplyWithHTML(ctx, `${ctx.i18n.t("txId")} - <b>${res.id}</b>.`);
+      await safeReplyWithHTML(
+        ctx,
+        `${ctx.i18n.t("txClick")}:\n/status_${res.id}`
+      );
+      await safeReply(ctx, ctx.i18n.t("waiting"));
+      ctx.scene.enter(scenes.newEx);
 
       return;
     }
 
-    await safeReply(ctx, `Sorry, the address you’ve entered is invalid.`);
+    await safeReply(ctx, `${ctx.i18n.t("addrInvalid")}`);
     await ctx.scene.enter(scenes.estExch);
   }
 });

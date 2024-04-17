@@ -1,73 +1,95 @@
-import Markup from 'telegraf/markup';
-import buttons from './constants/buttons';
-import popularCurrs from './constants/popularCurrs';
+import Markup from "telegraf/markup";
+import buttons from "./constants/buttons";
+import popularCurrs from "./constants/popularCurrs";
 
-class Keyboards{  
-  getMainKeyboard() {
-    return Markup.keyboard([buttons.accept])
+class Keyboards {
+  getLangKeyboard(lang) {
+    Markup.removeKeyboard();
+    return Markup.inlineKeyboard([
+      Markup.callbackButton(lang.t(buttons.en), "/en"),
+      Markup.callbackButton(lang.t(buttons.ru), "/ru"),
+    ]);
+  }
+  getMainKeyboard(lang) {
+    return Markup.keyboard([lang.t(buttons.accept)])
       .oneTime()
       .resize()
       .extra();
   }
-  getReplyKeyboard () {
-    return Markup.keyboard([buttons.start])
-      .oneTime()
-      .resize()
-      .extra();
-  }  
-  getFromKeyboard  (chosenCurr) {
-    const popularCurrsWithActive = { ...popularCurrs, [chosenCurr]:  `✅ ${popularCurrs[chosenCurr]}`};
-    const { btc, eth, bch, ltc, xmr, zec } = popularCurrsWithActive;
-    const fullKb = [[btc, eth], [bch, ltc], [xmr, zec], [buttons.cancel], [buttons.help]];
-  
-    return Markup.keyboard(fullKb)
-      .resize()
-      .extra();
+
+  getReplyKeyboard() {
+    return Markup.keyboard([buttons.start]).oneTime().resize().extra();
   }
-  
-  getToKeyboard (chosenCurr) {
-    const popularCurrsWithActive = { ...popularCurrs, [chosenCurr]:  `✅ ${popularCurrs[chosenCurr]}`};
-    const { btc, eth, bch, ltc, xmr, zec } = popularCurrsWithActive;
+  getFromKeyboard(chosenCurr, lang) {
+    const popularCurrsWithActive = {
+      ...popularCurrs,
+      [chosenCurr]: `✅ ${popularCurrs[chosenCurr]}`,
+    };
+    const { btc, eth, ltc, xmr, trx, bnb } = popularCurrsWithActive;
     const fullKb = [
       [btc, eth],
-      [bch, ltc],
-      [xmr, zec],
-      [buttons.back, buttons.cancel],
-      [buttons.help]
+      [ltc, xmr],
+      [trx, bnb],
+      [lang.t(buttons.cancel)],
+      [lang.t(buttons.help)],
     ];
-  
-    return Markup.keyboard(fullKb)
+
+    return Markup.keyboard(fullKb).resize().extra();
+  }
+
+  getToKeyboard(chosenCurr, lang) {
+    const popularCurrsWithActive = {
+      ...popularCurrs,
+      [chosenCurr]: `✅ ${popularCurrs[chosenCurr]}`,
+    };
+    const { btc, eth, ltc, xmr, trx, bnb } = popularCurrsWithActive;
+    const fullKb = [
+      [btc, eth],
+      [ltc, xmr],
+      [trx, bnb],
+      [lang.t(buttons.cancel)],
+      [lang.t(buttons.help)],
+    ];
+    return Markup.keyboard(fullKb).resize().extra();
+  }
+
+  getAmountKeyboard(lang) {
+    return Markup.keyboard([
+      [lang.t(buttons.back), lang.t(buttons.cancel)],
+      [lang.t(buttons.help)],
+    ])
       .resize()
       .extra();
   }
-  
-  getAmountKeyboard  ()  {
-    return Markup.keyboard([[buttons.back, buttons.cancel], [buttons.help]])
+
+  getExtraIDKeyboard(lang) {
+    return Markup.keyboard([
+      [lang.t(buttons.back), lang.t(buttons.next)],
+      [lang.t(buttons.cancel)],
+      [lang.t(buttons.help)],
+    ])
       .resize()
       .extra();
   }
-  
-  getExtraIDKeyboard ()  {
-    return Markup.keyboard([[buttons.back, buttons.next], [buttons.cancel], [buttons.help]])
+
+  getAgreeKeyboard(lang) {
+    return Markup.keyboard([
+      [lang.t(buttons.back), lang.t(buttons.confirm)],
+      [lang.t(buttons.help)],
+    ])
       .resize()
       .extra();
   }
-  
-  getAgreeKeyboard  () {
-    return Markup.keyboard([[buttons.back, buttons.confirm ], [buttons.help]])
+
+  getBackKeyboard(lang) {
+    return Markup.keyboard([[lang.t(buttons.startNew)], [lang.t(buttons.help)]])
       .resize()
       .extra();
   }
-  
-  getBackKeyboard ()  {
-    return Markup.keyboard([[buttons.startNew], [buttons.help]])
-      .resize()
-      .extra();
-  }
-  
-  getStartEmptyKeyboard () {
+
+  getStartEmptyKeyboard(lang) {
     // return Markup.removeKeyboard().extra();
-    return Markup.keyboard([[buttons.startNew], [buttons.help]])
+    return Markup.keyboard([[lang.t(buttons.startNew)], [lang.t(buttons.help)]])
       .resize()
       .extra();
   }

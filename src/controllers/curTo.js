@@ -1,30 +1,51 @@
-import Scene from 'telegraf/scenes/base';
-import { messages } from '../messages';
-import { keyboards } from '../keyboards';
-import { getCurrencyName, getMessageIfCurrencyNotFound, isAvailableCurr, pause, validatePair } from '../helpers';
-import buttons from '../constants/buttons';
-import scenes from '../constants/scenes';
-import { getCurrInfo, content_api } from '../api';
-import { safeReply, safeReplyWithHTML } from '../helpers';
-import { app } from '../app';
+import Scene from "telegraf/scenes/base";
+import { messages } from "../messages";
+import { keyboards } from "../keyboards";
+import {
+  getCurrencyName,
+  isAvailableCurr,
+  pause,
+  validatePair,
+} from "../helpers";
+import buttons from "../constants/buttons";
+import scenes from "../constants/scenes";
+import { getCurrInfo, content_api } from "../api";
+import { safeReply, safeReplyWithHTML } from "../helpers";
+import { app } from "../app";
+import UserModel from "../models/User";
+import { getRandom } from "../helpers";
+
+let lan = "en";
 
 const curTo = new Scene(scenes.currTo);
 
-curTo.enter(async ctx => {
+curTo.enter(async (ctx) => {
   await app.analytics.trackCurTo(ctx);
+  const user = await UserModel.findOne({ userId: ctx.from.id });
+  lan = ctx.scene.state.lang || user.lang || "en";
+  ctx.i18n.locale(lan);
+
   const { tradingData } = ctx.session;
   if (!ctx.session.allCurrencies) {
     ctx.session.allCurrencies = await getAllCurrencies();
   }
-  const chosenCurr = tradingData.currFrom ? tradingData.currFrom.ticker : '';
-  await safeReplyWithHTML(ctx, messages.selectToMsg, keyboards.getToKeyboard(chosenCurr));
+  const chosenCurr = tradingData.currFrom ? tradingData.currFrom.ticker : "";
+  await safeReplyWithHTML(
+    ctx,
+    ctx.i18n.t("selectToMsg"),
+    keyboards.getToKeyboard(chosenCurr, ctx.i18n)
+  );
 });
 
-curTo.hears([/(.*)/gi, buttons.back], async ctx => {
-  if (await app.msgInterceptor.interceptedByMsgAge(ctx)) { return; }
+curTo.on("text", async (ctx) => {
+  const user = await UserModel.findOne({ userId: ctx.from.id });
+  lan = ctx.scene.state.lang || user.lang || "en";
+  ctx.i18n.locale(lan);
+
   const { text } = ctx.message;
-  if (text === buttons.back) {
-    ctx.session.tradingData.currTo = '';
+
+  if (text === ctx.i18n.t(buttons.back)) {
+    ctx.session.tradingData.currTo = "";
     await ctx.scene.enter(scenes.currFrom);
     return;
   }
@@ -33,9 +54,21 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
   }
   const { allCurrencies, tradingData } = ctx.session;
 
+  if (text === ctx.i18n.t(buttons.cancel)) {
+    ctx.session.tradingData = {};
+    await ctx.scene.leave();
+    await ctx.scene.enter(scenes.startNewExchange);
+    return;
+  }
+
+  if (text === ctx.i18n.t(buttons.help)) {
+    await safeReply(ctx, `${ctx.i18n.t("support")}\n${process.env.CN_EMAIL}`);
+    return;
+  }
+
   if (text && text.trim().length) {
-    var currencyName = null
-    if (text.startsWith('/')) {
+    var currencyName = null;
+    if (text.startsWith("/")) {
       currencyName = text.slice(-text.length + 1);
     } else {
       if (text.match(/^[\u{2705}]/gu)) {
@@ -43,23 +76,25 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
         return;
       }
       if (text.match(/[^()A-Za-z0-9\s]+/gi)) {
-        await safeReply(ctx, messages.validErr);
+        await safeReply(ctx, ctx.i18n.t("numErr"));
         return;
       }
       currencyName = getCurrencyName(text);
       const currList = await content_api.proposeAwailableCurrs(currencyName);
       if (currList.length == 0) {
-        let message = getMessageIfCurrencyNotFound(currencyName);
-        await safeReply(ctx, message)
+        const message = ctx.i18n.t(`currNotFound${getRandom(1, 12)}`, {
+          text: currencyName,
+        });
+        await safeReply(ctx, message);
         await pause(500);
         let alternatives = await app.content_api.getFuzzyCurrAlternatives(text);
-        let alternativesText = alternatives
+        let alternativesText = alternatives;
         if (alternatives.length > 0) {
-          await safeReply(ctx, messages.didYouMean + alternativesText);
+          await safeReply(ctx, ctx.i18n.t("didMean") + alternativesText);
         }
         return;
       } else if (currList.length > 1) {
-        await safeReply(ctx, messages.multipleResultsFound + currList);
+        await safeReply(ctx, ctx.i18n.t("multiply") + currList);
         return;
       }
     }
@@ -73,25 +108,25 @@ curTo.hears([/(.*)/gi, buttons.back], async ctx => {
     }
 
     const currTo = await getCurrInfo(allCurrencies[currIndex].ticker);
-    await safeReplyWithHTML(ctx, `Selected currency - <b>${currTo.ticker.toUpperCase()}</b>.`);
+    await safeReplyWithHTML(
+      ctx,
+      `${ctx.i18n.t("selected")} - <b>${currTo.ticker.toUpperCase()}</b>.`
+    );
 
     const { currFrom } = tradingData;
     const pair = `${currFrom.ticker}_${currTo.ticker}`;
     const hasPair = await validatePair(pair);
 
     if (hasPair) {
-
       ctx.session.tradingData = { ...tradingData, currTo };
 
       await ctx.scene.enter(scenes.amount);
       return;
     }
 
-    await safeReply(ctx, messages.invalidPair);
+    await safeReply(ctx, ctx.i18n.t("invalidPair"));
     await ctx.scene.enter(scenes.currFrom);
-
   }
-
 });
 
 export default curTo;

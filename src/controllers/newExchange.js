@@ -1,30 +1,20 @@
 import Scene from "telegraf/scenes/base";
 import scenes from "../constants/scenes";
-import { keyboards } from "../keyboards";
-import { safeReply, safeReplyWithHTML } from "../helpers";
+import { safeReplyWithHTML, safeReply } from "../helpers";
 import { app } from "../app";
 import UserModel from "../models/User";
-import { getTransactionStatus } from "../api";
 import buttons from "../constants/buttons";
-
+import { getTransactionStatus } from "../api";
 let lan = "en";
 
-const startNewExchange = new Scene(scenes.startNewExchange);
+const newEx = new Scene(scenes.newEx);
 
-startNewExchange.enter(async (ctx) => {
-  await app.analytics.trackWelcomeScreen(ctx);
-  const user = await UserModel.findOne({ userId: ctx.from.id });
-  lan = user.lang || "en";
-  ctx.i18n.locale(lan);
-
-  await safeReply(
-    ctx,
-    ctx.i18n.t("cancel"),
-    keyboards.getBackKeyboard(ctx.i18n)
-  );
+newEx.enter(async (ctx) => {
+  await app.analytics.trackNew(ctx);
 });
 
-startNewExchange.on("text", async (ctx) => {
+newEx.on("text", async (ctx) => {
+  await app.analytics.trackNew(ctx);
   const user = await UserModel.findOne({ userId: ctx.from.id });
   lan = ctx.scene.state.lang || user.lang || "en";
   ctx.i18n.locale(lan);
@@ -42,15 +32,11 @@ startNewExchange.on("text", async (ctx) => {
     }
     return;
   }
-
   if (text === ctx.i18n.t(buttons.startNew)) {
-    await ctx.scene.enter(scenes.currFrom);
-    return;
-  }
-  if (text === ctx.i18n.t(buttons.help)) {
+    await ctx.scene.enter(scenes.currFrom, { lang: lan });
+  } else if (text === ctx.i18n.t(buttons.help)) {
     await safeReply(ctx, `${ctx.i18n.t("support")}\n${process.env.CN_EMAIL}`);
-    return;
   }
 });
 
-export default startNewExchange;
+export default newEx;

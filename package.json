@@ -1,12 +1,12 @@
 {
   "name": "telegram-bot",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "[Flow description](./FLOW.md)",
   "main": "index.js",
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "babel src -d dist --copy-files",
     "dev": "npm run build && nodemon dist/index.js",
-    "serve": "node dist/index.js",
+    "serverRun": "node dist/index.js",
     "prepare": "npm run build",
     "start": "node index"
   },
@@ -17,14 +17,18 @@
     "dotenv": "8.2.0",
     "eslint": "^8.13.0",
     "express": "4.17.1",
+    "fs": "^0.0.1-security",
     "mongoose": "^5.13.14",
     "node-postgres": "^0.6.2",
     "nodemon": "^2.0.15",
+    "path": "^0.12.7",
     "request": "2.88.0",
     "request-promise": "4.2.4",
     "telegraf": "3.33.0",
+    "telegraf-i18n": "^6.6.0",
     "telegraf-session-redis": "5.1.0",
-    "winston": "3.2.1"
+    "winston": "3.2.1",
+    "yaml": "^2.4.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",

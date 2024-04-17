@@ -1,5 +1,7 @@
-# Telegram bot workflow 
+# Telegram bot workflow
+
 Technologies:
+
 - Express
 - Telegraf
 - MongoDB
@@ -25,29 +27,37 @@ The scene starts after pressing the `Read` button, a message about the need to a
 ### currFrom
 
 At the beginning of the scene, a request is made to the ChangeNOW API to get available currencies for exchange:
+
 ```
 GET: /currencies?active=true
 ```
+
 Received currencies are cached in the user's session. A message is sent to the chat about choosing a currency to exchange, a keyboard appears with popular currencies. The user selects the currency by pressing the button or by entering a ticker of the desired currency. The received ticker is validated, in case of an error a message is displayed. The scene waits until a valid currency ticker is entered. After selecting the 'from' currency, a request is made for the transfer of full information on the 'from' currency using CN API:
+
 ```
 GET: /currencies/:ticker
 ```
+
 Currency information is stored in the user session, the transition to the currency 'to' selection scene takes place.
 
 ### curTo
 
 A message about choosing the currency 'to' is sent to the chat, a keyboard with popular currencies appears. If the chosen currency 'from' is in popular category, the button will be checked. The principle of currency 'to' selection is similar to the previous scene. The ticker is validated, information on currency 'to' is requested. Next, the possibility of exchanging a pair from-to is checked. By using CN API, the pairs available for exchange are requested:
+
 ```
 GET: /market-info/available-pairs/
 ```
+
 If the pair is not avaialable for exchange, the user is prompted to select the currency 'to' again. If successful, the amount to enter scene is launched.
 
 ### amount
 
 A request is made for the minimum amount for an exchange pair:
+
 ```
 GET: /min-amount/from_to
 ```
+
 A message is displayed to the user with a minimum amount for exchange and a proposal to enter the amount. The scene expects a valid integer or float to be entered, which must be at least equal to the minimum amount. If the entered amount is invalid, an error message is sent to the user.
 A keyboard with buttons is displayed: return to the previous step, complete the exchange, and write to support.
 If the amount is successfully entered, the user goes to the address input scene.
@@ -55,9 +65,11 @@ If the amount is successfully entered, the user goes to the address input scene.
 ### estimateExchange
 
 At the beginning of the scene, a request is made for the expected amount that the user will receive.
+
 ```
 GET: /exchange-amount/amount/from_to
 ```
+
 A message is displayed to the user with the amount and a proposal to enter the recipient address.
 The scene expects an address for the currency 'to', it is validated for only English letters and numbers.
 After entering and validating the address, it is saved in the session and a transition to the transaction data confirmation scene takes place.
@@ -66,15 +78,15 @@ After entering and validating the address, it is saved in the session and a tran
 
 In this scene, the need to enter an extra id for the currency 'to' is checked. The principle of proccess is similar to the scene of the input address. If the field is not required, control immediately passes to the next scene.
 
-
 ### checkAgree
 
 The final scene of creating an exchange.
 At the beginning, a message with data to create a transaction is displayed to the user. The user confirms the creation of the transaction by pressing the `Confirm` button. A request is sent to create a transaction to CN API:
+
 ```
 POST: /transactions/api_key
 
-request params: 
+request params:
 {
   userId,
   amount,
@@ -86,21 +98,21 @@ request params:
 }
 
 ```
+
 The created transaction is saved to the database, a connection between the transaction and the user is created.
 Messages are sent to the user with transaction information.
 In case of a request error, a transaction creation error message is displayed, the user returns to the previous scene.
 
-
 The StatusWorker object is responsible for checking statuses and notifications of status changes. At specified intervals, it checks the status of transactions whose status is not completed. Check workflow:
+
 1. Take a transaction from the database
 2. Send a request to CN API:
-    ```
-    GET: /transactions/:transaction_id
-    ```
+   ```
+   GET: /transactions/:transaction_id
+   ```
 3. Compare the status of the received transaction information with the one in the database
 4. If the status has changed, we update the transaction information, the user is notified about the status change, the transaction data is updated.  
    If the status has not changed after the specified interval, repeat from step 1.
-5. Repeat from step 1, until the transaction status is  `confirming`, `exchanging`, `sending` or `waiting`.
+5. Repeat from step 1, until the transaction status is `confirming`, `exchanging`, `sending` or `waiting`.
 
 When the user clicks the `Start new exchange` button, the process begins with the `curTo` scene.
-

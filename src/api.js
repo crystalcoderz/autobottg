@@ -1,13 +1,13 @@
-import rp from 'request-promise';
-import { string_similarity, isAvailableCurr } from './helpers';
+import rp from "request-promise";
+import { string_similarity, isAvailableCurr } from "./helpers";
 
-const _apiRequest = async options => {
+const _apiRequest = async (options) => {
   try {
     options = {
       ...options,
-      headers: options.headers || { 'Content-Type': 'application/json' },
+      headers: options.headers || { "Content-Type": "application/json" },
       json: options.json || true,
-      method: options.method || 'GET',
+      method: options.method || "GET",
     };
 
     logger.info({
@@ -21,13 +21,13 @@ const _apiRequest = async options => {
   }
 };
 
-const _apiRequestUnsafe = async options => {
+const _apiRequestUnsafe = async (options) => {
   try {
     options = {
       ...options,
-      headers: options.headers || { 'Content-Type': 'application/json' },
+      headers: options.headers || { "Content-Type": "application/json" },
       json: options.json || true,
-      method: options.method || 'GET',
+      method: options.method || "GET",
     };
 
     logger.info({
@@ -46,9 +46,9 @@ export const getAllCurrencies = async () => {
   const options = {
     uri: `${process.env.CN_API_URL}/currencies?active=true?api_key=${process.env.CN_API_KEY}`,
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    json: true
+    json: true,
   };
 
   return await _apiRequest(options);
@@ -62,7 +62,7 @@ export const getPairs = async () => {
   return await _apiRequest(options);
 };
 
-export const getMinimumDepositAmount = async pair => {
+export const getMinimumDepositAmount = async (pair) => {
   const options = {
     uri: `${process.env.CN_API_URL}/min-amount/${pair}?api_key=${process.env.CN_API_KEY}`,
   };
@@ -70,7 +70,7 @@ export const getMinimumDepositAmount = async pair => {
   return await _apiRequest(options);
 };
 
-export const getCurrInfo = async cur => {
+export const getCurrInfo = async (cur) => {
   const options = {
     uri: `${process.env.CN_API_URL}/currencies/${cur}?api_key=${process.env.CN_API_KEY}`,
   };
@@ -84,17 +84,15 @@ export const getExchAmount = async (amount, fromTo) => {
   };
   try {
     return await _apiRequestUnsafe(options);
-  }
-  catch (e) {
+  } catch (e) {
     logger.error("err:" + e.message);
-    return e.message
+    return e.message;
   }
-
 };
 
-export const sendTransactionData = async data => {
+export const sendTransactionData = async (data) => {
   const options = {
-    method: 'POST',
+    method: "POST",
     uri: `${process.env.CN_API_URL}/transactions/${process.env.CN_API_KEY}`,
     body: data,
   };
@@ -102,7 +100,7 @@ export const sendTransactionData = async data => {
   return await _apiRequest(options);
 };
 
-export const getTransactionStatus = async id => {
+export const getTransactionStatus = async (id) => {
   const options = {
     uri: `${process.env.CN_API_URL}/transactions/${id}/${process.env.CN_API_KEY}`,
   };
@@ -124,15 +122,14 @@ class ContentApi {
     return this;
   }
 
-
   async getContentCurrenciesFromApi() {
     console.log("request contentApi.currencies");
     const options = {
       uri: `${this.apiUrl}/currencies?_locale=en&_limit=-1&_is_site=true`,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      json: true
+      json: true,
     };
 
     return _apiRequest(options);
@@ -163,12 +160,23 @@ class ContentApi {
   async proposeAwailableCurrs(name) {
     let contentCurrencies = await this.getContentCurrencies();
     let res = new Array();
-    contentCurrencies.forEach(c => {
-      if (c.ticker.toLowerCase() === name.toLowerCase() ||
+    contentCurrencies.forEach((c) => {
+      if (
+        c.ticker.toLowerCase() === name.toLowerCase() ||
         c.name.toLowerCase() === name.toLowerCase() ||
         c.current_ticker === name.toLowerCase()
       ) {
-        res.push("\n\n /" + c.ticker + " = " + c.current_ticker.toUpperCase() + " (" + c.name + ") on " + c.network.toUpperCase() + " network");
+        res.push(
+          "\n\n /" +
+            c.ticker +
+            " = " +
+            c.current_ticker.toUpperCase() +
+            " (" +
+            c.name +
+            ") on " +
+            c.network.toUpperCase() +
+            " network",
+        );
       }
     });
     return res;
@@ -178,21 +186,49 @@ class ContentApi {
     let allContentCurrencies = await this.getContentCurrencies();
     let allCurrencies = await getAllCurrencies();
     let res = new Array();
-    allContentCurrencies.forEach(c => {
-      let tickerSimilarity = string_similarity(name.toLowerCase(), c.ticker.toLowerCase());
-      let nameSimilarity = string_similarity(name.toLowerCase(), c.name.toLowerCase());
-      let current_tickerSimilarity = string_similarity(name.toLowerCase(), c.current_ticker.toLowerCase());
+    allContentCurrencies.forEach((c) => {
+      let tickerSimilarity = string_similarity(
+        name.toLowerCase(),
+        c.ticker.toLowerCase(),
+      );
+      let nameSimilarity = string_similarity(
+        name.toLowerCase(),
+        c.name.toLowerCase(),
+      );
+      let current_tickerSimilarity = string_similarity(
+        name.toLowerCase(),
+        c.current_ticker.toLowerCase(),
+      );
       const currIndex = isAvailableCurr(c.ticker.toLowerCase(), allCurrencies);
       if (currIndex !== -1) {
-        if (current_tickerSimilarity > 0.45 ||
+        if (
+          current_tickerSimilarity > 0.45 ||
           tickerSimilarity > 0.45 ||
           nameSimilarity > 0.45
         ) {
           try {
             if (!c.network) {
-              res.push("\n\n /" + c.ticker + " = " + c.current_ticker.toUpperCase() + " (" + c.name + ") ");
+              res.push(
+                "\n\n /" +
+                  c.ticker +
+                  " = " +
+                  c.current_ticker.toUpperCase() +
+                  " (" +
+                  c.name +
+                  ") ",
+              );
             } else {
-              res.push("\n\n /" + c.ticker + " = " + c.current_ticker.toUpperCase() + " (" + c.name + ") on " + c.network.toUpperCase() + " network");
+              res.push(
+                "\n\n /" +
+                  c.ticker +
+                  " = " +
+                  c.current_ticker.toUpperCase() +
+                  " (" +
+                  c.name +
+                  ") on " +
+                  c.network.toUpperCase() +
+                  " network",
+              );
             }
           } catch (error) {
             console.log("error while search for query:" + name);

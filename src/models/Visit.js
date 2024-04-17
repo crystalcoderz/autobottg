@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const VisitSchema = new Schema({
   userIp: String,
   ipParsed: Date,
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
-export default mongoose.model('Visit', VisitSchema);
+export default mongoose.model("Visit", VisitSchema);
