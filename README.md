@@ -82,7 +82,7 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot) and 
 4. sudo systemctl daemon-reload
 5. sudo systemctl enable shellscript-bot.service
 6. sudo systemctl start shellscript-bot.service
-7. sudo systemctl status shellscript.service
+7. sudo systemctl status shellscript-bot.service
 8. see status
 
 ## Database setup
