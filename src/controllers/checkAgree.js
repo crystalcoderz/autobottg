@@ -76,7 +76,7 @@ checkAgree.on("text", async (ctx) => {
   }
 
   if (text === ctx.i18n.t(buttons.help)) {
-    await safeReply(ctx, `${ctx.i18n.t("support")}\n${process.env.CN_EMAIL}`);
+    await safeReply(ctx, `${ctx.i18n.t("support")}\n${process.env.HELP_TG}`);
     return;
   }
 
@@ -95,11 +95,13 @@ checkAgree.on("text", async (ctx) => {
       address: walletCode,
     };
 
+    let restoredID = userId || app.sessionAdapter.readUserIdStr(ctx);
+
     const res = await sendTransactionData(data);
 
     if (res && res.payinAddress) {
       const { transactionExplorerMask } = currTo;
-      await addTransactionToDB(res, userId, transactionExplorerMask);
+      await addTransactionToDB(res, restoredID, transactionExplorerMask);
 
       await safeReplyWithHTML(
         ctx,
