@@ -1,6 +1,6 @@
-import { analytics } from './analytics';
-import { content_api } from './api';
-import { msgInterceptor, sessionAdapter } from './helpers';
+import { analytics } from "./analytics";
+import { content_api } from "./api";
+import { msgInterceptor, sessionAdapter } from "./helpers";
 
 class BotApplication {
   constructor() {
@@ -10,6 +10,5 @@ class BotApplication {
     this.msgInterceptor = msgInterceptor;
   }
 }
-
 
 export const app = new BotApplication();

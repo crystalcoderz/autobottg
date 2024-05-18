@@ -1,5 +1,4 @@
-
-# Changenow Bot
+# Evercode Exchange Bot
 
 [Flow description](./FLOW.md)
 
@@ -9,15 +8,15 @@
 
 ## Requirements
 
-- node `11.2.0`
-- redis `5.0.3`
-- mongodb `4.0.4`
+- node `18+`
+- redis
+- mongodb
 
 ## Description of .env config parameters:
 
-`NODE_ENV` - mode in which production or development application is launched
+`NODE_ENV` - mode in which production or development application is launched (development/production)
 
-`CN_API_URL` - URL for API ChahgeNOW usage, by default: https://changenow.io/api/v1  
+`CN_API_URL` - URL for API ChahgeNOW usage, by default: https://changenow.io/api/v1
 
 `CN_API_KEY` - API key provided by ChangeNOW
 
@@ -27,23 +26,25 @@
 
 `API_BOT_KEY` - Bot's key (token) in Telegram
 
-`APP_PORT` - Port on which express application is launched
+`APP_PORT` - Port on which express application is launched (example: 4000)
 
-`APP_HOST` - Host on which express application is launched 
+`APP_HOST` - Host on which express application is launched
 
-`APP_EXTERNAL_HOST` - Your domain for external URLs and webhook link  
+`WEBHOOK_PART` - Bot URL part (example: /bot)
+
+`WEBHOOK_PORT` - Bot ports for its operation (Different from APP_PORT. example: 3000)
 
 `APP_USE_CERTIFICATE` - Sets up the application to use SSL certificate, accepts value `true/false`
 
-`DB_HOST` - Host on which MongoDB database is running  
+`DB_HOST` - Host on which MongoDB database is running
 
-`DB_PORT` - Port on which MongoDB database is running  
+`DB_PORT` - Port on which MongoDB database is running
 
 `DB_NAME` - Database name, by default: changenow_bot
 
 `DB_USERNAME` - Database username
- 
-`DB_PASS` - Database user password 
+
+`DB_PASS` - Database user password
 
 `DB_REDIS_HOST` - Host on which Redis is running
 
@@ -58,30 +59,41 @@ To start Exchange, just visit [Telegram](http://t.me/changeNOW_officialbot) and 
 ## Server setup
 
 1. Setup domain with SSL-certificate to let webhooks work
-2. git clone https://gitlab.com/changenow/frontend/changenow-telegram-bot
-   or 
-   git clone git@gitlab.com:changenow-s-library-catalogue/white-label-telegram-bot.git
-3. cd changenow-bot
-4. Install RedisDB (https://redis.io/) and insert parameters to .env
-5. npm install
-6. create _.env_ file and enter fields from .env.example
-7. npm run serve
+2. git clone https://github.com/EvercodeLab/whitelabel-evercode-tgbot.git
+3. Install RedisDB (https://redis.io/) and insert parameters to .env
+4. npm install
+5. create _.env_ file and enter fields from .env.example
+6. sh bot_start.sh
+
+## Server autostart
+
+1. sudo chmod +x bot_start.sh
+2. sudo nano /lib/systemd/system/shellscript-bot.service
+3. Paste:
+   [Unit]
+   Description=Telegram Bot Service
+   After=multi-user.target
+   [Service]
+   Type=idle
+   ExecStart=path-bot-folder/bot_start.sh
+   [Install]
+   WantedBy=multi-user.target
+
+4. sudo systemctl daemon-reload
+5. sudo systemctl enable shellscript-bot.service
+6. sudo systemctl start shellscript-bot.service
+7. sudo systemctl status shellscript-bot.service
+8. see status
 
 ## Database setup
-1. Install [mongodb](https://docs.mongodb.com/v4.0/administration/install-on-linux/)
+
+1. Install [mongodb](https://www.mongodb.com/docs/manual/installation/)
 2. Set db name in DB_NAME .env parameter
-3. Create user and password in this db name (`db.createUser()`)
-4. Set DB_USERNAME and DB_PASS parameters
-5. MongoDB should use ssl connection
+3. Enter to `mongosh`
+4. Create user and password in this db name (`db.createUser({user: "DB_USERNAME", pwd: "DB_PASS", roles: [ { role: "dbOwner", db: "NAME_DB" } ], passwordDigestor: "server" })`)
+5. Set DB_USERNAME, DB_PASS & NAME_DB parameters
 
 ## Development setup
 
-1. git clone https://gitlab.com/changenow/frontend/changenow-telegram-bot
-2. cd changenow-bot
-3. install [mongodb](https://docs.mongodb.com/v4.0/administration/install-on-linux/)
-4. npm install
-5. create _.env_ file and enter fields from .env.example
-6. Install RedisDB and run with parameters from .env.example
-7. if you need build and run app `npm run dev` only run `npm start`
-
-Tip: Use `dev` branch for testing environment!
+if you need build - `yarn build` & `yarn serverRun`
+to quickly receive changes during development - it will be enough - `yarn start`
